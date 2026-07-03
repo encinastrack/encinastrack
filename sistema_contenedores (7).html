@@ -1310,35 +1310,51 @@ body {
 </script>
 
 <!-- LOGIN -->
-<div id="login-screen">
-  <div class="login-card">
-    <div class="login-logo-wrap">
-      <svg width="56" height="56" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto 14px;display:block;">
-        <rect width="64" height="64" rx="14" fill="#1a3a2a"/>
-        <path d="M32 8 C28 14 24 18 26 24 C28 28 32 27 32 27 C32 27 36 28 38 24 C40 18 36 14 32 8Z" fill="#52B788"/>
-        <line x1="32" y1="27" x2="32" y2="32" stroke="#52B788" stroke-width="2"/>
-        <circle cx="23" cy="40" r="9" fill="#C0392B"/>
-        <circle cx="20" cy="37" r="2.5" fill="#E74C3C" opacity="0.6"/>
-        <circle cx="41" cy="40" r="9" fill="#8E44AD"/>
-        <circle cx="38" cy="37" r="2.5" fill="#9B59B6" opacity="0.6"/>
-        <circle cx="32" cy="48" r="8" fill="#C0392B"/>
-        <circle cx="29" cy="45" r="2" fill="#E74C3C" opacity="0.6"/>
-      </svg>
-      <div class="login-title">Encinas Track</div>
-      <div class="login-subtitle">Sistema de registro de carga</div>
-    </div>
-    <div class="role-tabs">
-      <button id="tab-coord" class="role-tab active" ontouchend="event.preventDefault();selectLoginRole('coordinador');" onclick="selectLoginRole('coordinador')">Coordinador</button>
-      <button id="tab-op" class="role-tab" ontouchend="event.preventDefault();selectLoginRole('operario');" onclick="selectLoginRole('operario')">Operario</button>
-      <button id="tab-cli" class="role-tab" ontouchend="event.preventDefault();selectLoginRole('cliente');" onclick="selectLoginRole('cliente')">Cliente</button>
-    </div>
-    <label class="login-label" id="pin-label">PIN coordinador</label>
-    <input id="pin-input" type="password" inputmode="numeric" maxlength="4" placeholder="••••" class="pin-input"
-      oninput="document.getElementById('login-error').style.display='none'"
-      onkeydown="if(event.key==='Enter') intentarLogin()">
-    <div id="login-error" class="login-error">PIN incorrecto — intenta de nuevo</div>
-    <button class="btn-login" ontouchend="event.preventDefault();intentarLogin();" onclick="intentarLogin()">Ingresar →</button>
+<div id="login-screen" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:#1a3a2a;">
+  <div style="background:#f5f0e8;border-radius:16px;padding:36px 28px;width:100%;max-width:380px;text-align:center;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#3d7a55,#c8973a,#c0392b);"></div>
     
+    <svg width="56" height="56" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto 14px;display:block;">
+      <rect width="64" height="64" rx="14" fill="#1a3a2a"/>
+      <path d="M32 8 C28 14 24 18 26 24 C28 28 32 27 32 27 C32 27 36 28 38 24 C40 18 36 14 32 8Z" fill="#52B788"/>
+      <line x1="32" y1="27" x2="32" y2="32" stroke="#52B788" stroke-width="2"/>
+      <circle cx="23" cy="40" r="9" fill="#C0392B"/>
+      <circle cx="41" cy="40" r="9" fill="#8E44AD"/>
+      <circle cx="32" cy="48" r="8" fill="#C0392B"/>
+    </svg>
+    
+    <div style="font-family:'Georgia',serif;font-size:26px;color:#1a3a2a;margin-bottom:4px;">Encinas Track</div>
+    <div style="font-size:11px;color:#9E9B93;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:28px;">Sistema de registro de carga</div>
+
+    <!-- Role selector using radio buttons for iOS compatibility -->
+    <div style="display:flex;gap:6px;margin-bottom:20px;background:#ece6d8;border-radius:8px;padding:4px;">
+      <label style="flex:1;cursor:pointer;">
+        <input type="radio" name="rol" value="coordinador" checked style="display:none;" onchange="selectLoginRole('coordinador')">
+        <div id="lbl-coord" style="padding:10px;border-radius:6px;font-size:13px;font-weight:500;background:#1a3a2a;color:#f5f0e8;text-align:center;transition:all 0.2s;">Coordinador</div>
+      </label>
+      <label style="flex:1;cursor:pointer;">
+        <input type="radio" name="rol" value="operario" style="display:none;" onchange="selectLoginRole('operario')">
+        <div id="lbl-op" style="padding:10px;border-radius:6px;font-size:13px;color:#6B6860;text-align:center;transition:all 0.2s;">Operario</div>
+      </label>
+      <label style="flex:1;cursor:pointer;">
+        <input type="radio" name="rol" value="cliente" style="display:none;" onchange="selectLoginRole('cliente')">
+        <div id="lbl-cli" style="padding:10px;border-radius:6px;font-size:13px;color:#6B6860;text-align:center;transition:all 0.2s;">Cliente</div>
+      </label>
+    </div>
+
+    <div style="font-size:11px;color:#6B6860;letter-spacing:0.12em;text-transform:uppercase;text-align:left;margin-bottom:6px;" id="pin-label">PIN coordinador</div>
+    
+    <input id="pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="••••"
+      style="width:100%;border:2px solid #ddd6c6;border-radius:8px;padding:14px;font-size:26px;text-align:center;letter-spacing:12px;background:#ece6d8;color:#1A1916;outline:none;margin-bottom:8px;-webkit-text-security:disc;"
+      oninput="document.getElementById('login-error').style.display='none'"
+      onkeyup="if(event.keyCode===13) intentarLogin()">
+    
+    <div id="login-error" style="display:none;font-size:12px;color:#991B1B;background:#FEE2E2;border-radius:6px;padding:8px 12px;margin-bottom:8px;">PIN incorrecto — intenta de nuevo</div>
+    
+    <button id="btn-ingresar" style="width:100%;background:#1a3a2a;color:#f5f0e8;border:none;border-radius:8px;padding:16px;font-size:15px;font-weight:500;cursor:pointer;margin-top:4px;-webkit-appearance:none;"
+      onclick="intentarLogin()">
+      Ingresar →
+    </button>
   </div>
 </div>
 
@@ -2533,16 +2549,31 @@ async function subirFotoFB(file, path) {
 let loginRole = 'coordinador';
 function selectLoginRole(role) {
   loginRole = role;
-  ['tab-coord','tab-op','tab-cli'].forEach(id => {
-    const btn = document.getElementById(id);
-    if (btn) { btn.classList.remove('active'); }
+  // Update visual state of radio labels
+  const labels = {
+    coordinador: 'lbl-coord',
+    operario: 'lbl-op', 
+    cliente: 'lbl-cli'
+  };
+  Object.entries(labels).forEach(([r, id]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (r === role) {
+      el.style.background = '#1a3a2a';
+      el.style.color = '#f5f0e8';
+      el.style.fontWeight = '500';
+    } else {
+      el.style.background = 'transparent';
+      el.style.color = '#6B6860';
+      el.style.fontWeight = '400';
+    }
   });
-  const tabMap = {coordinador:'tab-coord', operario:'tab-op', cliente:'tab-cli'};
-  const activeTab = document.getElementById(tabMap[role]);
-  if (activeTab) activeTab.classList.add('active');
-  document.getElementById('pin-label').textContent = role === 'cliente' ? 'PIN de empresa' : 'PIN ' + role;
-  document.getElementById('pin-input').value = '';
-  document.getElementById('login-error').style.display = 'none';
+  const lbl = document.getElementById('pin-label');
+  if (lbl) lbl.textContent = role === 'cliente' ? 'PIN de empresa' : 'PIN ' + role;
+  const inp = document.getElementById('pin-input');
+  if (inp) inp.value = '';
+  const err = document.getElementById('login-error');
+  if (err) err.style.display = 'none';
 }
 function intentarLogin() {
   const pin = document.getElementById('pin-input').value.trim();
