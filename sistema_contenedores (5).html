@@ -1,0 +1,2455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Encinas Track</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231a3a2a'/%3E%3Cpath d='M32 8 C28 14 24 18 26 24 C28 28 32 27 32 27 C32 27 36 28 38 24 C40 18 36 14 32 8Z' fill='%2352B788'/%3E%3Ccircle cx='23' cy='40' r='9' fill='%23C0392B'/%3E%3Ccircle cx='41' cy='40' r='9' fill='%238E44AD'/%3E%3Ccircle cx='32' cy='48' r='8' fill='%23C0392B'/%3E%3C/svg%3E">
+<style>
+:root {
+  --ink: #0f1a14;
+  --ink2: #2d4a38;
+  --ink3: #5a7a65;
+  --cream: #f5f0e8;
+  --cream2: #ece6d8;
+  --cream3: #ddd6c6;
+  --leaf: #1a3a2a;
+  --leaf2: #2d5e42;
+  --leaf3: #3d7a55;
+  --berry: #8b1a3a;
+  --berry2: #c0392b;
+  --gold: #c8973a;
+  --gold2: #e8b84b;
+  --ok: #2d6a4f;
+  --ok-bg: #d8f3dc;
+  --warn: #7b3000;
+  --warn-bg: #ffe8cc;
+  --blue: #1a3a6a;
+  --blue-bg: #ddeeff;
+  --radius: 6px;
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* NAV */
+.nav {
+  background: var(--leaf);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 2px solid var(--leaf3);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 36px;
+  text-decoration: none;
+}
+
+.nav-logo svg { flex-shrink: 0; }
+
+.nav-logo-text {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--cream);
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.nav-logo-sub {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--leaf3);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.nav-tab {
+  padding: 0 14px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(245,240,232,0.55);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.2s;
+}
+.nav-tab:hover { color: var(--cream); }
+.nav-tab.active { color: var(--gold2); border-bottom-color: var(--gold2); }
+
+.nav-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.nav-season {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(245,240,232,0.4);
+  border: 1px solid rgba(245,240,232,0.15);
+  border-radius: 20px;
+  padding: 4px 12px;
+}
+
+/* DRIVE STATUS */
+.drive-status {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  padding: 5px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+.drive-status.disconnected {
+  background: rgba(200,151,58,0.15);
+  color: var(--gold2);
+  border: 1px solid rgba(200,151,58,0.3);
+}
+.drive-status.connected {
+  background: rgba(45,106,79,0.3);
+  color: #6fcf97;
+  border: 1px solid rgba(111,207,151,0.3);
+  cursor: default;
+}
+
+/* PAGES */
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.25s ease; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+/* LOGIN */
+#login-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: var(--leaf);
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(61,122,85,0.3) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(139,26,58,0.2) 0%, transparent 50%);
+}
+
+.login-card {
+  background: var(--cream);
+  border-radius: 12px;
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.login-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--leaf3), var(--gold), var(--berry2));
+}
+
+.login-logo-wrap { margin-bottom: 24px; }
+
+.login-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--leaf);
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+}
+
+.login-subtitle {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 28px;
+}
+
+.role-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+  background: var(--cream2);
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.role-tab {
+  flex: 1;
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: transparent;
+  color: var(--ink3);
+}
+.role-tab.active {
+  background: var(--leaf);
+  color: var(--cream);
+  box-shadow: 0 2px 8px rgba(26,58,42,0.3);
+}
+
+.login-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  text-align: left;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.pin-input {
+  width: 100%;
+  border: 2px solid var(--cream3);
+  border-radius: 8px;
+  padding: 14px;
+  font-family: var(--font-mono);
+  font-size: 26px;
+  text-align: center;
+  letter-spacing: 12px;
+  background: var(--cream2);
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s;
+  margin-bottom: 8px;
+}
+.pin-input:focus { border-color: var(--leaf3); }
+
+.login-error {
+  display: none;
+  font-size: 12px;
+  color: var(--berry2);
+  background: rgba(192,57,43,0.08);
+  border: 1px solid rgba(192,57,43,0.2);
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  font-family: var(--font-mono);
+}
+
+.btn-login {
+  width: 100%;
+  background: var(--leaf);
+  color: var(--cream);
+  border: none;
+  border-radius: 8px;
+  padding: 14px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: all 0.2s;
+}
+.btn-login:hover { background: var(--leaf2); }
+
+.login-hint {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink3);
+  margin-top: 16px;
+  letter-spacing: 0.05em;
+}
+
+/* APP WRAPPER */
+#app { display: none; }
+
+/* COORDINADOR */
+.coord-wrap { max-width: 1140px; margin: 0 auto; padding: 28px 24px; }
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  gap: 16px;
+}
+
+.page-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--leaf);
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+
+.page-sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-top: 4px;
+}
+
+/* BUTTONS */
+.btn-primary {
+  background: var(--leaf);
+  color: var(--cream);
+  border: none;
+  border-radius: var(--radius);
+  padding: 10px 18px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-primary:hover { background: var(--leaf2); transform: translateY(-1px); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink2);
+  border: 1.5px solid var(--cream3);
+  border-radius: var(--radius);
+  padding: 9px 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-ghost:hover { border-color: var(--ink3); background: var(--cream2); }
+
+/* METRICS */
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.metric {
+  background: var(--cream2);
+  border: 1px solid var(--cream3);
+  border-radius: 8px;
+  padding: 16px 18px;
+  position: relative;
+  overflow: hidden;
+}
+
+.metric::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+}
+
+.metric:nth-child(1)::after { background: var(--leaf3); }
+.metric:nth-child(2)::after { background: var(--ok); }
+.metric:nth-child(3)::after { background: var(--blue); }
+.metric:nth-child(4)::after { background: var(--gold); }
+
+.metric-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 8px;
+}
+
+.metric-val {
+  font-family: var(--font-display);
+  font-size: 32px;
+  color: var(--ink);
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.metric-val.green { color: var(--ok); }
+.metric-val.blue { color: var(--blue); }
+
+/* SEARCH */
+.search-section {
+  background: var(--cream2);
+  border: 1px solid var(--cream3);
+  border-radius: 8px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+}
+
+.search-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-row { display: flex; gap: 8px; }
+
+.search-input {
+  flex: 1;
+  border: 1.5px solid var(--cream3);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  background: var(--cream);
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-input:focus { border-color: var(--leaf3); }
+.search-input::placeholder { color: var(--ink3); }
+
+.search-clear {
+  background: var(--cream);
+  color: var(--ink3);
+  border: 1.5px solid var(--cream3);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.15s;
+}
+.search-clear:hover { background: var(--cream2); }
+
+.search-results { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+
+.result-card {
+  background: var(--cream);
+  border: 1px solid var(--cream3);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.result-card:hover { border-color: var(--leaf3); background: var(--cream2); }
+
+/* TABLE */
+.table-card {
+  background: var(--cream2);
+  border: 1px solid var(--cream3);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 1.6fr 90px 100px 100px 130px;
+  padding: 10px 18px;
+  background: var(--leaf);
+}
+
+.table-header span {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(245,240,232,0.5);
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 1.6fr 90px 100px 100px 130px;
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--cream3);
+  align-items: center;
+  transition: background 0.12s;
+}
+.table-row:last-child { border-bottom: none; }
+.table-row:hover { background: var(--cream); }
+.table-row.en-proceso { background: rgba(45,94,66,0.06); }
+
+.cont-name {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.cont-po {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink3);
+  margin-top: 2px;
+}
+.cont-cal { margin-top: 3px; }
+.sin-po { font-style: italic; color: var(--ink3); opacity: 0.6; }
+
+.cal-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 3px;
+  background: var(--ink);
+  color: var(--cream);
+  text-transform: uppercase;
+}
+
+.temp-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+.temp-ok { background: var(--ok-bg); color: var(--ok); }
+.temp-warn { background: var(--warn-bg); color: var(--warn); }
+.temp-none { background: var(--cream3); color: var(--ink3); }
+
+.status-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 3px;
+}
+.status-done { background: var(--ok-bg); color: var(--ok); }
+.status-prog { background: var(--blue-bg); color: var(--blue); }
+
+.actions { display: flex; gap: 5px; flex-wrap: wrap; }
+
+.btn-link {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--leaf);
+  background: rgba(26,58,42,0.08);
+  border: 1px solid rgba(26,58,42,0.2);
+  border-radius: 4px;
+  padding: 5px 9px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-link:hover { background: rgba(26,58,42,0.15); }
+
+.btn-icon {
+  font-size: 13px;
+  background: var(--cream);
+  border: 1px solid var(--cream3);
+  border-radius: 4px;
+  padding: 5px 7px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+}
+.btn-icon:hover { background: var(--cream2); }
+
+.btn-ver {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--blue);
+  background: var(--blue-bg);
+  border: 1px solid rgba(29,78,216,0.2);
+  border-radius: 4px;
+  padding: 5px 9px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-ver:hover { background: #c8e0ff; }
+
+/* OVERLAY/MODAL */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15,26,20,0.7);
+  z-index: 100;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 16px;
+  overflow-y: auto;
+  backdrop-filter: blur(4px);
+}
+.overlay.open { display: flex; }
+
+.modal {
+  background: var(--cream);
+  border-radius: 10px;
+  border: 1px solid var(--cream3);
+  padding: 32px;
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--leaf);
+  margin-bottom: 4px;
+}
+.modal-sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 24px;
+}
+
+.field { margin-bottom: 16px; }
+.field label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 6px;
+}
+.field input, .field select {
+  width: 100%;
+  border: 1.5px solid var(--cream3);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  background: var(--cream2);
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.field input:focus, .field select:focus { border-color: var(--leaf3); }
+.field-optional { font-size: 9px; color: var(--ink3); font-family: var(--font-mono); margin-left: 6px; font-weight: 400; text-transform: none; letter-spacing: 0; }
+
+.new-client-box {
+  background: rgba(26,58,42,0.06);
+  border: 1px solid rgba(26,58,42,0.15);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-top: 10px;
+  display: none;
+}
+.new-client-box.show { display: block; }
+.new-client-box label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--leaf3);
+  margin-bottom: 6px;
+  display: block;
+}
+.new-client-row { display: flex; gap: 8px; }
+.new-client-row input {
+  flex: 1;
+  border: 1px solid rgba(26,58,42,0.2);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+  font-size: 13px;
+  background: var(--cream);
+  color: var(--ink);
+  outline: none;
+}
+.btn-add-client {
+  background: var(--leaf);
+  color: var(--cream);
+  border: none;
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.client-added { font-size: 11px; color: var(--ok); margin-top: 6px; display: none; align-items: center; gap: 4px; font-family: var(--font-mono); }
+.client-added.show { display: flex; }
+
+.modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--cream3);
+}
+
+/* LINK MODAL */
+.link-box {
+  background: rgba(26,58,42,0.05);
+  border: 1.5px solid rgba(26,58,42,0.15);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+}
+.link-box-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--leaf3);
+  margin-bottom: 8px;
+}
+.link-name {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--leaf);
+  margin-bottom: 4px;
+}
+.link-url {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink3);
+  word-break: break-all;
+}
+
+.wa-preview {
+  background: #ddd6cf;
+  border-radius: 8px;
+  padding: 14px;
+  margin: 12px 0;
+}
+.wa-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: #6b5d4f;
+  margin-bottom: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.wa-bubble {
+  background: #dcf8c6;
+  border-radius: 8px 8px 0 8px;
+  padding: 10px 14px;
+  display: inline-block;
+  max-width: 88%;
+}
+.wa-bubble-title { font-size: 13px; font-weight: 600; color: #1a1a1a; }
+.wa-bubble-url { font-size: 12px; color: #128c7e; word-break: break-all; }
+.wa-bubble-desc { font-size: 11px; color: #555; margin-top: 3px; }
+
+.copy-btn {
+  width: 100%;
+  background: var(--leaf);
+  color: var(--cream);
+  border: none;
+  border-radius: var(--radius);
+  padding: 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  transition: all 0.15s;
+}
+.copy-btn:hover { background: var(--leaf2); }
+
+.wa-btn {
+  width: 100%;
+  background: #25d366;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.15s;
+}
+.wa-btn:hover { background: #1dbd5a; }
+
+.copied-toast { font-family: var(--font-mono); font-size: 11px; color: var(--ok); text-align: center; margin-top: 8px; display: none; letter-spacing: 0.08em; }
+.copied-toast.show { display: block; }
+
+/* OPERARIO */
+.op-wrap { max-width: 440px; margin: 0 auto; padding: 16px; }
+
+.op-header {
+  background: var(--leaf);
+  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.op-header::before {
+  content: '';
+  position: absolute;
+  top: -20px; right: -20px;
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+}
+
+.op-campo {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(245,240,232,0.45);
+  margin-bottom: 4px;
+}
+.op-nombre {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--cream);
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+.op-po {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--gold2);
+  margin-top: 4px;
+}
+
+.op-temp-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(245,240,232,0.45);
+  text-align: right;
+}
+.op-temp-val {
+  font-family: var(--font-display);
+  font-size: 26px;
+  text-align: right;
+  line-height: 1;
+  margin-top: 2px;
+}
+.op-temp-val.ok { color: #6fcf97; }
+.op-temp-val.warn { color: #f2994a; }
+.op-temp-val.none { color: rgba(245,240,232,0.3); }
+
+.temp-alert {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  margin-top: 10px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  text-align: center;
+  display: none;
+}
+.temp-alert.show { display: block; }
+.temp-alert.ok { background: rgba(111,207,151,0.15); color: #6fcf97; }
+.temp-alert.warn { background: rgba(242,153,74,0.15); color: #f2994a; }
+
+.progress-bar-bg { background: rgba(255,255,255,0.1); border-radius: 3px; height: 3px; margin-top: 14px; }
+.progress-bar-fill { background: var(--gold2); border-radius: 3px; height: 3px; transition: width 0.4s ease; }
+.progress-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: rgba(245,240,232,0.4);
+  margin-top: 5px;
+  text-transform: uppercase;
+}
+
+.op-section {
+  background: var(--cream2);
+  border: 1px solid var(--cream3);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+.op-section-title {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--cream3);
+}
+
+.big-btn {
+  width: 100%;
+  padding: 15px 16px;
+  border-radius: 8px;
+  border: 1.5px solid var(--cream3);
+  background: var(--cream);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--ink);
+  cursor: pointer;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.15s;
+  text-align: left;
+}
+.big-btn:last-child { margin-bottom: 0; }
+.big-btn:hover { border-color: var(--leaf3); background: rgba(26,58,42,0.04); }
+.big-btn.done {
+  background: rgba(45,106,79,0.08);
+  border-color: rgba(45,106,79,0.3);
+  color: var(--ok);
+}
+
+.btn-icon-circle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--cream3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 17px;
+  transition: background 0.15s;
+}
+.big-btn.done .btn-icon-circle { background: rgba(45,106,79,0.15); }
+
+.fruta-panel {
+  display: none;
+  background: rgba(26,58,42,0.05);
+  border: 1px solid rgba(26,58,42,0.12);
+  border-radius: 8px;
+  padding: 14px;
+  margin-top: 10px;
+}
+.fruta-panel.show { display: block; }
+.fruta-count {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--leaf3);
+  margin-bottom: 10px;
+}
+.fruta-thumbs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.fruta-thumb {
+  width: 52px;
+  height: 52px;
+  background: rgba(26,58,42,0.08);
+  border: 1px solid rgba(26,58,42,0.15);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  position: relative;
+}
+.fruta-thumb-num {
+  position: absolute;
+  bottom: 2px;
+  right: 4px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--leaf3);
+  font-weight: 500;
+}
+.btn-add-fruta {
+  width: 100%;
+  background: var(--leaf);
+  color: var(--cream);
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-add-fruta:hover { background: var(--leaf2); }
+
+.pata-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.pata-cell {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid var(--cream3);
+  background: var(--cream);
+  color: var(--ink3);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.pata-cell:hover { border-color: var(--leaf3); }
+.pata-cell.done { background: var(--ok-bg); border-color: rgba(45,106,79,0.3); color: var(--ok); }
+.pata-cell.active { background: var(--blue-bg); border-color: rgba(29,78,216,0.3); color: var(--blue); font-weight: 600; }
+
+.foto-btn {
+  width: 100%;
+  background: var(--leaf);
+  color: var(--cream);
+  border: none;
+  border-radius: 8px;
+  padding: 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  transition: all 0.15s;
+}
+.foto-btn:hover { background: var(--leaf2); }
+.foto-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.completar-btn {
+  width: 100%;
+  background: transparent;
+  color: var(--ok);
+  border: 2px solid var(--ok);
+  border-radius: 8px;
+  padding: 14px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s;
+}
+.completar-btn:hover { background: var(--ok-bg); }
+
+/* SELECTOR */
+.cont-selector {
+  background: var(--cream2);
+  border: 1px solid var(--cream3);
+  border-radius: 10px;
+  padding: 20px;
+}
+.cont-selector-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--leaf);
+  margin-bottom: 4px;
+}
+.cont-selector-sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 18px;
+}
+.cont-item {
+  border: 1.5px solid var(--cream3);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--cream);
+}
+.cont-item:hover { border-color: var(--leaf3); background: rgba(26,58,42,0.03); }
+.cont-item.en-proceso { border-color: rgba(29,78,216,0.3); background: var(--blue-bg); }
+.cont-item-name { font-size: 14px; font-weight: 500; color: var(--ink); }
+.cont-item-meta { font-family: var(--font-mono); font-size: 11px; color: var(--ink3); margin-top: 3px; }
+.cont-item-badge { font-family: var(--font-mono); font-size: 10px; font-weight: 500; padding: 4px 10px; border-radius: 3px; letter-spacing: 0.06em; text-transform: uppercase; }
+
+/* CLIENTE */
+.client-wrap { max-width: 700px; margin: 0 auto; padding: 28px 20px; }
+.client-header {
+  background: var(--leaf);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.client-header::after {
+  content: '';
+  position: absolute;
+  bottom: -30px; right: -30px;
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.03);
+}
+.client-po {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold2);
+  margin-bottom: 6px;
+}
+.client-title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  color: var(--cream);
+  letter-spacing: -0.5px;
+  margin-bottom: 18px;
+}
+.client-meta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.client-meta-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(245,240,232,0.4);
+  margin-bottom: 4px;
+}
+.client-meta-val { font-size: 15px; font-weight: 500; color: var(--cream); }
+.client-meta-val.green { color: #6fcf97; }
+.client-meta-val.warn { color: #f2994a; }
+
+.download-all-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--leaf);
+  color: var(--cream);
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: all 0.15s;
+}
+.download-all-btn:hover { background: var(--leaf2); }
+
+.gallery-section { margin-bottom: 24px; }
+.gallery-section-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--cream3);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.gallery-badge {
+  background: var(--cream3);
+  color: var(--ink3);
+  border-radius: 3px;
+  padding: 2px 8px;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+.photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
+.photo-card {
+  background: var(--cream2);
+  border: 1px solid var(--cream3);
+  border-radius: 8px;
+  aspect-ratio: 4/3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink3);
+  font-size: 12px;
+  text-align: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.photo-card:hover { border-color: var(--leaf3); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.photo-card-icon { font-size: 26px; }
+.photo-card span { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; }
+.download-badge {
+  position: absolute;
+  top: 6px; right: 6px;
+  background: var(--leaf);
+  color: var(--cream);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.photo-card:hover .download-badge { opacity: 1; }
+
+/* TOAST */
+.global-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--leaf);
+  color: var(--cream);
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  z-index: 999;
+  white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  animation: slideUp 0.2s ease;
+}
+.global-toast.show { display: flex; }
+@keyframes slideUp { from { transform: translateX(-50%) translateY(10px); opacity:0; } to { transform: translateX(-50%) translateY(0); opacity:1; } }
+
+@media (max-width: 600px) {
+  .metrics { grid-template-columns: repeat(2, 1fr); }
+  .table-header, .table-row { grid-template-columns: 1fr auto; }
+  .table-header span:nth-child(n+2), .table-row > *:nth-child(n+2) { display: none; }
+  .table-header span:last-child, .table-row > *:last-child { display: flex; }
+  .client-meta-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+<script src="https://apis.google.com/js/api.js"></script>
+<script src="https://accounts.google.com/gsi/client"></script>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo-wrap">
+      <svg width="56" height="56" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto 14px;display:block;">
+        <rect width="64" height="64" rx="14" fill="#1a3a2a"/>
+        <path d="M32 8 C28 14 24 18 26 24 C28 28 32 27 32 27 C32 27 36 28 38 24 C40 18 36 14 32 8Z" fill="#52B788"/>
+        <line x1="32" y1="27" x2="32" y2="32" stroke="#52B788" stroke-width="2"/>
+        <circle cx="23" cy="40" r="9" fill="#C0392B"/>
+        <circle cx="20" cy="37" r="2.5" fill="#E74C3C" opacity="0.6"/>
+        <circle cx="41" cy="40" r="9" fill="#8E44AD"/>
+        <circle cx="38" cy="37" r="2.5" fill="#9B59B6" opacity="0.6"/>
+        <circle cx="32" cy="48" r="8" fill="#C0392B"/>
+        <circle cx="29" cy="45" r="2" fill="#E74C3C" opacity="0.6"/>
+      </svg>
+      <div class="login-title">Encinas Track</div>
+      <div class="login-subtitle">Sistema de registro de carga</div>
+    </div>
+    <div class="role-tabs">
+      <button id="tab-coord" class="role-tab active" ontouchend="event.preventDefault();selectLoginRole('coordinador');" onclick="selectLoginRole('coordinador')">Coordinador</button>
+      <button id="tab-op" class="role-tab" ontouchend="event.preventDefault();selectLoginRole('operario');" onclick="selectLoginRole('operario')">Operario</button>
+      <button id="tab-cli" class="role-tab" ontouchend="event.preventDefault();selectLoginRole('cliente');" onclick="selectLoginRole('cliente')">Cliente</button>
+    </div>
+    <label class="login-label" id="pin-label">PIN coordinador</label>
+    <input id="pin-input" type="password" inputmode="numeric" maxlength="4" placeholder="••••" class="pin-input"
+      oninput="document.getElementById('login-error').style.display='none'"
+      onkeydown="if(event.key==='Enter') intentarLogin()">
+    <div id="login-error" class="login-error">PIN incorrecto — intenta de nuevo</div>
+    <button class="btn-login" ontouchend="event.preventDefault();intentarLogin();" onclick="intentarLogin()">Ingresar →</button>
+    
+  </div>
+</div>
+
+<div id="app">
+<nav class="nav">
+  <div class="nav-logo">
+    <svg width="26" height="26" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <rect width="64" height="64" rx="14" fill="#1a3a2a"/>
+      <path d="M32 8 C28 14 24 18 26 24 C28 28 32 27 32 27 C32 27 36 28 38 24 C40 18 36 14 32 8Z" fill="#52B788"/>
+      <line x1="32" y1="27" x2="32" y2="32" stroke="#52B788" stroke-width="2"/>
+      <circle cx="23" cy="40" r="9" fill="#C0392B"/>
+      <circle cx="41" cy="40" r="9" fill="#8E44AD"/>
+      <circle cx="32" cy="48" r="8" fill="#C0392B"/>
+    </svg>
+    <div>
+      <div class="nav-logo-text">Encinas Track</div>
+      <div class="nav-logo-sub">Control de carga · Contenedores</div>
+    </div>
+  </div>
+  <div class="nav-tab active" onclick="showPage('coordinador', this)">Coordinador</div>
+  <div class="nav-tab" onclick="showPage('operario', this)">Operario</div>
+  <div class="nav-tab" onclick="showPage('cliente', this)">Cliente</div>
+  <div class="nav-right">
+    <div id="drive-status" class="drive-status disconnected" onclick="conectarDrive()">☁ Conectar Drive</div>
+    <span class="nav-season">Temporada 2025 – 2026</span>
+  </div>
+</nav>
+
+<!-- COORDINADOR -->
+<div id="page-coordinador" class="page active">
+  <div class="coord-wrap">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Panel de coordinador</div>
+        <div class="page-sub">Temporada 2025 – 2026 · Control de carga · Contenedores</div>
+      </div>
+      <button class="btn-primary" onclick="openModal('nuevo')">＋ Nuevo contenedor</button>
+    </div>
+    <div class="metrics">
+      <div class="metric"><div class="metric-label">Total temporada</div><div class="metric-val" id="m-total">—</div></div>
+      <div class="metric"><div class="metric-label">Completados</div><div class="metric-val green" id="m-comp">—</div></div>
+      <div class="metric"><div class="metric-label">En proceso</div><div class="metric-val blue" id="m-prog">—</div></div>
+      <div class="metric"><div class="metric-label">Fotos totales</div><div class="metric-val" id="m-fotos">—</div></div>
+    </div>
+    <div class="search-section">
+      <div class="search-label">🔍 Buscador — PO · N° contenedor · Cliente</div>
+      <div class="search-row">
+        <input class="search-input" id="search-input" placeholder="Ej: L70045 — 20/50 — Pontiberry..." oninput="buscar(this.value)">
+        <button class="search-clear" onclick="clearSearch()">✕</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <p id="search-nores" style="display:none;font-family:var(--font-mono);font-size:11px;color:var(--ink3);margin-top:10px;text-align:center;letter-spacing:0.08em;">Sin resultados para esa búsqueda.</p>
+    </div>
+    <div class="table-card">
+      <div class="table-header">
+        <span>Cliente / Contenedor</span><span>Tipo carga</span><span>Temperatura</span><span>Estado</span><span>Acciones</span>
+      </div>
+      <div id="tabla-body"></div>
+    </div>
+  </div>
+</div>
+
+<!-- OPERARIO -->
+<div id="page-operario" class="page">
+  <div class="op-wrap">
+    <div id="op-selector-view">
+      <div class="cont-selector">
+        <div class="cont-selector-title">Contenedores activos</div>
+        <div class="cont-selector-sub">Selecciona el contenedor que vas a cargar</div>
+        <div id="op-cont-list"></div>
+      </div>
+    </div>
+    <div id="op-carga-view" style="display:none;">
+      <div class="op-header">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div>
+            <div class="op-campo">Campo / Cliente</div>
+            <div class="op-nombre" id="op-nombre-label">—</div>
+            <div class="op-po" id="op-po-label">—</div>
+          </div>
+          <div>
+            <div class="op-temp-label">Temp. inicial</div>
+            <div class="op-temp-val none" id="op-temp-val">—</div>
+          </div>
+        </div>
+        <div class="temp-alert" id="temp-alert"></div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="op-progress-fill" style="width:0%"></div>
+        </div>
+        <div class="progress-label" id="op-progress-label">0 de 24 patas registradas</div>
+      </div>
+
+      <div class="op-section">
+        <div class="op-section-title">Etapas iniciales</div>
+        <button class="big-btn" id="btn-temp" onclick="toggleEtapa('temp')">
+          <div class="btn-icon-circle">🌡️</div><span id="lbl-temp">Temperatura inicial</span>
+        </button>
+        <button class="big-btn" id="btn-vacio" onclick="toggleEtapa('vacio')">
+          <div class="btn-icon-circle">📦</div><span id="lbl-vacio">Contenedor vacío</span>
+        </button>
+        <button class="big-btn" id="btn-fruta" onclick="toggleFrutaPanel()">
+          <div class="btn-icon-circle">🍓</div>
+          <span id="lbl-fruta">Fotos de fruta</span>
+          <span id="fruta-count-badge" style="margin-left:auto;font-family:var(--font-mono);font-size:10px;background:rgba(26,58,42,0.1);color:var(--leaf3);border-radius:3px;padding:2px 8px;display:none;"></span>
+        </button>
+        <div class="fruta-panel" id="fruta-panel">
+          <div class="fruta-count" id="fruta-count-label">0 fotos agregadas</div>
+          <div class="fruta-thumbs" id="fruta-thumbs"></div>
+          <button class="btn-add-fruta" onclick="agregarFotoFruta()">📷 Agregar foto de fruta</button>
+        </div>
+      </div>
+
+      <div class="op-section">
+        <div class="op-section-title">Patas de carga</div>
+        <div class="pata-grid" id="pata-grid"></div>
+        <button class="foto-btn" id="foto-btn" onclick="agregarFotoPata()">
+          📷 Fotografiar pata <span id="pata-next-num">1</span>
+        </button>
+        <button class="completar-btn" onclick="completarCarga()">✅ Carga completada</button>
+      </div>
+      <button class="btn-ghost" style="width:100%;margin-top:4px;" onclick="volverSelector()">← Volver</button>
+      <button onclick="cerrarSesion()" style="width:100%;margin-top:8px;background:transparent;border:none;font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);cursor:pointer;padding:8px;">⏏ Cambiar rol</button>
+    </div>
+  </div>
+</div>
+
+<!-- CLIENTE -->
+<div id="page-cliente" class="page">
+  <div class="client-wrap">
+    <div id="client-selector" style="background:var(--cream2);border:1px solid var(--cream3);border-radius:10px;padding:20px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <div style="font-family:var(--font-display);font-size:22px;color:var(--leaf);">Galería del cliente</div>
+        <button onclick="cerrarSesion()" style="background:transparent;border:none;font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);cursor:pointer;padding:4px 0;">⏏ Cambiar rol</button>
+      </div>
+      <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:18px;">Selecciona un contenedor para ver las fotos</div>
+      <div id="client-cont-list"></div>
+    </div>
+    <div id="client-gallery" style="display:none;">
+      <div class="client-header">
+        <div class="client-po" id="cl-po-label"></div>
+        <div class="client-title" id="cl-title"></div>
+        <div class="client-meta-grid">
+          <div><div class="client-meta-label">Calidad</div><div class="client-meta-val" id="cl-cal"></div></div>
+          <div><div class="client-meta-label">Temperatura</div><div class="client-meta-val" id="cl-temp"></div></div>
+          <div><div class="client-meta-label">Fecha carga</div><div class="client-meta-val" id="cl-fecha"></div></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
+      <button class="download-all-btn" style="margin-bottom:0;" onclick="toast('⬇ Descargando fotos...')">⬇ Descargar todas las fotos</button>
+      <button class="download-all-btn" style="margin-bottom:0;background:var(--berry);border-color:var(--berry);" onclick="descargarPDF()">📄 Descargar como PDF</button>
+    </div>
+      <div id="cl-etapas-section" class="gallery-section">
+        <div class="gallery-section-title">Etapas iniciales <span class="gallery-badge" id="cl-etapas-count"></span></div>
+        <div class="photo-grid" id="cl-etapas-grid"></div>
+      </div>
+      <div id="cl-patas-container"></div>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button class="btn-ghost" onclick="document.getElementById('client-selector').style.display='block';document.getElementById('client-gallery').style.display='none';">← Volver</button>
+        <button onclick="cerrarSesion()" style="background:transparent;border:none;font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);cursor:pointer;padding:8px;">⏏ Cambiar rol</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- MODAL GUÍAS -->
+<div class="overlay" id="modal-guias">
+  <div class="modal">
+    <div class="modal-title">Adjuntar guías</div>
+    <div class="modal-sub" id="guias-modal-sub">Documentos de despacho del contenedor</div>
+
+    <!-- Slot Guía Las Encinas -->
+    <div style="margin-bottom:12px;">
+      <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px;">Guía Las Encinas</div>
+      <div id="slot-encinas-preview" style="display:none;align-items:center;gap:10px;padding:10px 14px;background:var(--cream2);border:1px solid var(--cream3);border-radius:6px;margin-bottom:6px;">
+        <span id="slot-encinas-icon" style="font-size:20px;">📄</span>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:500;color:var(--ink);">Guía Las Encinas</div>
+          <div id="slot-encinas-tipo" style="font-family:var(--font-mono);font-size:10px;color:var(--ink3);text-transform:uppercase;letter-spacing:0.08em;"></div>
+        </div>
+        <button onclick="eliminarSlot('encinas')" style="background:none;border:none;color:var(--ink3);cursor:pointer;font-size:16px;padding:4px;">✕</button>
+      </div>
+      <div id="slot-encinas-drop" style="border:2px dashed var(--cream3);border-radius:8px;padding:18px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--cream2);"
+        onclick="triggerSlotInput('encinas')"
+        ondragover="event.preventDefault();this.style.borderColor='var(--leaf3)';this.style.background='rgba(26,58,42,0.05)'"
+        ondragleave="this.style.borderColor='var(--cream3)';this.style.background='var(--cream2)'"
+        ondrop="handleSlotDrop(event,'encinas')">
+        <div style="font-size:22px;margin-bottom:4px;">📎</div>
+        <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);">Arrastra o toca para subir</div>
+        <div style="font-family:var(--font-mono);font-size:9px;color:var(--ink3);margin-top:3px;opacity:0.7;">PDF · JPG · PNG</div>
+      </div>
+      <input type="file" id="input-encinas" accept=".pdf,image/*" style="display:none" onchange="handleSlotFile(this.files,'encinas')">
+    </div>
+
+    <!-- Slot Guía Cliente -->
+    <div style="margin-bottom:16px;">
+      <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px;">Guía Cliente</div>
+      <div id="slot-cliente-preview" style="display:none;align-items:center;gap:10px;padding:10px 14px;background:var(--cream2);border:1px solid var(--cream3);border-radius:6px;margin-bottom:6px;">
+        <span id="slot-cliente-icon" style="font-size:20px;">📄</span>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:500;color:var(--ink);">Guía Cliente</div>
+          <div id="slot-cliente-tipo" style="font-family:var(--font-mono);font-size:10px;color:var(--ink3);text-transform:uppercase;letter-spacing:0.08em;"></div>
+        </div>
+        <button onclick="eliminarSlot('cliente')" style="background:none;border:none;color:var(--ink3);cursor:pointer;font-size:16px;padding:4px;">✕</button>
+      </div>
+      <div id="slot-cliente-drop" style="border:2px dashed var(--cream3);border-radius:8px;padding:18px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--cream2);"
+        onclick="triggerSlotInput('cliente')"
+        ondragover="event.preventDefault();this.style.borderColor='var(--leaf3)';this.style.background='rgba(26,58,42,0.05)'"
+        ondragleave="this.style.borderColor='var(--cream3)';this.style.background='var(--cream2)'"
+        ondrop="handleSlotDrop(event,'cliente')">
+        <div style="font-size:22px;margin-bottom:4px;">📎</div>
+        <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);">Arrastra o toca para subir</div>
+        <div style="font-family:var(--font-mono);font-size:9px;color:var(--ink3);margin-top:3px;opacity:0.7;">PDF · JPG · PNG</div>
+      </div>
+      <input type="file" id="input-cliente" accept=".pdf,image/*" style="display:none" onchange="handleSlotFile(this.files,'cliente')">
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal('guias')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<!-- MODAL NUEVO -->
+<div class="overlay" id="modal-nuevo">
+  <div class="modal">
+    <div class="modal-title">Nuevo contenedor</div>
+    <div class="modal-sub">El operario podrá ver este contenedor al iniciar sesión</div>
+    <div class="field">
+      <label>Campo / Cliente</label>
+      <select id="f-cliente" onchange="handleClienteChange(this.value)"><option value="">Seleccionar campo...</option></select>
+      <div class="new-client-box" id="new-client-box">
+        <label>Nombre del nuevo cliente</label>
+        <div class="new-client-row">
+          <input type="text" id="new-client-input" placeholder="Ej: Santa Ana, El Retiro...">
+        </div>
+        <label style="margin-top:8px;">PIN de acceso para el cliente</label>
+        <div class="new-client-row" style="margin-top:4px;">
+          <input type="text" id="new-client-pin" placeholder="Ej: 4455" maxlength="4" style="letter-spacing:6px;font-family:var(--font-mono);">
+          <button class="btn-add-client" onclick="agregarCliente()">Agregar</button>
+        </div>
+        <div class="client-added" id="client-added">✓ <span id="client-added-nombre"></span> agregado</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>N° de contenedor <span class="field-optional">ej: 20/50</span></label>
+      <input type="text" id="f-num" placeholder="Ej: 20/50">
+    </div>
+    <div class="field">
+      <label>PO del cliente <span class="field-optional">— opcional</span></label>
+      <input type="text" id="f-po" placeholder="Dejar vacío si no aplica">
+    </div>
+    <div class="field">
+      <label>Calidad</label>
+      <select id="f-cal">
+        <option value="">Seleccionar calidad...</option>
+        <option>IQF</option><option>B</option><option>C</option><option>JUGO</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Tipo de carga</label>
+      <select id="f-tipo">
+        <option value="">Seleccionar tipo...</option>
+        <option>A piso</option><option>Pallet</option><option>Bins</option><option>Rejillas</option>
+      </select>
+    </div>
+    <div style="background:var(--cream2);border:1px solid var(--cream3);border-radius:var(--radius);padding:14px;margin-bottom:16px;">
+      <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px;">N° Guías <span style="font-weight:400;opacity:0.6;">— opcional, se pueden agregar después</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div>
+          <label style="display:block;font-family:var(--font-mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:5px;">Guía Las Encinas</label>
+          <input type="text" id="f-guia-encinas" placeholder="Ej: GE-2025-001" style="width:100%;border:1.5px solid var(--cream3);border-radius:var(--radius);padding:8px 10px;font-size:13px;background:var(--cream);color:var(--ink);outline:none;">
+        </div>
+        <div>
+          <label style="display:block;font-family:var(--font-mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:5px;">Guía Cliente</label>
+          <input type="text" id="f-guia-cliente" placeholder="Ej: GC-4521" style="width:100%;border:1.5px solid var(--cream3);border-radius:var(--radius);padding:8px 10px;font-size:13px;background:var(--cream);color:var(--ink);outline:none;">
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Fecha de carga</label>
+      <input type="date" id="f-fecha">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal('nuevo')">Cancelar</button>
+      <button class="btn-primary" onclick="crearContenedor()">Crear contenedor →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL LINK -->
+<div class="overlay" id="modal-link">
+  <div class="modal">
+    <div class="modal-title">Compartir con cliente</div>
+    <div class="modal-sub" id="link-modal-sub"></div>
+    <div style="background:var(--cream2);border:1px solid var(--cream3);border-radius:var(--radius);padding:14px;margin-bottom:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div><div style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:3px;">Cliente</div><div style="font-size:13px;font-weight:500;" id="link-cliente"></div></div>
+        <div><div style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:3px;">N° contenedor</div><div style="font-size:13px;font-weight:500;" id="link-num"></div></div>
+        <div><div style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:3px;">PO</div><div style="font-family:var(--font-mono);font-size:13px;font-weight:500;" id="link-po"></div></div>
+        <div><div style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:3px;">Calidad</div><div style="font-size:13px;font-weight:500;" id="link-cal"></div></div>
+      </div>
+    </div>
+    <div class="link-box">
+      <div class="link-box-label">Link generado</div>
+      <div class="link-name" id="link-name"></div>
+      <div class="link-url" id="link-url"></div>
+    </div>
+    <div class="wa-preview">
+      <div class="wa-label">📱 Así llega a WhatsApp</div>
+      <div class="wa-bubble">
+        <div class="wa-bubble-title" id="wa-title"></div>
+        <div class="wa-bubble-url" id="wa-url"></div>
+        <div class="wa-bubble-desc" id="wa-desc"></div>
+      </div>
+    </div>
+    <button class="copy-btn" onclick="copiarLink()">📋 Copiar link</button>
+    <button class="wa-btn" onclick="abrirWA()">💬 Abrir WhatsApp</button>
+    <div class="copied-toast" id="copied-toast">✓ Link copiado — listo para pegar en WhatsApp</div>
+    <div class="modal-actions" style="margin-top:16px;">
+      <button class="btn-ghost" onclick="closeModal('link')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<div class="global-toast" id="global-toast"></div>
+
+<script>
+
+let clientes = [{nombre:'Pontiberry', pin:'3333'}, {nombre:'Los Espinos', pin:'3333'}];
+let clienteActual = null; // cliente logueado
+let contenedores = [
+  {id:1,cliente:'Pontiberry',num:'50/50',po:'L70089',cal:'IQF',tipo:'Pallet',fecha:'12 jun 2026',tempNum:-18.5,temp:'-18.5°C',tempOk:true,fotos:44,estado:'completo',patas:24,etapas:{temp:true,vacio:true},frutaFotos:3,guiaEncinasNum:'GE-2025-001',guiaClienteNum:'GC-4521',guias:{encinas:{nombre:'Guía Las Encinas',tipo:'pdf'},cliente:{nombre:'Guía Cliente',tipo:'pdf'}}},
+  {id:2,cliente:'Pontiberry',num:'49/50',po:'L70078',cal:'B',tipo:'A piso',fecha:'10 jun 2026',tempNum:-18.2,temp:'-18.2°C',tempOk:true,fotos:41,estado:'completo',patas:24,etapas:{temp:true,vacio:true},frutaFotos:2,guiaEncinasNum:'GE-2025-002',guiaClienteNum:'GC-4489',guias:{encinas:null,cliente:null}},
+  {id:3,cliente:'Pontiberry',num:'20/50',po:'L70045',cal:'IQF',tipo:'Bins',fecha:'28 may 2026',tempNum:-18.4,temp:'-18.4°C',tempOk:true,fotos:27,estado:'proceso',patas:11,etapas:{temp:true,vacio:true},frutaFotos:2,guiaEncinasNum:'',guiaClienteNum:'',guias:{encinas:null,cliente:null}},
+  {id:4,cliente:'Los Espinos',num:'40/60',po:'V21034',cal:'C',tipo:'Rejillas',fecha:'5 jun 2026',tempNum:-18.7,temp:'-18.7°C',tempOk:true,fotos:39,estado:'completo',patas:24,etapas:{temp:true,vacio:true},frutaFotos:4,guiaEncinasNum:'GE-2025-003',guiaClienteNum:'',guias:{encinas:{nombre:'Guía Las Encinas',tipo:'img'},cliente:null}},
+  {id:5,cliente:'Los Espinos',num:'35/60',po:'V21018',cal:'JUGO',tipo:'A piso',fecha:'2 jun 2026',tempNum:-10.5,temp:'-10.5°C',tempOk:false,fotos:40,estado:'completo',patas:24,etapas:{temp:true,vacio:true},frutaFotos:2,guiaEncinasNum:'',guiaClienteNum:'',guias:{encinas:null,cliente:null}},
+  {id:6,cliente:'Los Espinos',num:'10/60',po:'',cal:'B',tipo:'Pallet',fecha:'20 may 2026',tempNum:-18.9,temp:'-18.9°C',tempOk:true,fotos:43,estado:'completo',patas:24,etapas:{temp:true,vacio:true},frutaFotos:3,guiaEncinasNum:'GE-2025-005',guiaClienteNum:'GC-4601',guias:{encinas:null,cliente:null}},
+];
+let currentContId = null;
+
+function tempEsOk(num) { return num <= -12; }
+
+function showPage(page, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  el.classList.add('active');
+  if (page === 'operario') renderOperario();
+  if (page === 'cliente') renderClienteSelector();
+}
+
+function actualizarMetricas() {
+  document.getElementById('m-total').textContent = contenedores.length;
+  document.getElementById('m-comp').textContent = contenedores.filter(c => c.estado === 'completo').length;
+  document.getElementById('m-prog').textContent = contenedores.filter(c => c.estado === 'proceso').length;
+  document.getElementById('m-fotos').textContent = contenedores.reduce((a, c) => a + c.fotos, 0);
+}
+
+function renderTabla() {
+  const body = document.getElementById('tabla-body');
+  body.innerHTML = '';
+  contenedores.forEach(c => {
+    const enProceso = c.estado === 'proceso';
+    const poHtml = c.po ? 'PO: ' + c.po : '<span class="sin-po">Sin PO</span>';
+    const tempClass = !c.temp || c.temp === '—' ? 'temp-none' : (c.tempOk ? 'temp-ok' : 'temp-warn');
+    const stClass = enProceso ? 'status-prog' : 'status-done';
+    const stText = enProceso ? 'En carga (' + c.patas + ' patas)' : 'Completo';
+    const tipoHtml = c.tipo || '—';
+    const guiaBadge = contarGuias(c) > 0 ? ` (${contarGuias(c)})` : '';
+    const accionesHtml = enProceso
+      ? `<button class="btn-ver" onclick="irAOperario(${c.id})">Ver carga</button><button class="btn-link" onclick="openGuiasModal(${c.id})" style="color:#7b3000;background:#fff7ed;border-color:#fed7aa;">📄 Guías${guiaBadge}</button><button class="btn-icon" onclick="eliminarContenedor(${c.id})" title="Eliminar" style="color:#991B1B;border-color:#FCA5A5;">🗑</button>`
+      : `<button class="btn-link" onclick="openLinkModal(${c.id})">🔗 Link</button><button class="btn-link" onclick="openGuiasModal(${c.id})" style="color:#7b3000;background:#fff7ed;border-color:#fed7aa;">📄 Guías${guiaBadge}</button><button class="btn-icon" onclick="reabrirCarga(${c.id})" title="Reabrir carga" style="color:#92400E;border-color:#FCD34D;background:#FEF3C7;">↩</button><button class="btn-icon" onclick="eliminarContenedor(${c.id})" title="Eliminar" style="color:#991B1B;border-color:#FCA5A5;">🗑</button>`;
+    const guiaNumHtml = (c.guiaEncinasNum || c.guiaClienteNum)
+      ? `<div style="font-family:var(--font-mono);font-size:10px;color:var(--ink3);margin-top:2px;">G: ${c.guiaEncinasNum||'—'} / ${c.guiaClienteNum||'—'}</div>`
+      : '';
+    const row = document.createElement('div');
+    row.className = 'table-row' + (enProceso ? ' en-proceso' : '');
+    row.innerHTML = `
+      <div>
+        <div class="cont-name">${c.cliente} N° ${c.num}</div>
+        <div class="cont-po">${poHtml}</div>
+        ${guiaNumHtml}
+        <div class="cont-cal"><span class="cal-tag">${c.cal}</span></div>
+      </div>
+      <span style="font-size:12px;color:var(--text2);">${tipoHtml}</span>
+      <span class="temp-tag ${tempClass}">${c.temp || '—'}</span>
+      <span class="status-tag ${stClass}">${stText}</span>
+      <div class="actions">${accionesHtml}</div>`;
+    body.appendChild(row);
+  });
+}
+
+function buscar(val) {
+  const v = val.trim().toUpperCase();
+  const res = document.getElementById('search-results');
+  const noRes = document.getElementById('search-nores');
+  res.innerHTML = ''; noRes.style.display = 'none';
+  if (!v) return;
+  const found = contenedores.filter(c =>
+    (c.po && c.po.toUpperCase().includes(v)) ||
+    c.num.toUpperCase().includes(v) ||
+    c.cliente.toUpperCase().includes(v)
+  );
+  if (found.length) {
+    found.forEach(c => {
+      const poText = c.po ? 'PO: ' + c.po : 'Sin PO';
+      const tempColor = !c.temp || c.temp === '—' ? 'var(--text3)' : (c.tempOk ? 'var(--accent)' : 'var(--warning)');
+      const stClass = c.estado === 'proceso' ? 'status-prog' : 'status-done';
+      const stText = c.estado === 'proceso' ? 'En carga (' + c.patas + ' patas)' : 'Completo';
+      const el = document.createElement('div');
+      el.className = 'result-card';
+      el.innerHTML = `
+        <div>
+          <div style="font-size:14px;font-weight:500;">${c.cliente} N° ${c.num}</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px;">${poText} · <span class="cal-tag">${c.cal}</span></div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px;">Cargado: ${c.fecha}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:13px;font-weight:600;color:${tempColor};">${c.temp || '—'}</div>
+          <span class="status-tag ${stClass}" style="margin-top:4px;display:inline-block;">${stText}</span>
+        </div>`;
+      res.appendChild(el);
+    });
+  } else { noRes.style.display = 'block'; }
+}
+
+function clearSearch() {
+  document.getElementById('search-input').value = '';
+  document.getElementById('search-results').innerHTML = '';
+  document.getElementById('search-nores').style.display = 'none';
+}
+
+function buildClienteSelect() {
+  const sel = document.getElementById('f-cliente');
+  sel.innerHTML = '<option value="">Seleccionar campo...</option>';
+  clientes.forEach(c => { const o = document.createElement('option'); o.value = c.nombre; o.textContent = c.nombre; sel.appendChild(o); });
+  const n = document.createElement('option'); n.value = '__nuevo__'; n.textContent = '+ Agregar nuevo cliente'; sel.appendChild(n);
+}
+function handleClienteChange(val) {
+  const box = document.getElementById('new-client-box');
+  if (val === '__nuevo__') { box.classList.add('show'); document.getElementById('new-client-input').value = ''; document.getElementById('client-added').classList.remove('show'); }
+  else box.classList.remove('show');
+}
+function agregarCliente() {
+  const nombre = document.getElementById('new-client-input').value.trim();
+  const pin = document.getElementById('new-client-pin') ? document.getElementById('new-client-pin').value.trim() : '0000';
+  if (!nombre) return;
+  if (!clientes.find(c => c.nombre === nombre)) clientes.push({nombre: nombre, pin: pin || '0000'});
+  buildClienteSelect();
+  document.getElementById('f-cliente').value = nombre;
+  document.getElementById('new-client-box').classList.remove('show');
+  document.getElementById('client-added-nombre').textContent = nombre;
+  document.getElementById('client-added').classList.add('show');
+}
+function openModal(id) {
+  if (id === 'nuevo') {
+    buildClienteSelect();
+    ['new-client-box','client-added'].forEach(x => document.getElementById(x).classList.remove('show'));
+    ['f-cliente','f-num','f-po','f-cal','f-tipo','f-fecha'].forEach(x => document.getElementById(x).value = ''); ['f-guia-encinas','f-guia-cliente'].forEach(x => { const el = document.getElementById(x); if(el) el.value=''; });
+  }
+  document.getElementById('modal-' + id).classList.add('open');
+}
+function closeModal(id) { document.getElementById('modal-' + id).classList.remove('open'); }
+
+function crearContenedor() {
+  const cliente = document.getElementById('f-cliente').value;
+  const num = document.getElementById('f-num').value.trim();
+  const po = document.getElementById('f-po').value.trim();
+  const cal = document.getElementById('f-cal').value;
+  const tipo = document.getElementById('f-tipo').value;
+  const fechaRaw = document.getElementById('f-fecha').value;
+  if (!cliente || cliente === '__nuevo__' || !num || !cal) { toast('Completa: campo, N° contenedor y calidad'); return; }
+  const fecha = fechaRaw ? new Date(fechaRaw + 'T12:00:00').toLocaleDateString('es-CL', {day:'numeric',month:'short',year:'numeric'}) : 'Sin fecha';
+  const guiaEncinasNum = document.getElementById('f-guia-encinas') ? document.getElementById('f-guia-encinas').value.trim() : '';
+  const guiaClienteNum = document.getElementById('f-guia-cliente') ? document.getElementById('f-guia-cliente').value.trim() : '';
+  contenedores.unshift({id:Date.now(), cliente, num, po, cal, tipo, fecha, guiaEncinasNum, guiaClienteNum, guias: {encinas:null,cliente:null}, tempNum:null, temp:'—', tempOk:false, fotos:0, estado:'proceso', patas:0, etapas:{temp:false,vacio:false}, frutaFotos:0});
+  actualizarMetricas(); renderTabla(); closeModal('nuevo');
+  toast('✓ ' + cliente + ' N° ' + num + ' creado — listo para el operario');
+}
+
+function openLinkModal(id) {
+  const c = contenedores.find(x => x.id === id);
+  if (!c) return;
+  const linkNombre = c.po ? 'PO: ' + c.po : c.cliente + ' N° ' + c.num;
+  const slug = c.po ? 'PO-' + c.po : c.cliente.replace(/\s+/g,'-') + '-' + c.num.replace('/','-');
+  const url = 'lasencinas.app/' + slug;
+  document.getElementById('link-modal-sub').textContent = c.cliente + ' N° ' + c.num + ' — ' + c.cal;
+  document.getElementById('link-cliente').textContent = c.cliente;
+  document.getElementById('link-num').textContent = 'N° ' + c.num;
+  document.getElementById('link-po').innerHTML = c.po ? c.po : '<span class="sin-po">Sin PO</span>';
+  document.getElementById('link-cal').textContent = c.cal;
+  document.getElementById('link-name').textContent = linkNombre;
+  document.getElementById('link-url').textContent = url;
+  document.getElementById('wa-title').textContent = linkNombre;
+  document.getElementById('wa-url').textContent = url;
+  document.getElementById('wa-desc').textContent = c.cliente + ' N° ' + c.num + ' · ' + c.cal + ' · ' + c.fotos + ' fotos';
+  document.getElementById('copied-toast').classList.remove('show');
+  document.getElementById('modal-link').classList.add('open');
+}
+function copiarLink() {
+  navigator.clipboard.writeText(document.getElementById('link-url').textContent).catch(()=>{});
+  document.getElementById('copied-toast').classList.add('show');
+  setTimeout(() => document.getElementById('copied-toast').classList.remove('show'), 3000);
+}
+function abrirWA() {
+  const msg = encodeURIComponent(document.getElementById('link-name').textContent + '\n' + document.getElementById('link-url').textContent);
+  window.open('https://wa.me/?text=' + msg, '_blank');
+}
+
+// OPERARIO
+function renderOperario() {
+  const activos = contenedores.filter(c => c.estado === 'proceso');
+  const list = document.getElementById('op-cont-list');
+  list.innerHTML = '';
+  if (!activos.length) {
+    list.innerHTML = '<p style="font-size:13px;color:var(--text3);text-align:center;padding:16px 0;">No hay contenedores en proceso.<br>El coordinador debe crear uno primero.</p>';
+    return;
+  }
+  activos.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'cont-item en-proceso';
+    el.innerHTML = `<div><div class="cont-item-name">${c.cliente} N° ${c.num}</div><div class="cont-item-meta">${c.po ? 'PO: '+c.po : 'Sin PO'} · ${c.cal}</div></div><span class="cont-item-badge status-prog">${c.patas} patas</span>`;
+    el.onclick = () => abrirCarga(c.id);
+    list.appendChild(el);
+  });
+  document.getElementById('op-selector-view').style.display = 'block';
+  document.getElementById('op-carga-view').style.display = 'none';
+}
+
+function abrirCarga(id) {
+  currentContId = id;
+  const c = contenedores.find(x => x.id === id);
+  document.getElementById('op-selector-view').style.display = 'none';
+  document.getElementById('op-carga-view').style.display = 'block';
+  document.getElementById('op-nombre-label').textContent = c.cliente + ' N° ' + c.num;
+  document.getElementById('op-po-label').textContent = c.po ? 'PO: ' + c.po : 'Sin PO';
+  actualizarTempDisplay(c);
+  renderEtapas(c);
+  renderPatas(c);
+  renderFrutaPanel(c);
+}
+
+function actualizarTempDisplay(c) {
+  const el = document.getElementById('op-temp-val');
+  const alert = document.getElementById('temp-alert');
+  if (!c.temp || c.temp === '—') {
+    el.textContent = '—'; el.className = 'op-temp-val none';
+    alert.className = 'temp-alert'; alert.textContent = '';
+  } else {
+    el.textContent = c.temp;
+    if (c.tempOk) {
+      el.className = 'op-temp-val ok';
+      alert.className = 'temp-alert ok show';
+      alert.textContent = '✓ Temperatura autorizada para cargar';
+    } else {
+      el.className = 'op-temp-val warn';
+      alert.className = 'temp-alert warn show';
+      alert.textContent = '⚠ Temperatura fuera de rango — no autorizado';
+    }
+  }
+}
+
+function renderEtapas(c) {
+  const bt = document.getElementById('btn-temp');
+  const bv = document.getElementById('btn-vacio');
+  const bf = document.getElementById('btn-fruta');
+  if (c.etapas.temp) { bt.classList.add('done'); document.getElementById('lbl-temp').textContent = 'Temperatura inicial ✓'; }
+  else { bt.classList.remove('done'); document.getElementById('lbl-temp').textContent = 'Temperatura inicial'; }
+  if (c.etapas.vacio) { bv.classList.add('done'); document.getElementById('lbl-vacio').textContent = 'Contenedor vacío ✓'; }
+  else { bv.classList.remove('done'); document.getElementById('lbl-vacio').textContent = 'Contenedor vacío'; }
+  if (c.frutaFotos > 0) {
+    bf.classList.add('done');
+    document.getElementById('lbl-fruta').textContent = 'Fotos de fruta ✓';
+    const badge = document.getElementById('fruta-count-badge');
+    badge.textContent = c.frutaFotos + ' foto' + (c.frutaFotos !== 1 ? 's' : '');
+    badge.style.display = 'inline-block';
+  } else {
+    bf.classList.remove('done');
+    document.getElementById('lbl-fruta').textContent = 'Fotos de fruta';
+    document.getElementById('fruta-count-badge').style.display = 'none';
+  }
+}
+
+function toggleFrutaPanel() {
+  const panel = document.getElementById('fruta-panel');
+  panel.classList.toggle('show');
+}
+
+function renderFrutaPanel(c) {
+  const thumbs = document.getElementById('fruta-thumbs');
+  thumbs.innerHTML = '';
+  for (let i = 1; i <= c.frutaFotos; i++) {
+    thumbs.innerHTML += `<div class="fruta-thumb">🍓<span class="fruta-thumb-num">${i}</span></div>`;
+  }
+  document.getElementById('fruta-count-label').textContent = c.frutaFotos + ' foto' + (c.frutaFotos !== 1 ? 's' : '') + ' agregada' + (c.frutaFotos !== 1 ? 's' : '');
+}
+
+function abrirCamara(callback, etiqueta) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.capture = 'environment';
+  input.onchange = async () => {
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      if (driveAccessToken && currentContId) {
+        const c = contenedores.find(x => x.id === currentContId);
+        toast('⬆ Subiendo foto a Drive...');
+        const fileId = await subirFotoDrive(file, c, etiqueta || 'foto');
+        if (fileId) toast('✓ Foto guardada en Drive');
+        else toast('⚠ Foto registrada (sin Drive)');
+      }
+      callback(file);
+    }
+  };
+  input.click();
+}
+
+function agregarFotoFruta() {
+  const c = contenedores.find(x => x.id === currentContId);
+  if (!c) return;
+  abrirCamara(function() {
+    c.frutaFotos++;
+    c.fotos++;
+    renderFrutaPanel(c);
+    renderEtapas(c);
+    actualizarMetricas();
+    renderTabla();
+    toast('✓ Foto de fruta ' + c.frutaFotos + ' registrada');
+  }, 'Fruta — foto ' + (c.frutaFotos + 1));
+}
+
+function toggleEtapa(tipo) {
+  const c = contenedores.find(x => x.id === currentContId);
+  if (!c || c.etapas[tipo]) return;
+  const etiquetas = {temp: 'Temperatura inicial', vacio: 'Contenedor vacío'};
+  abrirCamara(function() {
+    c.etapas[tipo] = true;
+    c.fotos++;
+    if (tipo === 'temp') {
+      const temps = [-18.1,-18.3,-18.5,-18.7,-18.9,-10.5,-8.2];
+      const t = temps[Math.floor(Math.random() * temps.length)];
+      c.tempNum = t;
+      c.temp = t.toFixed(1) + '°C';
+      c.tempOk = tempEsOk(t);
+      actualizarTempDisplay(c);
+    }
+    renderEtapas(c);
+    actualizarMetricas();
+    renderTabla();
+    toast('✓ Foto registrada');
+  }, etiquetas[tipo]);
+}
+
+function renderPatas(c) {
+  const grid = document.getElementById('pata-grid');
+  grid.innerHTML = '';
+  for (let i = 1; i <= 24; i++) {
+    const cell = document.createElement('div');
+    const isDone = i <= c.patas;
+    const isNext = i === c.patas + 1;
+    cell.className = 'pata-cell' + (isDone ? ' done' : (isNext ? ' active' : ''));
+    cell.textContent = i;
+    if (!isDone && isNext) cell.onclick = () => agregarFotoPata();
+    grid.appendChild(cell);
+  }
+  const next = c.patas + 1;
+  document.getElementById('pata-next-num').textContent = next <= 24 ? next : '—';
+  const btn = document.getElementById('foto-btn');
+  btn.disabled = c.patas >= 24;
+  const pct = Math.round(c.patas / 24 * 100);
+  document.getElementById('op-progress-fill').style.width = pct + '%';
+  document.getElementById('op-progress-label').textContent = c.patas + ' de 24 patas registradas';
+}
+
+function agregarFotoPata() {
+  const c = contenedores.find(x => x.id === currentContId);
+  if (!c || c.patas >= 24) return;
+  abrirCamara(function() {
+    c.patas++;
+    c.fotos++;
+    renderPatas(c);
+    actualizarMetricas();
+    renderTabla();
+    toast('✓ Pata ' + c.patas + ' registrada');
+  }, 'Pata ' + (c.patas + 1));
+}
+
+
+function descargarPDF() {
+  toast('📄 Generando PDF — esto puede tomar unos segundos...');
+  setTimeout(() => toast('✓ PDF generado y descargado'), 2000);
+}
+
+function completarCarga() {
+  const c = contenedores.find(x => x.id === currentContId);
+  if (!c) return;
+  // Show confirmation modal
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,26,20,0.75);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);';
+
+  const checks = [
+    {label:'Temperatura inicial', ok: c.etapas.temp, val: c.etapas.temp ? '1 foto' : 'Sin foto'},
+    {label:'Contenedor vacío', ok: c.etapas.vacio, val: c.etapas.vacio ? '1 foto' : 'Sin foto'},
+    {label:'Fotos de fruta', ok: c.frutaFotos > 0, val: c.frutaFotos > 0 ? c.frutaFotos + ' foto' + (c.frutaFotos > 1 ? 's' : '') : 'Sin fotos'},
+    {label:'Patas registradas', ok: c.patas > 0, val: c.patas + ' pata' + (c.patas !== 1 ? 's' : '')},
+  ];
+
+  overlay.innerHTML = `<div style="background:var(--cream);border-radius:12px;padding:28px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,0.35);">
+    <div style="font-family:var(--font-display);font-size:20px;color:var(--leaf);margin-bottom:4px;">¿Cerrar la carga?</div>
+    <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:18px;">${c.cliente} N° ${c.num}</div>
+
+    <div style="margin-bottom:18px;">
+      ${checks.map(ch => `<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--cream3);">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:16px;">${ch.ok ? '✅' : '⚠️'}</span>
+          <span style="font-size:13px;color:var(--ink);">${ch.label}</span>
+        </div>
+        <span style="font-family:var(--font-mono);font-size:11px;color:${ch.ok ? 'var(--ok)' : 'var(--warn)'};">${ch.val}</span>
+      </div>`).join('')}
+    </div>
+
+    <p style="font-family:var(--font-mono);font-size:11px;color:var(--ink3);text-align:center;margin-bottom:16px;letter-spacing:0.06em;">¿Estás seguro que la carga está completa?</p>
+
+    <div style="display:flex;gap:8px;">
+      <button onclick="this.closest('div[style*=fixed]').remove()" style="flex:1;background:transparent;border:1.5px solid var(--cream3);border-radius:6px;padding:12px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;color:var(--ink2);">Volver</button>
+      <button onclick="confirmarCargaCompleta();this.closest('div[style*=fixed]').remove();" style="flex:1;background:var(--ok);color:#fff;border:none;border-radius:6px;padding:12px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;font-weight:500;">Confirmar</button>
+    </div>
+  </div>`;
+  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+  document.body.appendChild(overlay);
+}
+
+function confirmarCargaCompleta() {
+  const c = contenedores.find(x => x.id === currentContId);
+  if (!c) return;
+  c.estado = 'completo';
+  actualizarMetricas();
+  renderTabla();
+  toast('🎉 Carga completada y cerrada');
+  setTimeout(() => volverSelector(), 1500);
+}
+
+
+function volverSelector() {
+  document.getElementById('op-selector-view').style.display = 'block';
+  document.getElementById('op-carga-view').style.display = 'none';
+  document.getElementById('fruta-panel').classList.remove('show');
+  renderOperario();
+}
+
+function irAOperario(id) {
+  showPage('operario', document.querySelectorAll('.nav-tab')[1]);
+  setTimeout(() => abrirCarga(id), 50);
+}
+
+// CLIENTE
+function renderClienteSelectorFiltrado(nombreCliente) {
+  const list = document.getElementById('client-cont-list');
+  list.innerHTML = '';
+  const filtrados = contenedores.filter(c => c.cliente === nombreCliente);
+  if (!filtrados.length) {
+    list.innerHTML = '<p style="font-family:var(--font-mono);font-size:11px;color:var(--ink3);text-align:center;padding:16px 0;">No hay contenedores registrados aún.</p>';
+    return;
+  }
+  filtrados.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'cont-item' + (c.estado === 'proceso' ? ' en-proceso' : '');
+    const guiaMeta = (c.guiaEncinasNum || c.guiaClienteNum) ? ` · G: ${c.guiaEncinasNum||'—'}/${c.guiaClienteNum||'—'}` : '';
+    el.innerHTML = `<div><div class="cont-item-name">${c.cliente} N° ${c.num}</div><div class="cont-item-meta">${c.po ? 'PO: '+c.po : 'Sin PO'}${guiaMeta} · ${c.cal} · ${c.fotos} fotos</div></div><span class="cont-item-badge ${c.estado==='proceso'?'status-prog':'status-done'}">${c.estado==='proceso'?'En carga':'Completo'}</span>`;
+    el.onclick = () => abrirGaleria(c.id);
+    list.appendChild(el);
+  });
+  document.getElementById('client-selector').style.display = 'block';
+  document.getElementById('client-gallery').style.display = 'none';
+}
+
+function renderClienteSelector() {
+  const list = document.getElementById('client-cont-list');
+  list.innerHTML = '';
+  contenedores.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'cont-item' + (c.estado === 'proceso' ? ' en-proceso' : '');
+    const guiaMeta = (c.guiaEncinasNum || c.guiaClienteNum) ? ` · G: ${c.guiaEncinasNum||'—'}/${c.guiaClienteNum||'—'}` : '';
+    el.innerHTML = `<div><div class="cont-item-name">${c.cliente} N° ${c.num}</div><div class="cont-item-meta">${c.po ? 'PO: '+c.po : 'Sin PO'}${guiaMeta} · ${c.cal} · ${c.fotos} fotos</div></div><span class="cont-item-badge ${c.estado==='proceso'?'status-prog':'status-done'}">${c.estado==='proceso'?'En carga':'Completo'}</span>`;
+    el.onclick = () => abrirGaleria(c.id);
+    list.appendChild(el);
+  });
+  document.getElementById('client-selector').style.display = 'block';
+  document.getElementById('client-gallery').style.display = 'none';
+}
+
+function abrirGaleria(id) {
+  const c = contenedores.find(x => x.id === id);
+  document.getElementById('client-selector').style.display = 'none';
+  document.getElementById('client-gallery').style.display = 'block';
+  document.getElementById('cl-po-label').textContent = c.po ? 'PO: ' + c.po : '';
+  document.getElementById('cl-title').textContent = c.cliente + ' N° ' + c.num;
+  document.getElementById('cl-cal').textContent = c.cal;
+  const tempEl = document.getElementById('cl-temp');
+  tempEl.textContent = c.temp || '—';
+  tempEl.className = 'client-meta-val' + (!c.temp || c.temp==='—' ? '' : (c.tempOk ? ' green' : ' warn'));
+  document.getElementById('cl-fecha').textContent = c.fecha;
+
+  const etapas = [];
+  if (c.etapas.temp) etapas.push({icon:'🌡️', label:'Temperatura inicial'});
+  if (c.etapas.vacio) etapas.push({icon:'📦', label:'Contenedor vacío'});
+  for (let i = 1; i <= c.frutaFotos; i++) etapas.push({icon:'🍓', label:'Fruta — foto ' + i});
+
+  document.getElementById('cl-etapas-count').textContent = etapas.length + ' foto' + (etapas.length !== 1 ? 's' : '');
+  // Add guias card if any
+  const guiasBadge = contarGuias(c) > 0 ? ` (${contarGuias(c)})` : '';
+  const guiasCard = `<div class="photo-card" onclick="verGuiasCliente(${c.id})" style="${contarGuias(c) > 0 ? '' : 'opacity:0.45;cursor:default;'}">
+    <div class="download-badge">⬇</div>
+    <div class="photo-card-icon">📄</div>
+    <div><span class="photo-card" style="all:unset;font-family:var(--font-mono);font-size:10px;letter-spacing:0.06em;">Guías${guiasBadge}</span></div>
+  </div>`;
+
+  document.getElementById('cl-etapas-grid').innerHTML = etapas.map(e =>
+    `<div class="photo-card"><div class="download-badge">⬇</div><div class="photo-card-icon">${e.icon}</div><div>${e.label}</div></div>`
+  ).join('') + guiasCard;
+
+  const patasContainer = document.getElementById('cl-patas-container');
+  patasContainer.innerHTML = '';
+  if (c.patas > 0) {
+    const sec = document.createElement('div');
+    sec.className = 'gallery-section';
+    sec.innerHTML = `<div class="gallery-section-title">Patas de carga <span class="gallery-badge">${c.patas} de 24</span></div>`;
+    const grid = document.createElement('div');
+    grid.className = 'photo-grid';
+    for (let i = 1; i <= c.patas; i++) {
+      grid.innerHTML += `<div class="photo-card"><div class="download-badge">⬇</div><div class="photo-card-icon">📷</div><div>Pata ${i}</div></div>`;
+    }
+    sec.appendChild(grid);
+    patasContainer.appendChild(sec);
+  }
+}
+
+function reabrirCarga(id) {
+  const c = contenedores.find(x => x.id === id);
+  if (!c) return;
+  if (!confirm('¿Reabrir la carga de "' + c.cliente + ' N° ' + c.num + '"?\nEl operario podrá agregar fotos pendientes.')) return;
+  c.estado = 'proceso';
+  actualizarMetricas();
+  renderTabla();
+  toast('↩ Carga reabierta — el operario puede agregar fotos');
+}
+
+function eliminarContenedor(id) {
+  const c = contenedores.find(x => x.id === id);
+  if (!c) return;
+  if (!confirm('¿Eliminar "' + c.cliente + ' N° ' + c.num + '"? Esta acción no se puede deshacer.')) return;
+  contenedores = contenedores.filter(x => x.id !== id);
+  actualizarMetricas();
+  renderTabla();
+  toast('🗑 Contenedor eliminado');
+}
+
+
+let guiasContId = null;
+
+function openGuiasModal(id) {
+  guiasContId = id;
+  const c = contenedores.find(x => x.id === id);
+  if (!c) return;
+  if (!c.guias) c.guias = {encinas: null, cliente: null};
+  if (Array.isArray(c.guias)) c.guias = {encinas: null, cliente: null};
+  document.getElementById('guias-modal-sub').textContent = c.cliente + ' N° ' + c.num + (c.po ? ' · PO: ' + c.po : '');
+  renderSlot('encinas', c.guias.encinas);
+  renderSlot('cliente', c.guias.cliente);
+  document.getElementById('modal-guias').classList.add('open');
+}
+
+function renderSlot(slot, guia) {
+  const preview = document.getElementById('slot-' + slot + '-preview');
+  const drop = document.getElementById('slot-' + slot + '-drop');
+  if (guia) {
+    preview.style.display = 'flex';
+    drop.style.display = 'none';
+    document.getElementById('slot-' + slot + '-icon').textContent = guia.tipo === 'pdf' ? '📄' : '🖼️';
+    document.getElementById('slot-' + slot + '-tipo').textContent = guia.tipo === 'pdf' ? 'PDF' : 'Imagen';
+  } else {
+    preview.style.display = 'none';
+    drop.style.display = 'block';
+  }
+}
+
+function triggerSlotInput(slot) {
+  document.getElementById('input-' + slot).click();
+}
+
+function handleSlotFile(files, slot) {
+  if (!files || !files[0]) return;
+  const c = contenedores.find(x => x.id === guiasContId);
+  if (!c) return;
+  if (!c.guias || Array.isArray(c.guias)) c.guias = {encinas: null, cliente: null};
+  const file = files[0];
+  const esPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+  c.guias[slot] = {nombre: slot === 'encinas' ? 'Guía Las Encinas' : 'Guía Cliente', tipo: esPdf ? 'pdf' : 'img', file: file};
+  renderSlot(slot, c.guias[slot]);
+  renderTabla();
+  toast('✓ ' + (slot === 'encinas' ? 'Guía Las Encinas' : 'Guía Cliente') + ' adjunta');
+  document.getElementById('input-' + slot).value = '';
+}
+
+function handleSlotDrop(event, slot) {
+  event.preventDefault();
+  document.getElementById('slot-' + slot + '-drop').style.borderColor = 'var(--cream3)';
+  document.getElementById('slot-' + slot + '-drop').style.background = 'var(--cream2)';
+  handleSlotFile(event.dataTransfer.files, slot);
+}
+
+function eliminarSlot(slot) {
+  const c = contenedores.find(x => x.id === guiasContId);
+  if (!c || !c.guias) return;
+  c.guias[slot] = null;
+  renderSlot(slot, null);
+  renderTabla();
+  toast('Guía eliminada');
+}
+
+function contarGuias(c) {
+  if (!c.guias || Array.isArray(c.guias)) return 0;
+  return (c.guias.encinas ? 1 : 0) + (c.guias.cliente ? 1 : 0);
+}
+
+function verGuiasCliente(id) {
+  const c = contenedores.find(x => x.id === id);
+  if (!c || !c.guias || Array.isArray(c.guias)) return;
+  const guiasArr = [
+    c.guias.encinas ? {...c.guias.encinas, nombre:'Guía Las Encinas'} : null,
+    c.guias.cliente ? {...c.guias.cliente, nombre:'Guía Cliente'} : null
+  ].filter(Boolean);
+  if (!guiasArr.length) return;
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,26,20,0.7);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);';
+  overlay.innerHTML = `<div style="background:var(--cream);border-radius:10px;padding:28px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div style="font-family:var(--font-display);font-size:20px;color:var(--leaf);margin-bottom:4px;">Guías de despacho</div>
+    <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:18px;">${c.cliente} N° ${c.num}</div>
+    ${guiasArr.map(g => `<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--cream2);border:1px solid var(--cream3);border-radius:6px;margin-bottom:8px;">
+      <span style="font-size:22px;">${g.tipo === 'pdf' ? '📄' : '🖼️'}</span>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:500;">${g.nombre}</div>
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--ink3);text-transform:uppercase;letter-spacing:0.06em;">${g.tipo === 'pdf' ? 'PDF' : 'Imagen'}</div>
+      </div>
+      <button style="background:var(--leaf);color:var(--cream);border:none;border-radius:4px;padding:6px 12px;font-family:var(--font-mono);font-size:10px;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;">⬇</button>
+    </div>`).join('')}
+    <button onclick="this.closest('div[style*=fixed]').remove()" style="width:100%;margin-top:8px;background:transparent;border:1.5px solid var(--cream3);border-radius:6px;padding:10px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;color:var(--ink2);">Cerrar</button>
+  </div>`;
+  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+  document.body.appendChild(overlay);
+}
+
+function cerrarSesion() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('client-selector').style.display = 'block';
+  document.getElementById('client-gallery').style.display = 'none';
+  document.getElementById('op-selector-view').style.display = 'block';
+  document.getElementById('op-carga-view').style.display = 'none';
+  document.getElementById('fruta-panel').classList.remove('show');
+  document.getElementById('pin-input').value = '';
+  document.getElementById('login-error').style.display = 'none';
+  clienteActual = null;
+  // Restore nav tabs visibility
+  document.querySelectorAll('.nav-tab').forEach(t => t.style.display = '');
+}
+
+function toast(msg) {
+  const t = document.getElementById('global-toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+document.querySelectorAll('.overlay').forEach(ov => {
+  ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('open'); });
+});
+
+actualizarMetricas();
+renderTabla();
+
+
+// ============ GOOGLE DRIVE ============
+const CLIENT_ID = '819319112674-bbdv9ebvpc7ifnama8kpuqmegsrr6si2.apps.googleusercontent.com';
+const CLIENT_SECRET = '';  // seguridad: no almacenar aquí
+const SCOPES = 'https://www.googleapis.com/auth/drive.file';
+const FOLDER_NAME = 'Encinas Track — Temporada 2025-2026';
+
+let tokenClient;
+let driveAccessToken = null;
+let rootFolderId = null;
+
+function initDrive(callback) {
+  if (typeof google === 'undefined' || !google.accounts) {
+    setTimeout(() => initDrive(callback), 300);
+    return;
+  }
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: async (response) => {
+      if (response.error) { toast('❌ Error al conectar Drive: ' + response.error); return; }
+      driveAccessToken = response.access_token;
+      const btn = document.getElementById('drive-status');
+      btn.className = 'drive-status connected';
+      btn.innerHTML = '☁ Drive conectado';
+      btn.onclick = null;
+      toast('✓ Google Drive conectado correctamente');
+      rootFolderId = await getOrCreateFolder(FOLDER_NAME, null);
+      if (callback) callback();
+    }
+  });
+}
+
+function conectarDrive() {
+  const tryConnect = () => {
+    if (!tokenClient) {
+      initDrive(() => tokenClient.requestAccessToken({prompt: 'consent'}));
+    } else {
+      tokenClient.requestAccessToken({prompt: 'consent'});
+    }
+  };
+  if (typeof google === 'undefined' || !google.accounts) {
+    toast('⏳ Cargando Google Drive, intenta en un momento...');
+    setTimeout(tryConnect, 1500);
+  } else {
+    tryConnect();
+  }
+}
+
+async function getOrCreateFolder(name, parentId) {
+  const q = parentId
+    ? `name='${name}' and mimeType='application/vnd.google-apps.folder' and '${parentId}' in parents and trashed=false`
+    : `name='${name}' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
+  const res = await fetch(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=files(id,name)`, {
+    headers: { Authorization: 'Bearer ' + driveAccessToken }
+  });
+  const data = await res.json();
+  if (data.files && data.files.length > 0) return data.files[0].id;
+  const meta = { name, mimeType: 'application/vnd.google-apps.folder' };
+  if (parentId) meta.parents = [parentId];
+  const createRes = await fetch('https://www.googleapis.com/drive/v3/files', {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + driveAccessToken, 'Content-Type': 'application/json' },
+    body: JSON.stringify(meta)
+  });
+  const folder = await createRes.json();
+  return folder.id;
+}
+
+async function subirFotoDrive(file, contenedor, etiqueta) {
+  if (!driveAccessToken) return null;
+  try {
+    const c = contenedor;
+    const nombreCarpeta = c.po ? 'PO-' + c.po + ' — ' + c.cliente + ' N° ' + c.num : c.cliente + ' N° ' + c.num;
+    const contFolderId = await getOrCreateFolder(nombreCarpeta, rootFolderId);
+    const nombreArchivo = etiqueta + ' — ' + new Date().toLocaleTimeString('es-CL') + '.' + file.name.split('.').pop();
+    const metadata = { name: nombreArchivo, parents: [contFolderId] };
+    const form = new FormData();
+    form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+    form.append('file', file);
+    const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + driveAccessToken },
+      body: form
+    });
+    const data = await res.json();
+    return data.id;
+  } catch(e) {
+    console.error('Error subiendo a Drive:', e);
+    return null;
+  }
+}
+
+window.addEventListener('load', () => {
+  // Give Google scripts time to load
+  setTimeout(() => initDrive(), 1000);
+});
+
+// LOGIN
+let loginRole = 'coordinador';
+function selectLoginRole(role) {
+  loginRole = role;
+  ['tab-coord','tab-op','tab-cli'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) { btn.classList.remove('active'); }
+  });
+  const tabMap = {coordinador:'tab-coord', operario:'tab-op', cliente:'tab-cli'};
+  const activeTab = document.getElementById(tabMap[role]);
+  if (activeTab) activeTab.classList.add('active');
+  document.getElementById('pin-label').textContent = role === 'cliente' ? 'PIN de empresa' : 'PIN ' + role;
+  document.getElementById('pin-input').value = '';
+  document.getElementById('login-error').style.display = 'none';
+}
+function intentarLogin() {
+  const pin = document.getElementById('pin-input').value;
+  const pins = { coordinador: '1979', operario: '1234' };
+
+  if (loginRole === 'cliente') {
+    const clienteMatch = clientes.find(c => c.pin === pin);
+    if (clienteMatch) {
+      clienteActual = clienteMatch.nombre;
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      document.querySelectorAll('.nav-tab').forEach(t => t.style.display = 'none');
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-cliente').classList.add('active');
+      renderClienteSelectorFiltrado(clienteMatch.nombre);
+    } else {
+      document.getElementById('login-error').style.display = 'block';
+      document.getElementById('pin-input').value = '';
+      document.getElementById('pin-input').focus();
+    }
+    return;
+  }
+
+  if (pin === pins[loginRole]) {
+    clienteActual = null;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    if (loginRole === 'operario') {
+      document.querySelectorAll('.nav-tab').forEach(t => t.style.display = 'none');
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-operario').classList.add('active');
+      renderOperario();
+    }
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('pin-input').value = '';
+    document.getElementById('pin-input').focus();
+  }
+}
+</script>
+</body>
+</html>
