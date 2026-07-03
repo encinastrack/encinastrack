@@ -116,27 +116,7 @@ body {
 }
 
 /* DRIVE STATUS */
-.drive-status {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  padding: 5px 12px;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-transform: uppercase;
-}
-.drive-status.disconnected {
-  background: rgba(200,151,58,0.15);
-  color: var(--gold2);
-  border: 1px solid rgba(200,151,58,0.3);
-}
-.drive-status.connected {
-  background: rgba(45,106,79,0.3);
-  color: #6fcf97;
-  border: 1px solid rgba(111,207,151,0.3);
-  cursor: default;
-}
+
 
 /* PAGES */
 .page { display: none; }
@@ -1281,8 +1261,45 @@ body {
 </style>
 </head>
 <body>
-<script src="https://apis.google.com/js/api.js"></script>
-<script src="https://accounts.google.com/gsi/client"></script>
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, doc, setDoc, getDocs, deleteDoc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyC9NP8v4rUkRuwUqfnkqZeSXKEyxtie01g",
+    authDomain: "encinas-track-4b7b1.firebaseapp.com",
+    projectId: "encinas-track-4b7b1",
+    storageBucket: "encinas-track-4b7b1.appspot.com",
+    messagingSenderId: "1061890701387",
+    appId: "1:1061890701387:web:5f1d59f59093cefe8035ce"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Make Firebase available globally
+  window.db = db;
+  window.fsCollection = collection;
+  window.fsDoc = doc;
+  window.fsSetDoc = setDoc;
+  window.fsGetDocs = getDocs;
+  window.fsDeleteDoc = deleteDoc;
+  window.fsOnSnapshot = onSnapshot;
+  window.fsUpdateDoc = updateDoc;
+  window.firebaseReady = true;
+
+  // Start listening to contenedores collection
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      if (typeof iniciarFirebase === 'function') iniciarFirebase();
+    }, 500);
+  });
+  setTimeout(() => {
+    if (typeof iniciarFirebase === 'function') iniciarFirebase();
+  }, 800);
+</script>
 
 <!-- LOGIN -->
 <div id="login-screen">
@@ -1337,7 +1354,7 @@ body {
   <div class="nav-tab" onclick="showPage('operario', this)">Operario</div>
   <div class="nav-tab" onclick="showPage('cliente', this)">Cliente</div>
   <div class="nav-right">
-    <div id="drive-status" class="drive-status disconnected" onclick="conectarDrive()">☁ Conectar Drive</div>
+    <div id="db-status" style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.08em;padding:5px 12px;border-radius:20px;background:rgba(200,151,58,0.15);color:var(--gold2);border:1px solid rgba(200,151,58,0.3);text-transform:uppercase;">⏳ Conectando...</div>
     <span class="nav-season">Temporada 2025 – 2026</span>
   </div>
 </nav>
@@ -1764,7 +1781,10 @@ function agregarCliente() {
   const nombre = document.getElementById('new-client-input').value.trim();
   const pin = document.getElementById('new-client-pin') ? document.getElementById('new-client-pin').value.trim() : '0000';
   if (!nombre) return;
-  if (!clientes.find(c => c.nombre === nombre)) clientes.push({nombre: nombre, pin: pin || '0000'});
+  if (!clientes.find(c => c.nombre === nombre)) {
+    clientes.push({nombre: nombre, pin: pin || '0000'});
+    guardarClientesFB();
+  }
   buildClienteSelect();
   document.getElementById('f-cliente').value = nombre;
   document.getElementById('new-client-box').classList.remove('show');
@@ -1792,7 +1812,8 @@ function crearContenedor() {
   const fecha = fechaRaw ? new Date(fechaRaw + 'T12:00:00').toLocaleDateString('es-CL', {day:'numeric',month:'short',year:'numeric'}) : 'Sin fecha';
   const guiaEncinasNum = document.getElementById('f-guia-encinas') ? document.getElementById('f-guia-encinas').value.trim() : '';
   const guiaClienteNum = document.getElementById('f-guia-cliente') ? document.getElementById('f-guia-cliente').value.trim() : '';
-  contenedores.unshift({id:Date.now(), cliente, num, po, cal, tipo, fecha, guiaEncinasNum, guiaClienteNum, guias: {encinas:null,cliente:null}, tempNum:null, temp:'—', tempOk:false, fotos:0, estado:'proceso', patas:0, etapas:{temp:false,vacio:false}, frutaFotos:0});
+  const nuevoId = String(Date.now());
+  const nuevoContenedor = {id:nuevoId, fbId:nuevoId, cliente, num, po, cal, tipo, fecha, guiaEncinasNum, guiaClienteNum, guias: {encinas:null,cliente:null}, createdAt:Date.now(), tempNum:null, temp:'—', tempOk:false, fotos:0, estado:'proceso', patas:0, etapas:{temp:false,vacio:false}, frutaFotos:0});
   actualizarMetricas(); renderTabla(); closeModal('nuevo');
   toast('✓ ' + cliente + ' N° ' + num + ' creado — listo para el operario');
 }
@@ -1928,14 +1949,15 @@ function abrirCamara(callback, etiqueta) {
   input.onchange = async () => {
     if (input.files && input.files[0]) {
       const file = input.files[0];
-      if (driveAccessToken && currentContId) {
-        const c = contenedores.find(x => x.id === currentContId);
-        toast('⬆ Subiendo foto a Drive...');
-        const fileId = await subirFotoDrive(file, c, etiqueta || 'foto');
-        if (fileId) toast('✓ Foto guardada en Drive');
-        else toast('⚠ Foto registrada (sin Drive)');
+      toast('⬆ Guardando foto...');
+      try {
+        const dataUrl = await subirFotoFB(file, etiqueta);
+        callback(file, dataUrl);
+        toast('✓ Foto guardada');
+      } catch(e) {
+        callback(file, null);
+        toast('⚠ Foto registrada localmente');
       }
-      callback(file);
     }
   };
   input.click();
@@ -1944,36 +1966,44 @@ function abrirCamara(callback, etiqueta) {
 function agregarFotoFruta() {
   const c = contenedores.find(x => x.id === currentContId);
   if (!c) return;
-  abrirCamara(function() {
+  if (!c.fotoUrls) c.fotoUrls = {};
+  if (!c.frutaUrls) c.frutaUrls = [];
+  abrirCamara(function(file, dataUrl) {
     c.frutaFotos++;
     c.fotos++;
+    if (dataUrl) c.frutaUrls.push(dataUrl);
+    guardarContenedorFB(c);
     renderFrutaPanel(c);
     renderEtapas(c);
     actualizarMetricas();
     renderTabla();
-    toast('✓ Foto de fruta ' + c.frutaFotos + ' registrada');
-  }, 'Fruta — foto ' + (c.frutaFotos + 1));
+  }, 'Fruta — foto ' + c.frutaFotos);
 }
 
 function toggleEtapa(tipo) {
   const c = contenedores.find(x => x.id === currentContId);
   if (!c) return;
   const etiquetas = {temp: 'Temperatura inicial', vacio: 'Contenedor vacío'};
-  abrirCamara(function() {
+  if (!c.fotoUrls) c.fotoUrls = {};
+  abrirCamara(function(file, dataUrl) {
     c.etapas[tipo] = true;
     c.fotos++;
+    if (dataUrl) c.fotoUrls[tipo] = dataUrl;
     if (tipo === 'temp') {
-      const temps = [-18.1,-18.3,-18.5,-18.7,-18.9,-10.5,-8.2];
-      const t = temps[Math.floor(Math.random() * temps.length)];
-      c.tempNum = t;
-      c.temp = t.toFixed(1) + '°C';
-      c.tempOk = tempEsOk(t);
+      // Ask for temperature value
+      const tempVal = prompt('Ingresa la temperatura registrada (ej: -18.5):');
+      if (tempVal) {
+        const t = parseFloat(tempVal);
+        c.tempNum = t;
+        c.temp = t.toFixed(1) + '°C';
+        c.tempOk = tempEsOk(t);
+      }
       actualizarTempDisplay(c);
     }
+    guardarContenedorFB(c);
     renderEtapas(c);
     actualizarMetricas();
     renderTabla();
-    toast('✓ Foto registrada');
   }, etiquetas[tipo]);
 }
 
@@ -2001,9 +2031,12 @@ function renderPatas(c) {
 function agregarFotoPata() {
   const c = contenedores.find(x => x.id === currentContId);
   if (!c || c.patas >= 24) return;
-  abrirCamara(function() {
+  if (!c.pataUrls) c.pataUrls = [];
+  abrirCamara(function(file, dataUrl) {
     c.patas++;
     c.fotos++;
+    if (dataUrl) c.pataUrls.push(dataUrl);
+    guardarContenedorFB(c);
     renderPatas(c);
     actualizarMetricas();
     renderTabla();
@@ -2060,6 +2093,7 @@ function confirmarCargaCompleta() {
   const c = contenedores.find(x => x.id === currentContId);
   if (!c) return;
   c.estado = 'completo';
+  guardarContenedorFB(c);
   actualizarMetricas();
   renderTabla();
   toast('🎉 Carga completada y cerrada');
@@ -2129,9 +2163,11 @@ function abrirGaleria(id) {
   document.getElementById('cl-fecha').textContent = c.fecha;
 
   const etapas = [];
-  if (c.etapas.temp) etapas.push({icon:'🌡️', label:'Temperatura inicial'});
-  if (c.etapas.vacio) etapas.push({icon:'📦', label:'Contenedor vacío'});
-  for (let i = 1; i <= c.frutaFotos; i++) etapas.push({icon:'🍓', label:'Fruta — foto ' + i});
+  const fotoUrls = c.fotoUrls || {};
+  const frutaUrls = c.frutaUrls || [];
+  if (c.etapas.temp) etapas.push({icon:'🌡️', label:'Temperatura inicial', url: fotoUrls.temp||''});
+  if (c.etapas.vacio) etapas.push({icon:'📦', label:'Contenedor vacío', url: fotoUrls.vacio||''});
+  for (let i = 1; i <= c.frutaFotos; i++) etapas.push({icon:'🍓', label:'Fruta — foto ' + i, url: frutaUrls[i-1]||''});
 
   document.getElementById('cl-etapas-count').textContent = etapas.length + ' foto' + (etapas.length !== 1 ? 's' : '');
   // Add guias card if any
@@ -2143,7 +2179,11 @@ function abrirGaleria(id) {
   </div>`;
 
   document.getElementById('cl-etapas-grid').innerHTML = etapas.map(e =>
-    `<div class="photo-card"><div class="download-badge">⬇</div><div class="photo-card-icon">${e.icon}</div><div>${e.label}</div></div>`
+    `<div class="photo-card" onclick="verFoto('${e.url||''}','${e.label}')" style="${e.url ? '' : 'cursor:default;'}">
+      <div class="download-badge">⬇</div>
+      ${e.url ? `<img src="${e.url}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;position:absolute;inset:0;">` : `<div class="photo-card-icon">${e.icon}</div>`}
+      <div style="position:relative;z-index:1;background:rgba(255,255,255,0.85);padding:2px 6px;border-radius:4px;font-size:11px;">${e.label}</div>
+    </div>`
   ).join('') + guiasCard;
 
   const patasContainer = document.getElementById('cl-patas-container');
@@ -2154,8 +2194,14 @@ function abrirGaleria(id) {
     sec.innerHTML = `<div class="gallery-section-title">Patas de carga <span class="gallery-badge">${c.patas} de 24</span></div>`;
     const grid = document.createElement('div');
     grid.className = 'photo-grid';
+    const pataUrls = c.pataUrls || [];
     for (let i = 1; i <= c.patas; i++) {
-      grid.innerHTML += `<div class="photo-card"><div class="download-badge">⬇</div><div class="photo-card-icon">📷</div><div>Pata ${i}</div></div>`;
+      const url = pataUrls[i-1] || '';
+      grid.innerHTML += `<div class="photo-card" onclick="verFoto('${url}','Pata ${i}')" style="${url ? '' : 'cursor:default;'}">
+        <div class="download-badge">⬇</div>
+        ${url ? `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;position:absolute;inset:0;">` : '<div class="photo-card-icon">📷</div>'}
+        <div style="position:relative;z-index:1;background:rgba(255,255,255,0.85);padding:2px 6px;border-radius:4px;font-size:11px;">Pata ${i}</div>
+      </div>`;
     }
     sec.appendChild(grid);
     patasContainer.appendChild(sec);
@@ -2167,6 +2213,7 @@ function reabrirCarga(id) {
   if (!c) return;
   if (!confirm('¿Reabrir la carga de "' + c.cliente + ' N° ' + c.num + '"?\nEl operario podrá agregar fotos pendientes.')) return;
   c.estado = 'proceso';
+  guardarContenedorFB(c);
   actualizarMetricas();
   renderTabla();
   toast('↩ Carga reabierta — el operario puede agregar fotos');
@@ -2176,6 +2223,7 @@ function eliminarContenedor(id) {
   const c = contenedores.find(x => x.id === id);
   if (!c) return;
   if (!confirm('¿Eliminar "' + c.cliente + ' N° ' + c.num + '"? Esta acción no se puede deshacer.')) return;
+  eliminarContenedorFB(c);
   contenedores = contenedores.filter(x => x.id !== id);
   actualizarMetricas();
   renderTabla();
@@ -2292,6 +2340,21 @@ function cerrarSesion() {
   document.querySelectorAll('.nav-tab').forEach(t => t.style.display = '');
 }
 
+function verFoto(url, label) {
+  if (!url) return;
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;';
+  overlay.innerHTML = `
+    <p style="font-family:var(--font-mono);font-size:11px;color:rgba(255,255,255,0.6);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;">${label}</p>
+    <img src="${url}" style="max-width:100%;max-height:75vh;object-fit:contain;border-radius:8px;">
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <a href="${url}" download style="background:var(--leaf);color:var(--cream);text-decoration:none;border-radius:6px;padding:10px 18px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;">⬇ Descargar</a>
+      <button onclick="this.closest('div[style*=fixed]').remove()" style="background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:10px 18px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;">Cerrar</button>
+    </div>`;
+  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+  document.body.appendChild(overlay);
+}
+
 function toast(msg) {
   const t = document.getElementById('global-toast');
   t.textContent = msg;
@@ -2308,59 +2371,16 @@ renderTabla();
 
 
 // ============ GOOGLE DRIVE ============
-const CLIENT_ID = '819319112674-bbdv9ebvpc7ifnama8kpuqmegsrr6si2.apps.googleusercontent.com';
-const CLIENT_SECRET = '';  // seguridad: no almacenar aquí
-const SCOPES = 'https://www.googleapis.com/auth/drive.file';
-const FOLDER_NAME = 'Encinas Track — Temporada 2025-2026';
 
-let tokenClient;
-let driveAccessToken = null;
-let rootFolderId = null;
 
-function initDrive(callback) {
-  if (typeof google === 'undefined' || !google.accounts) {
-    setTimeout(() => initDrive(callback), 300);
-    return;
-  }
-  tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: CLIENT_ID,
-    scope: SCOPES,
-    callback: async (response) => {
-      if (response.error) { toast('❌ Error al conectar Drive: ' + response.error); return; }
-      driveAccessToken = response.access_token;
-      const btn = document.getElementById('drive-status');
-      btn.className = 'drive-status connected';
-      btn.innerHTML = '☁ Drive conectado';
-      btn.onclick = null;
-      toast('✓ Google Drive conectado correctamente');
-      rootFolderId = await getOrCreateFolder(FOLDER_NAME, null);
-      if (callback) callback();
-    }
-  });
-}
 
-function conectarDrive() {
-  const tryConnect = () => {
-    if (!tokenClient) {
-      initDrive(() => tokenClient.requestAccessToken({prompt: 'consent'}));
-    } else {
-      tokenClient.requestAccessToken({prompt: 'consent'});
-    }
-  };
-  if (typeof google === 'undefined' || !google.accounts) {
-    toast('⏳ Cargando Google Drive, intenta en un momento...');
-    setTimeout(tryConnect, 1500);
-  } else {
-    tryConnect();
-  }
-}
 
-async function getOrCreateFolder(name, parentId) {
+function getOrCreateFolder(name, parentId) {
   const q = parentId
     ? `name='${name}' and mimeType='application/vnd.google-apps.folder' and '${parentId}' in parents and trashed=false`
     : `name='${name}' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
   const res = await fetch(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=files(id,name)`, {
-    headers: { Authorization: 'Bearer ' + driveAccessToken }
+    headers: { Authorization: 'Bearer ' + false }
   });
   const data = await res.json();
   if (data.files && data.files.length > 0) return data.files[0].id;
@@ -2368,7 +2388,7 @@ async function getOrCreateFolder(name, parentId) {
   if (parentId) meta.parents = [parentId];
   const createRes = await fetch('https://www.googleapis.com/drive/v3/files', {
     method: 'POST',
-    headers: { Authorization: 'Bearer ' + driveAccessToken, 'Content-Type': 'application/json' },
+    headers: { Authorization: 'Bearer ' + false, 'Content-Type': 'application/json' },
     body: JSON.stringify(meta)
   });
   const folder = await createRes.json();
@@ -2376,7 +2396,7 @@ async function getOrCreateFolder(name, parentId) {
 }
 
 async function subirFotoDrive(file, contenedor, etiqueta) {
-  if (!driveAccessToken) return null;
+  if (!false) return null;
   try {
     const c = contenedor;
     const nombreCarpeta = c.po ? 'PO-' + c.po + ' — ' + c.cliente + ' N° ' + c.num : c.cliente + ' N° ' + c.num;
@@ -2388,7 +2408,7 @@ async function subirFotoDrive(file, contenedor, etiqueta) {
     form.append('file', file);
     const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
       method: 'POST',
-      headers: { Authorization: 'Bearer ' + driveAccessToken },
+      headers: { Authorization: 'Bearer ' + false },
       body: form
     });
     const data = await res.json();
@@ -2399,10 +2419,107 @@ async function subirFotoDrive(file, contenedor, etiqueta) {
   }
 }
 
-window.addEventListener('load', () => {
-  // Give Google scripts time to load
-  setTimeout(() => initDrive(), 1000);
-});
+
+
+
+// ============ FIREBASE INTEGRATION ============
+let unsubscribeContenedores = null;
+
+function iniciarFirebase() {
+  if (!window.db) {
+    setTimeout(iniciarFirebase, 500);
+    return;
+  }
+  const dbStatus = document.getElementById('db-status');
+  
+  // Listen to contenedores in real-time
+  try {
+    const contRef = window.fsCollection(window.db, 'contenedores');
+    unsubscribeContenedores = window.fsOnSnapshot(contRef, (snapshot) => {
+      if (!snapshot.empty) {
+        const fbContenedores = [];
+        snapshot.forEach(doc => {
+          fbContenedores.push({...doc.data(), fbId: doc.id});
+        });
+        // Sort by creation date desc
+        fbContenedores.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+        contenedores = fbContenedores;
+        actualizarMetricas();
+        renderTabla();
+      }
+      if (dbStatus) {
+        dbStatus.style.background = 'rgba(45,106,79,0.3)';
+        dbStatus.style.color = '#6fcf97';
+        dbStatus.style.borderColor = 'rgba(111,207,151,0.3)';
+        dbStatus.textContent = '● Base de datos conectada';
+      }
+    }, (error) => {
+      console.error('Firestore error:', error);
+      if (dbStatus) {
+        dbStatus.style.background = 'rgba(200,151,58,0.15)';
+        dbStatus.style.color = 'var(--gold2)';
+        dbStatus.textContent = '⚠ Sin conexión';
+      }
+    });
+
+    // Listen to clientes
+    const cliRef = window.fsCollection(window.db, 'clientes');
+    window.fsOnSnapshot(cliRef, (snapshot) => {
+      if (!snapshot.empty) {
+        const fbClientes = [];
+        snapshot.forEach(doc => fbClientes.push(doc.data()));
+        if (fbClientes.length > 0) clientes = fbClientes;
+      }
+    });
+
+  } catch(e) {
+    console.error('Firebase init error:', e);
+  }
+}
+
+async function guardarContenedorFB(c) {
+  if (!window.db) return;
+  try {
+    const id = c.fbId || String(c.id);
+    await window.fsSetDoc(window.fsDoc(window.db, 'contenedores', id), {
+      ...c,
+      fbId: id,
+      createdAt: c.createdAt || Date.now()
+    });
+  } catch(e) {
+    console.error('Error saving contenedor:', e);
+  }
+}
+
+async function eliminarContenedorFB(c) {
+  if (!window.db || !c.fbId) return;
+  try {
+    await window.fsDeleteDoc(window.fsDoc(window.db, 'contenedores', c.fbId));
+  } catch(e) {
+    console.error('Error deleting:', e);
+  }
+}
+
+async function guardarClientesFB() {
+  if (!window.db) return;
+  try {
+    for (const cli of clientes) {
+      await window.fsSetDoc(window.fsDoc(window.db, 'clientes', cli.nombre), cli);
+    }
+  } catch(e) {
+    console.error('Error saving clientes:', e);
+  }
+}
+
+// Upload photo and return URL
+async function subirFotoFB(file, path) {
+  // Use a simple base64 approach stored in Firestore since Storage needs paid plan
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result); // base64 data URL
+    reader.readAsDataURL(file);
+  });
+}
 
 // LOGIN
 let loginRole = 'coordinador';
