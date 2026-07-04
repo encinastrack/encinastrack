@@ -813,6 +813,25 @@ function cargarDatos(callback) {
 // ===== DATOS =====
 var clientes = [];
 var contenedores = [];
+
+// Load clientes before login so PIN validation works
+function preCargarClientes() {
+  fetch('https://hpvtrnwsobvwfhgdyykj.supabase.co/rest/v1/clientes?select=*', {
+    headers: {
+      'apikey': 'sb_publishable_g4FQHrJsNsFVEJHtDkfTKg_XcXnRsrM',
+      'Authorization': 'Bearer sb_publishable_g4FQHrJsNsFVEJHtDkfTKg_XcXnRsrM'
+    }
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(rows) {
+    if (rows && rows.length > 0) {
+      clientes = rows.map(function(r) { return {nombre: r.nombre, pin: r.pin}; });
+    }
+  })
+  .catch(function(e) { console.error('preCargar error:', e); });
+}
+// Run immediately on page load
+document.addEventListener('DOMContentLoaded', function() { preCargarClientes(); });
 var currentId = null;
 var clienteActual = null;
 var guiasContId = null;
