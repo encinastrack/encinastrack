@@ -2,1613 +2,602 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Encinas Track</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231a3a2a'/%3E%3Cpath d='M32 8 C28 14 24 18 26 24 C28 28 32 27 32 27 C32 27 36 28 38 24 C40 18 36 14 32 8Z' fill='%2352B788'/%3E%3Ccircle cx='23' cy='40' r='9' fill='%23C0392B'/%3E%3Ccircle cx='41' cy='40' r='9' fill='%238E44AD'/%3E%3Ccircle cx='32' cy='48' r='8' fill='%23C0392B'/%3E%3C/svg%3E">
 <style>
 :root {
-  --ink: #0f1a14;
-  --ink2: #2d4a38;
-  --ink3: #5a7a65;
-  --cream: #f5f0e8;
-  --cream2: #ece6d8;
-  --cream3: #ddd6c6;
-  --leaf: #1a3a2a;
-  --leaf2: #2d5e42;
-  --leaf3: #3d7a55;
-  --berry: #8b1a3a;
-  --berry2: #c0392b;
-  --gold: #c8973a;
-  --gold2: #e8b84b;
-  --ok: #2d6a4f;
-  --ok-bg: #d8f3dc;
-  --warn: #7b3000;
-  --warn-bg: #ffe8cc;
-  --blue: #1a3a6a;
-  --blue-bg: #ddeeff;
-  --radius: 6px;
-  --font-display: 'Playfair Display', serif;
-  --font-body: 'DM Sans', sans-serif;
-  --font-mono: 'DM Mono', monospace;
+  --forest:  #1B3A2A;
+  --forest2: #2d5c42;
+  --forest3: #3d7a55;
+  --cream:   #F5F0E8;
+  --cream2:  #ECE6D8;
+  --cream3:  #DDD6C6;
+  --ink:     #1A1916;
+  --ink2:    #4A5240;
+  --ink3:    #8A8578;
+  --gold:    #C8973A;
+  --gold2:   #E8B84B;
+  --ok:      #2D6A4F;
+  --ok-bg:   #D8F3DC;
+  --warn:    #92400E;
+  --warn-bg: #FEF3C7;
+  --blue:    #1D4ED8;
+  --blue-bg: #DDEEFF;
+  --berry:   #8B1A3A;
+  --r: 8px;
+  --display: 'Playfair Display', Georgia, serif;
+  --body:    'DM Sans', -apple-system, Arial, sans-serif;
+  --mono:    'DM Mono', 'Courier New', monospace;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--body); background: var(--cream); color: var(--ink); font-size: 14px; line-height: 1.5; min-height: 100vh; }
 
-body {
-  font-family: var(--font-body);
-  background: var(--cream);
-  color: var(--ink);
-  font-size: 14px;
-  line-height: 1.6;
-  min-height: 100vh;
-}
+/* ── LOGIN ── */
+#login-screen { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; background:var(--forest); background-image: radial-gradient(ellipse at 20% 60%, rgba(61,122,85,0.3) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(139,26,58,0.15) 0%, transparent 50%); }
+.login-card { background:var(--cream); border-radius:14px; padding:40px 36px; width:100%; max-width:380px; text-align:center; box-shadow:0 24px 80px rgba(0,0,0,0.4); position:relative; overflow:hidden; }
+.login-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg, var(--forest3), var(--gold), var(--berry)); }
+.login-logo { width:60px; height:60px; background:var(--forest); border-radius:12px; margin:0 auto 18px; display:flex; align-items:center; justify-content:center; font-size:28px; }
+.login-title { font-family:var(--display); font-size:28px; color:var(--forest); margin-bottom:4px; }
+.login-sub { font-family:var(--mono); font-size:10px; color:var(--ink3); letter-spacing:0.16em; text-transform:uppercase; margin-bottom:28px; }
+.lf-label { font-family:var(--mono); font-size:10px; color:var(--ink3); letter-spacing:0.12em; text-transform:uppercase; text-align:left; display:block; margin-bottom:6px; }
+.lf-select { width:100%; padding:12px; font-size:15px; font-family:var(--body); border:1.5px solid var(--cream3); border-radius:var(--r); background:var(--cream2); color:var(--ink); margin-bottom:16px; outline:none; }
+.lf-pin { width:100%; padding:14px; font-size:26px; text-align:center; letter-spacing:10px; border:1.5px solid var(--cream3); border-radius:var(--r); background:var(--cream2); color:var(--ink); margin-bottom:8px; outline:none; font-family:var(--mono); }
+.lf-pin:focus { border-color:var(--forest3); }
+.lf-error { display:none; font-size:12px; color:#991B1B; background:#FEE2E2; border:1px solid rgba(153,27,27,0.2); border-radius:6px; padding:8px 12px; margin-bottom:8px; font-family:var(--mono); }
+.lf-btn { width:100%; background:var(--forest); color:var(--cream); border:none; border-radius:var(--r); padding:15px; font-family:var(--body); font-size:15px; font-weight:600; cursor:pointer; transition:background 0.15s; }
+.lf-btn:hover { background:var(--forest2); }
 
-/* NAV */
-.nav {
-  background: var(--leaf);
-  padding: 0 24px;
-  display: flex;
-  align-items: center;
-  height: 56px;
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  border-bottom: 2px solid var(--leaf3);
-}
+/* ── APP ── */
+#app { display:none; }
+.page { display:none; }
+.page.active { display:block; animation:fadeIn 0.2s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
 
-.nav-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-right: 36px;
-  text-decoration: none;
-}
+/* ── NAV ── */
+nav { background:var(--forest); display:flex; align-items:center; padding:0 20px; height:54px; position:sticky; top:0; z-index:50; }
+.nav-logo { display:flex; align-items:center; gap:10px; margin-right:32px; }
+.nav-logo-icon { width:26px; height:26px; }
+.nav-logo-text { font-family:var(--display); font-size:17px; color:var(--cream); letter-spacing:0.02em; line-height:1; }
+.nav-logo-sub { font-family:var(--mono); font-size:9px; color:rgba(245,240,232,0.4); letter-spacing:0.12em; text-transform:uppercase; }
+.nav-tab { font-family:var(--body); font-size:13px; font-weight:500; color:rgba(245,240,232,0.5); padding:0 14px; height:54px; display:flex; align-items:center; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:all 0.15s; white-space:nowrap; }
+.nav-tab:hover { color:var(--cream); }
+.nav-tab.active { color:var(--gold2); border-bottom-color:var(--gold2); }
+.nav-right { margin-left:auto; }
+.nav-season { font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:rgba(245,240,232,0.35); border:1px solid rgba(245,240,232,0.12); border-radius:20px; padding:4px 12px; }
 
-.nav-logo svg { flex-shrink: 0; }
+/* ── LAYOUT ── */
+.wrap { max-width:1120px; margin:0 auto; padding:24px 20px; }
+.page-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:24px; gap:12px; flex-wrap:wrap; }
+.page-title { font-family:var(--display); font-size:28px; color:var(--forest); }
+.page-sub { font-family:var(--mono); font-size:10px; color:var(--ink3); letter-spacing:0.12em; text-transform:uppercase; margin-top:4px; }
 
-.nav-logo-text {
-  font-family: var(--font-display);
-  font-size: 18px;
-  color: var(--cream);
-  letter-spacing: 0.02em;
-  line-height: 1;
-}
+/* ── BUTTONS ── */
+.btn-primary { background:var(--forest); color:var(--cream); border:none; border-radius:var(--r); padding:10px 18px; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:6px; transition:all 0.15s; white-space:nowrap; }
+.btn-primary:hover { background:var(--forest2); transform:translateY(-1px); }
+.btn-ghost { background:var(--cream); color:var(--ink2); border:1.5px solid var(--cream3); border-radius:var(--r); padding:9px 16px; font-size:13px; cursor:pointer; transition:all 0.15s; }
+.btn-ghost:hover { border-color:var(--ink3); background:var(--cream2); }
 
-.nav-logo-sub {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  color: var(--leaf3);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  margin-top: 2px;
-}
+/* ── METRICS ── */
+.metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px; }
+.metric { background:var(--cream2); border:1px solid var(--cream3); border-radius:var(--r); padding:14px 16px; position:relative; overflow:hidden; }
+.metric::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; }
+.metric:nth-child(1)::after { background:var(--forest3); }
+.metric:nth-child(2)::after { background:var(--ok); }
+.metric:nth-child(3)::after { background:var(--blue); }
+.metric:nth-child(4)::after { background:var(--gold); }
+.metric-label { font-family:var(--mono); font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink3); margin-bottom:6px; }
+.metric-val { font-family:var(--display); font-size:32px; color:var(--ink); }
+.metric-val.green { color:var(--ok); }
+.metric-val.blue { color:var(--blue); }
 
-.nav-tab {
-  padding: 0 14px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(245,240,232,0.55);
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
-  transition: all 0.2s;
-}
-.nav-tab:hover { color: var(--cream); }
-.nav-tab.active { color: var(--gold2); border-bottom-color: var(--gold2); }
+/* ── SEARCH ── */
+.search-box { background:var(--cream2); border:1px solid var(--cream3); border-radius:var(--r); padding:16px; margin-bottom:14px; }
+.search-label { font-family:var(--mono); font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink3); margin-bottom:10px; }
+.search-row { display:flex; gap:8px; }
+.search-input { flex:1; padding:9px 12px; font-size:14px; font-family:var(--body); border:1px solid var(--cream3); border-radius:var(--r); background:var(--cream); outline:none; transition:border-color 0.15s; }
+.search-input:focus { border-color:var(--forest3); }
+.search-clear { padding:9px 12px; border:1px solid var(--cream3); border-radius:var(--r); background:var(--cream); cursor:pointer; color:var(--ink3); }
+.result-card { background:var(--cream); border:1px solid var(--cream3); border-radius:var(--r); padding:12px 14px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition:border-color 0.15s; }
+.result-card:hover { border-color:var(--forest3); }
 
-.nav-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
-.nav-season {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(245,240,232,0.4);
-  border: 1px solid rgba(245,240,232,0.15);
-  border-radius: 20px;
-  padding: 4px 12px;
-}
+/* ── TABLE ── */
+.table-card { background:var(--cream2); border:1px solid var(--cream3); border-radius:var(--r); overflow:hidden; }
+.table-head { display:grid; grid-template-columns:1.6fr 90px 100px 100px 150px; padding:10px 18px; background:var(--forest); }
+.table-head span { font-family:var(--mono); font-size:9px; letter-spacing:0.14em; text-transform:uppercase; color:rgba(245,240,232,0.5); }
+.table-row { display:grid; grid-template-columns:1.6fr 90px 100px 100px 150px; padding:12px 18px; border-bottom:1px solid var(--cream3); align-items:center; transition:background 0.1s; }
+.table-row:last-child { border-bottom:none; }
+.table-row:hover { background:var(--cream); }
+.table-row.proceso { background:rgba(28,59,24,0.04); }
+.cont-name { font-size:14px; font-weight:600; }
+.cont-po { font-family:var(--mono); font-size:11px; color:var(--ink3); margin-top:2px; }
+.cont-guia { font-family:var(--mono); font-size:10px; color:var(--ink3); opacity:0.7; margin-top:1px; }
+.cont-cal { margin-top:3px; }
+.sin-po { font-style:italic; color:var(--ink3); opacity:0.6; }
+.cal-tag { display:inline-block; font-family:var(--mono); font-size:10px; font-weight:500; padding:2px 7px; border-radius:3px; background:var(--ink); color:var(--cream); letter-spacing:0.06em; }
+.temp-tag { display:inline-block; font-family:var(--mono); font-size:12px; font-weight:500; padding:3px 9px; border-radius:4px; }
+.temp-ok { background:var(--ok-bg); color:var(--ok); }
+.temp-warn { background:var(--warn-bg); color:var(--warn); }
+.temp-none { background:var(--cream3); color:var(--ink3); }
+.status-tag { display:inline-block; font-family:var(--mono); font-size:9px; letter-spacing:0.06em; text-transform:uppercase; font-weight:500; padding:3px 9px; border-radius:3px; }
+.status-done { background:var(--ok-bg); color:var(--ok); }
+.status-proc { background:var(--blue-bg); color:var(--blue); }
+.actions { display:flex; gap:5px; flex-wrap:wrap; }
+.btn-link { font-family:var(--mono); font-size:10px; color:var(--ok); background:var(--ok-bg); border:1px solid rgba(45,106,79,0.2); border-radius:4px; padding:4px 9px; cursor:pointer; white-space:nowrap; }
+.btn-warn { font-family:var(--mono); font-size:10px; color:var(--warn); background:var(--warn-bg); border:1px solid rgba(146,64,14,0.2); border-radius:4px; padding:4px 9px; cursor:pointer; }
+.btn-danger { font-family:var(--mono); font-size:10px; color:#991B1B; background:#FEE2E2; border:1px solid rgba(153,27,27,0.2); border-radius:4px; padding:4px 9px; cursor:pointer; }
+.btn-blue { font-family:var(--mono); font-size:10px; color:var(--blue); background:var(--blue-bg); border:1px solid rgba(29,78,216,0.2); border-radius:4px; padding:4px 9px; cursor:pointer; }
 
-/* DRIVE STATUS */
-
-
-/* PAGES */
-.page { display: none; }
-.page.active { display: block; animation: fadeIn 0.25s ease; }
-@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
-
-/* LOGIN */
-#login-screen {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background: var(--leaf);
-  background-image:
-    radial-gradient(ellipse at 20% 50%, rgba(61,122,85,0.3) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 20%, rgba(139,26,58,0.2) 0%, transparent 50%);
-}
-
-.login-card {
-  background: var(--cream);
-  border-radius: 12px;
-  padding: 40px 36px;
-  width: 100%;
-  max-width: 380px;
-  text-align: center;
-  box-shadow: 0 24px 80px rgba(0,0,0,0.4);
-  position: relative;
-  overflow: hidden;
-}
-
-.login-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--leaf3), var(--gold), var(--berry2));
-}
-
-.login-logo-wrap { margin-bottom: 24px; }
-
-.login-title {
-  font-family: var(--font-display);
-  font-size: 28px;
-  color: var(--leaf);
-  letter-spacing: -0.5px;
-  margin-bottom: 4px;
-}
-
-.login-subtitle {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ink3);
-  margin-bottom: 28px;
-}
-
-.role-tabs {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 20px;
-  background: var(--cream2);
-  border-radius: 8px;
-  padding: 4px;
-}
-
-.role-tab {
-  flex: 1;
-  padding: 10px;
-  border-radius: 6px;
-  border: none;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.2s;
-  background: transparent;
-  color: var(--ink3);
-}
-.role-tab.active {
-  background: var(--leaf);
-  color: var(--cream);
-  box-shadow: 0 2px 8px rgba(26,58,42,0.3);
-}
-
-.login-label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink3);
-  text-align: left;
-  margin-bottom: 6px;
-  display: block;
-}
-
-.pin-input {
-  width: 100%;
-  border: 2px solid var(--cream3);
-  border-radius: 8px;
-  padding: 14px;
-  font-family: var(--font-mono);
-  font-size: 26px;
-  text-align: center;
-  letter-spacing: 12px;
-  background: var(--cream2);
-  color: var(--ink);
-  outline: none;
-  transition: border-color 0.2s;
-  margin-bottom: 8px;
-}
-.pin-input:focus { border-color: var(--leaf3); }
-
-.login-error {
-  display: none;
-  font-size: 12px;
-  color: var(--berry2);
-  background: rgba(192,57,43,0.08);
-  border: 1px solid rgba(192,57,43,0.2);
-  border-radius: 6px;
-  padding: 8px 12px;
-  margin-bottom: 8px;
-  font-family: var(--font-mono);
-}
-
-.btn-login {
-  width: 100%;
-  background: var(--leaf);
-  color: var(--cream);
-  border: none;
-  border-radius: 8px;
-  padding: 14px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  cursor: pointer;
-  margin-top: 4px;
-  transition: all 0.2s;
-}
-.btn-login:hover { background: var(--leaf2); }
-
-.login-hint {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--ink3);
-  margin-top: 16px;
-  letter-spacing: 0.05em;
-}
-
-/* APP WRAPPER */
-#app { display: none; }
-
-/* COORDINADOR */
-.coord-wrap { max-width: 1140px; margin: 0 auto; padding: 28px 24px; }
-
-.page-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 28px;
-  gap: 16px;
-}
-
-.page-title {
-  font-family: var(--font-display);
-  font-size: 28px;
-  color: var(--leaf);
-  letter-spacing: -0.5px;
-  line-height: 1.1;
-}
-
-.page-sub {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--ink3);
-  margin-top: 4px;
-}
-
-/* BUTTONS */
-.btn-primary {
-  background: var(--leaf);
-  color: var(--cream);
-  border: none;
-  border-radius: var(--radius);
-  padding: 10px 18px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-.btn-primary:hover { background: var(--leaf2); transform: translateY(-1px); }
-
-.btn-ghost {
-  background: transparent;
-  color: var(--ink2);
-  border: 1.5px solid var(--cream3);
-  border-radius: var(--radius);
-  padding: 9px 16px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.btn-ghost:hover { border-color: var(--ink3); background: var(--cream2); }
-
-/* METRICS */
-.metrics {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 24px;
-}
-@media (max-width: 768px) {
-  .metrics { grid-template-columns: repeat(2, 1fr); }
-  .table-header { display: none; }
-  .table-row { grid-template-columns: 1fr; gap: 6px; padding: 14px 16px; }
-  .table-row > *:nth-child(n+3) { display: block; }
-  .actions { flex-wrap: wrap; }
-  .coord-wrap { padding: 16px 12px; }
-  .page-header { flex-direction: column; gap: 10px; }
-  .page-header h1, .page-title { font-size: 20px; }
-  .nav { padding: 0 12px; overflow-x: auto; }
-  .nav-season { display: none; }
-}
-
-.metric {
-  background: var(--cream2);
-  border: 1px solid var(--cream3);
-  border-radius: 8px;
-  padding: 16px 18px;
-  position: relative;
-  overflow: hidden;
-}
-
-.metric::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 2px;
-}
-
-.metric:nth-child(1)::after { background: var(--leaf3); }
-.metric:nth-child(2)::after { background: var(--ok); }
-.metric:nth-child(3)::after { background: var(--blue); }
-.metric:nth-child(4)::after { background: var(--gold); }
-
-.metric-label {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--ink3);
-  margin-bottom: 8px;
-}
-
-.metric-val {
-  font-family: var(--font-display);
-  font-size: 32px;
-  color: var(--ink);
-  letter-spacing: -1px;
-  line-height: 1;
-}
-.metric-val.green { color: var(--ok); }
-.metric-val.blue { color: var(--blue); }
-
-/* SEARCH */
-.search-section {
-  background: var(--cream2);
-  border: 1px solid var(--cream3);
-  border-radius: 8px;
-  padding: 16px 18px;
-  margin-bottom: 16px;
-}
-
-.search-label {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--ink3);
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.search-row { display: flex; gap: 8px; }
-
-.search-input {
-  flex: 1;
-  border: 1.5px solid var(--cream3);
-  border-radius: var(--radius);
-  padding: 10px 14px;
-  font-family: var(--font-body);
-  font-size: 14px;
-  background: var(--cream);
-  color: var(--ink);
-  outline: none;
-  transition: border-color 0.2s;
-}
-.search-input:focus { border-color: var(--leaf3); }
-.search-input::placeholder { color: var(--ink3); }
-
-.search-clear {
-  background: var(--cream);
-  color: var(--ink3);
-  border: 1.5px solid var(--cream3);
-  border-radius: var(--radius);
-  padding: 10px 14px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.15s;
-}
-.search-clear:hover { background: var(--cream2); }
-
-.search-results { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
-
-.result-card {
-  background: var(--cream);
-  border: 1px solid var(--cream3);
-  border-radius: var(--radius);
-  padding: 12px 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.result-card:hover { border-color: var(--leaf3); background: var(--cream2); }
-
-/* TABLE */
-.table-card {
-  background: var(--cream2);
-  border: 1px solid var(--cream3);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.table-header {
-  display: grid;
-  grid-template-columns: 1.6fr 90px 100px 100px 130px;
-  padding: 10px 18px;
-  background: var(--leaf);
-}
-
-.table-header span {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(245,240,232,0.5);
-}
-
-.table-row {
-  display: grid;
-  grid-template-columns: 1.6fr 90px 100px 100px 130px;
-  padding: 13px 18px;
-  border-bottom: 1px solid var(--cream3);
-  align-items: center;
-  transition: background 0.12s;
-}
-.table-row:last-child { border-bottom: none; }
-.table-row:hover { background: var(--cream); }
-.table-row.en-proceso { background: rgba(45,94,66,0.06); }
-
-.cont-name {
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--ink);
-}
-.cont-po {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--ink3);
-  margin-top: 2px;
-}
-.cont-cal { margin-top: 3px; }
-.sin-po { font-style: italic; color: var(--ink3); opacity: 0.6; }
-
-.cal-tag {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  font-weight: 500;
-  padding: 2px 7px;
-  border-radius: 3px;
-  background: var(--ink);
-  color: var(--cream);
-  text-transform: uppercase;
-}
-
-.temp-tag {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  padding: 4px 10px;
-  border-radius: 4px;
-}
-.temp-ok { background: var(--ok-bg); color: var(--ok); }
-.temp-warn { background: var(--warn-bg); color: var(--warn); }
-.temp-none { background: var(--cream3); color: var(--ink3); }
-
-.status-tag {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-weight: 500;
-  padding: 4px 10px;
-  border-radius: 3px;
-}
-.status-done { background: var(--ok-bg); color: var(--ok); }
-.status-prog { background: var(--blue-bg); color: var(--blue); }
-
-.actions { display: flex; gap: 5px; flex-wrap: wrap; }
-
-.btn-link {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  color: var(--leaf);
-  background: rgba(26,58,42,0.08);
-  border: 1px solid rgba(26,58,42,0.2);
-  border-radius: 4px;
-  padding: 5px 9px;
-  cursor: pointer;
-  transition: all 0.15s;
-  white-space: nowrap;
-}
-.btn-link:hover { background: rgba(26,58,42,0.15); }
-
-.btn-icon {
-  font-size: 13px;
-  background: var(--cream);
-  border: 1px solid var(--cream3);
-  border-radius: 4px;
-  padding: 5px 7px;
-  cursor: pointer;
-  transition: all 0.15s;
-  display: inline-flex;
-  align-items: center;
-}
-.btn-icon:hover { background: var(--cream2); }
-
-.btn-ver {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  color: var(--blue);
-  background: var(--blue-bg);
-  border: 1px solid rgba(29,78,216,0.2);
-  border-radius: 4px;
-  padding: 5px 9px;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.btn-ver:hover { background: #c8e0ff; }
-
-/* OVERLAY/MODAL */
-.overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(15,26,20,0.7);
-  z-index: 100;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 40px 16px;
-  overflow-y: auto;
-  backdrop-filter: blur(4px);
-}
-.overlay.open { display: flex; }
-
-.modal {
-  background: var(--cream);
-  border-radius: 10px;
-  border: 1px solid var(--cream3);
-  padding: 32px;
-  width: 100%;
-  max-width: 440px;
-  position: relative;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-}
-
-.modal-title {
-  font-family: var(--font-display);
-  font-size: 22px;
-  color: var(--leaf);
-  margin-bottom: 4px;
-}
-.modal-sub {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink3);
-  margin-bottom: 24px;
-}
-
-.field { margin-bottom: 16px; }
-.field label {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink3);
-  margin-bottom: 6px;
-}
-.field input, .field select {
-  width: 100%;
-  border: 1.5px solid var(--cream3);
-  border-radius: var(--radius);
-  padding: 10px 12px;
-  font-family: var(--font-body);
-  font-size: 14px;
-  background: var(--cream2);
-  color: var(--ink);
-  outline: none;
-  transition: border-color 0.2s;
-}
-.field input:focus, .field select:focus { border-color: var(--leaf3); }
-.field-optional { font-size: 9px; color: var(--ink3); font-family: var(--font-mono); margin-left: 6px; font-weight: 400; text-transform: none; letter-spacing: 0; }
-
-.new-client-box {
-  background: rgba(26,58,42,0.06);
-  border: 1px solid rgba(26,58,42,0.15);
-  border-radius: var(--radius);
-  padding: 14px;
-  margin-top: 10px;
-  display: none;
-}
-.new-client-box.show { display: block; }
-.new-client-box label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--leaf3);
-  margin-bottom: 6px;
-  display: block;
-}
-.new-client-row { display: flex; gap: 8px; }
-.new-client-row input {
-  flex: 1;
-  border: 1px solid rgba(26,58,42,0.2);
-  border-radius: var(--radius);
-  padding: 8px 10px;
-  font-size: 13px;
-  background: var(--cream);
-  color: var(--ink);
-  outline: none;
-}
-.btn-add-client {
-  background: var(--leaf);
-  color: var(--cream);
-  border: none;
-  border-radius: var(--radius);
-  padding: 8px 12px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  white-space: nowrap;
-}
-.client-added { font-size: 11px; color: var(--ok); margin-top: 6px; display: none; align-items: center; gap: 4px; font-family: var(--font-mono); }
-.client-added.show { display: flex; }
-
-.modal-actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  margin-top: 24px;
-  padding-top: 16px;
-  border-top: 1px solid var(--cream3);
-}
+/* ── MODALS ── */
+.overlay { display:none; position:fixed; inset:0; background:rgba(15,26,20,0.65); z-index:100; align-items:flex-start; justify-content:center; padding:30px 16px; overflow-y:auto; backdrop-filter:blur(3px); }
+.overlay.open { display:flex; }
+.modal { background:var(--cream); border-radius:12px; border:1px solid var(--cream3); padding:28px; width:100%; max-width:440px; box-shadow:0 20px 60px rgba(0,0,0,0.25); }
+.modal-title { font-family:var(--display); font-size:22px; color:var(--forest); margin-bottom:4px; }
+.modal-sub { font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink3); margin-bottom:22px; }
+.field { margin-bottom:14px; }
+.field label { display:block; font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink3); margin-bottom:5px; }
+.field input, .field select { width:100%; border:1.5px solid var(--cream3); border-radius:var(--r); padding:9px 12px; font-size:14px; font-family:var(--body); background:var(--cream2); color:var(--ink); outline:none; transition:border-color 0.15s; }
+.field input:focus, .field select:focus { border-color:var(--forest3); }
+.field-opt { font-size:9px; color:var(--ink3); font-weight:400; text-transform:none; letter-spacing:0; margin-left:4px; }
+.modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:22px; padding-top:16px; border-top:1px solid var(--cream3); }
+.new-client-box { background:rgba(45,106,79,0.06); border:1px solid rgba(45,106,79,0.15); border-radius:var(--r); padding:14px; margin-top:8px; display:none; }
+.new-client-box.show { display:block; }
+.new-client-row { display:flex; gap:8px; margin-top:6px; }
+.new-client-row input { flex:1; border:1px solid var(--cream3); border-radius:var(--r); padding:8px 10px; font-size:13px; font-family:var(--body); background:var(--cream); color:var(--ink); outline:none; }
+.btn-add-cli { background:var(--forest); color:var(--cream); border:none; border-radius:var(--r); padding:8px 12px; font-size:13px; font-weight:600; cursor:pointer; }
+.client-ok { display:none; font-family:var(--mono); font-size:11px; color:var(--ok); margin-top:6px; }
+.client-ok.show { display:block; }
 
 /* LINK MODAL */
-.link-box {
-  background: rgba(26,58,42,0.05);
-  border: 1.5px solid rgba(26,58,42,0.15);
-  border-radius: 8px;
-  padding: 16px;
-  margin: 16px 0;
+.link-box { background:rgba(45,106,79,0.05); border:1.5px solid rgba(45,106,79,0.15); border-radius:var(--r); padding:16px; margin:14px 0; }
+.link-box-label { font-family:var(--mono); font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--forest3); margin-bottom:8px; }
+.link-name { font-family:var(--display); font-size:22px; color:var(--forest); margin-bottom:4px; }
+.link-url { font-family:var(--mono); font-size:11px; color:var(--ink3); word-break:break-all; }
+.wa-preview { background:#e5ddd5; border-radius:var(--r); padding:14px; margin:12px 0; }
+.wa-bubble { background:#dcf8c6; border-radius:8px 8px 0 8px; padding:10px 14px; display:inline-block; max-width:88%; }
+.wa-bubble-title { font-size:13px; font-weight:700; color:#1a1a1a; }
+.wa-bubble-url { font-size:12px; color:#128c7e; word-break:break-all; }
+.wa-bubble-desc { font-size:11px; color:#555; margin-top:3px; }
+.btn-copy { width:100%; background:var(--forest); color:var(--cream); border:none; border-radius:var(--r); padding:12px; font-size:14px; font-weight:600; cursor:pointer; margin-bottom:8px; }
+.btn-copy:hover { background:var(--forest2); }
+.btn-wa { width:100%; background:#25d366; color:#fff; border:none; border-radius:var(--r); padding:12px; font-size:14px; font-weight:600; cursor:pointer; }
+.copied-ok { display:none; font-family:var(--mono); font-size:11px; color:var(--ok); text-align:center; margin-top:8px; }
+.copied-ok.show { display:block; }
+
+/* GUIAS */
+.slot-box { background:var(--cream2); border:1px solid var(--cream3); border-radius:var(--r); padding:14px; margin-bottom:12px; }
+.slot-label { font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink3); margin-bottom:8px; font-weight:500; }
+.slot-preview { display:none; align-items:center; gap:10px; background:var(--cream); border:1px solid var(--cream3); border-radius:var(--r); padding:10px 12px; margin-bottom:6px; }
+.slot-preview.show { display:flex; }
+.slot-drop { border:2px dashed var(--cream3); border-radius:var(--r); padding:18px; text-align:center; cursor:pointer; transition:all 0.15s; }
+.slot-drop:hover { border-color:var(--forest3); background:rgba(45,106,79,0.04); }
+.slot-drop-text { font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink3); margin-top:6px; }
+
+/* ── OPERARIO ── */
+.op-wrap { max-width:440px; margin:0 auto; padding:16px; }
+.op-header { background:var(--forest); border-radius:12px; padding:18px; margin-bottom:14px; position:relative; overflow:hidden; }
+.op-header::before { content:''; position:absolute; top:-20px; right:-20px; width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,0.04); }
+.op-field-label { font-family:var(--mono); font-size:9px; letter-spacing:0.14em; text-transform:uppercase; color:rgba(245,240,232,0.4); margin-bottom:2px; }
+.op-name { font-family:var(--display); font-size:20px; color:var(--cream); }
+.op-po { font-family:var(--mono); font-size:11px; color:var(--gold2); margin-top:3px; }
+.op-temp-val { font-family:var(--display); font-size:24px; text-align:right; }
+.op-temp-val.ok { color:#6fcf97; }
+.op-temp-val.warn { color:#f2994a; }
+.op-temp-val.none { color:rgba(245,240,232,0.25); }
+.temp-alert { font-family:var(--mono); font-size:10px; letter-spacing:0.06em; padding:5px 10px; border-radius:4px; text-align:center; margin-top:8px; display:none; }
+.temp-alert.show { display:block; }
+.temp-alert.ok { background:rgba(111,207,151,0.15); color:#6fcf97; }
+.temp-alert.warn { background:rgba(242,153,74,0.15); color:#f2994a; }
+.prog-bg { background:rgba(255,255,255,0.12); border-radius:3px; height:3px; margin-top:12px; }
+.prog-fill { background:var(--gold2); border-radius:3px; height:3px; transition:width 0.3s; }
+.prog-label { font-family:var(--mono); font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:rgba(245,240,232,0.35); margin-top:4px; }
+
+.op-section { background:var(--cream2); border:1px solid var(--cream3); border-radius:12px; padding:16px; margin-bottom:14px; }
+.op-section-title { font-family:var(--mono); font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink3); margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid var(--cream3); }
+.big-btn { width:100%; padding:14px 16px; border-radius:var(--r); border:1.5px solid var(--cream3); background:var(--cream); font-family:var(--body); font-size:15px; color:var(--ink); cursor:pointer; margin-bottom:10px; display:flex; align-items:center; gap:12px; text-align:left; transition:all 0.12s; -webkit-tap-highlight-color:transparent; }
+.big-btn:last-child { margin-bottom:0; }
+.big-btn:active { background:var(--cream2); }
+.big-btn.done { background:rgba(45,106,79,0.08); border-color:rgba(45,106,79,0.25); color:var(--ok); }
+.btn-circle { width:34px; height:34px; border-radius:50%; background:var(--cream2); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:18px; border:1px solid var(--cream3); }
+.big-btn.done .btn-circle { background:rgba(45,106,79,0.1); border-color:rgba(45,106,79,0.2); }
+.fruta-panel { display:none; background:rgba(45,106,79,0.06); border:1px solid rgba(45,106,79,0.15); border-radius:var(--r); padding:12px; margin-top:10px; }
+.fruta-panel.show { display:block; }
+.fruta-count { font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ok); margin-bottom:8px; }
+.fruta-thumbs { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
+.fruta-thumb { width:50px; height:50px; background:rgba(45,106,79,0.08); border:1px solid rgba(45,106,79,0.2); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:20px; overflow:hidden; }
+.fruta-thumb img { width:100%; height:100%; object-fit:cover; }
+.btn-add-fruta { width:100%; background:var(--forest); color:var(--cream); border:none; border-radius:6px; padding:10px; font-size:13px; font-weight:600; cursor:pointer; }
+.pata-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:6px; margin-bottom:14px; }
+.pata-cell { aspect-ratio:1; border-radius:6px; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:12px; font-weight:500; border:1px solid var(--cream3); background:var(--cream); color:var(--ink3); cursor:pointer; -webkit-tap-highlight-color:transparent; transition:all 0.1s; }
+.pata-cell:active { transform:scale(0.93); }
+.pata-cell.done { background:var(--ok-bg); border-color:rgba(45,106,79,0.25); color:var(--ok); }
+.pata-cell.active { background:var(--blue-bg); border-color:rgba(29,78,216,0.3); color:var(--blue); font-weight:700; }
+.foto-btn { width:100%; background:var(--forest); color:var(--cream); border:none; border-radius:var(--r); padding:15px; font-size:14px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:10px; transition:all 0.12s; -webkit-tap-highlight-color:transparent; }
+.foto-btn:hover { background:var(--forest2); }
+.foto-btn:disabled { opacity:0.35; cursor:not-allowed; }
+.completar-btn { width:100%; background:transparent; color:var(--ok); border:2px solid var(--ok); border-radius:var(--r); padding:14px; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.15s; -webkit-tap-highlight-color:transparent; }
+.completar-btn:hover { background:var(--ok-bg); }
+.cont-selector { background:var(--cream2); border:1px solid var(--cream3); border-radius:12px; padding:20px; }
+.cont-selector-title { font-family:var(--display); font-size:22px; color:var(--forest); margin-bottom:4px; }
+.cont-selector-sub { font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink3); margin-bottom:16px; }
+.cont-item { border:1.5px solid var(--cream3); border-radius:var(--r); padding:12px 14px; margin-bottom:8px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; background:var(--cream); transition:all 0.12s; -webkit-tap-highlight-color:transparent; }
+.cont-item:hover { border-color:var(--forest3); }
+.cont-item:active { background:var(--cream2); }
+.cont-item.proc { border-color:rgba(29,78,216,0.3); background:var(--blue-bg); }
+.cont-item-name { font-size:14px; font-weight:600; }
+.cont-item-meta { font-family:var(--mono); font-size:11px; color:var(--ink3); margin-top:2px; }
+.cont-item-badge { font-family:var(--mono); font-size:10px; font-weight:500; padding:3px 9px; border-radius:3px; letter-spacing:0.06em; text-transform:uppercase; }
+.cambiar-rol-btn { background:none; border:none; font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink3); cursor:pointer; padding:8px 0; }
+.cambiar-rol-btn:hover { color:var(--ink); }
+
+/* ── CLIENTE ── */
+.client-wrap { max-width:700px; margin:0 auto; padding:24px 16px; }
+.client-header { background:var(--forest); border-radius:12px; padding:22px 26px; margin-bottom:22px; position:relative; overflow:hidden; }
+.client-header::after { content:''; position:absolute; bottom:-30px; right:-30px; width:140px; height:140px; border-radius:50%; background:rgba(255,255,255,0.03); }
+.client-po { font-family:var(--mono); font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold2); margin-bottom:6px; }
+.client-title { font-family:var(--display); font-size:26px; color:var(--cream); margin-bottom:18px; }
+.client-meta-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.client-meta-label { font-family:var(--mono); font-size:9px; letter-spacing:0.14em; text-transform:uppercase; color:rgba(245,240,232,0.35); margin-bottom:4px; }
+.client-meta-val { font-size:15px; font-weight:600; color:var(--cream); }
+.client-meta-val.ok { color:#6fcf97; }
+.client-meta-val.warn { color:#f2994a; }
+.download-btns { display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap; }
+.btn-download { display:flex; align-items:center; gap:8px; background:var(--forest); color:var(--cream); border:none; border-radius:var(--r); padding:10px 18px; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.12s; }
+.btn-download:hover { background:var(--forest2); transform:translateY(-1px); }
+.btn-pdf { background:var(--berry); }
+.btn-pdf:hover { background:#7a1a35; }
+.gallery-section { margin-bottom:22px; }
+.gallery-title { font-family:var(--mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink3); margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid var(--cream3); display:flex; align-items:center; gap:10px; }
+.gallery-badge { background:var(--cream3); color:var(--ink3); border-radius:3px; padding:2px 8px; font-size:9px; letter-spacing:0.08em; }
+.photo-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:8px; }
+.photo-card { background:var(--cream2); border:1px solid var(--cream3); border-radius:var(--r); aspect-ratio:4/3; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; cursor:pointer; position:relative; overflow:hidden; transition:all 0.15s; -webkit-tap-highlight-color:transparent; }
+.photo-card:hover { transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.1); border-color:var(--forest3); }
+.photo-card:active { transform:scale(0.97); }
+.photo-card img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
+.photo-card-label { position:relative; z-index:1; background:rgba(245,240,232,0.92); padding:2px 7px; border-radius:4px; font-family:var(--mono); font-size:10px; letter-spacing:0.06em; font-weight:500; }
+.photo-card-icon { font-size:26px; }
+.photo-card-text { font-family:var(--mono); font-size:10px; color:var(--ink3); letter-spacing:0.06em; }
+
+/* ── TOAST ── */
+.toast { position:fixed; bottom:22px; left:50%; transform:translateX(-50%); background:var(--forest); color:var(--cream); border-radius:var(--r); padding:10px 22px; font-family:var(--mono); font-size:12px; letter-spacing:0.08em; display:none; align-items:center; gap:8px; z-index:999; white-space:nowrap; box-shadow:0 8px 24px rgba(0,0,0,0.25); }
+.toast.show { display:flex; animation:slideUp 0.2s ease; }
+@keyframes slideUp { from{transform:translateX(-50%) translateY(10px);opacity:0} to{transform:translateX(-50%) translateY(0);opacity:1} }
+
+/* ── COORDINADOR: responsivo para PC y móvil ── */
+@media (max-width:900px) {
+  .table-head { grid-template-columns: 1.4fr 80px 90px 90px 130px; }
+  .table-row  { grid-template-columns: 1.4fr 80px 90px 90px 130px; }
 }
-.link-box-label {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--leaf3);
-  margin-bottom: 8px;
-}
-.link-name {
-  font-family: var(--font-display);
-  font-size: 20px;
-  color: var(--leaf);
-  margin-bottom: 4px;
-}
-.link-url {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--ink3);
-  word-break: break-all;
+@media (max-width:700px) {
+  .metrics { grid-template-columns:repeat(2,1fr); }
+  .table-head { display:none; }
+  .table-row { grid-template-columns:1fr; gap:6px; padding:14px 16px; }
+  .table-row>*:nth-child(2), .table-row>*:nth-child(3) { display:none; }
+  .wrap { padding:14px 12px; }
+  .page-title { font-size:24px; }
+  .btn-primary { font-size:12px; padding:9px 14px; }
+  .actions { gap:4px; }
 }
 
-.wa-preview {
-  background: #ddd6cf;
-  border-radius: 8px;
-  padding: 14px;
-  margin: 12px 0;
+/* ── OPERARIO: siempre móvil — botones grandes, fácil de tocar ── */
+#page-operario .op-wrap { 
+  max-width:100%; 
+  padding:12px;
 }
-.wa-label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: #6b5d4f;
-  margin-bottom: 8px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+#page-operario .big-btn {
+  padding:18px 16px;
+  font-size:16px;
+  min-height:60px;
 }
-.wa-bubble {
-  background: #dcf8c6;
-  border-radius: 8px 8px 0 8px;
-  padding: 10px 14px;
-  display: inline-block;
-  max-width: 88%;
+#page-operario .foto-btn {
+  padding:18px;
+  font-size:16px;
+  min-height:58px;
 }
-.wa-bubble-title { font-size: 13px; font-weight: 600; color: #1a1a1a; }
-.wa-bubble-url { font-size: 12px; color: #128c7e; word-break: break-all; }
-.wa-bubble-desc { font-size: 11px; color: #555; margin-top: 3px; }
-
-.copy-btn {
-  width: 100%;
-  background: var(--leaf);
-  color: var(--cream);
-  border: none;
-  border-radius: var(--radius);
-  padding: 12px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 8px;
-  transition: all 0.15s;
+#page-operario .completar-btn {
+  padding:18px;
+  font-size:16px;
+  min-height:58px;
 }
-.copy-btn:hover { background: var(--leaf2); }
-
-.wa-btn {
-  width: 100%;
-  background: #25d366;
-  color: #fff;
-  border: none;
-  border-radius: var(--radius);
-  padding: 12px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: all 0.15s;
+#page-operario .pata-cell {
+  font-size:14px;
 }
-.wa-btn:hover { background: #1dbd5a; }
-
-.copied-toast { font-family: var(--font-mono); font-size: 11px; color: var(--ok); text-align: center; margin-top: 8px; display: none; letter-spacing: 0.08em; }
-.copied-toast.show { display: block; }
-
-/* OPERARIO */
-.op-wrap { max-width: 440px; margin: 0 auto; padding: 16px; }
-
-.op-header {
-  background: var(--leaf);
-  border-radius: 10px;
-  padding: 18px;
-  margin-bottom: 14px;
-  position: relative;
-  overflow: hidden;
+#page-operario .op-name {
+  font-size:22px;
+}
+#page-operario .op-section {
+  border-radius:14px;
+}
+#page-operario .btn-circle {
+  width:40px;
+  height:40px;
+  font-size:20px;
 }
 
-.op-header::before {
-  content: '';
-  position: absolute;
-  top: -20px; right: -20px;
-  width: 100px; height: 100px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.04);
+/* ── CLIENTE: amplio en PC, adaptable en móvil ── */
+#page-cliente .client-wrap {
+  max-width:860px;
 }
-
-.op-campo {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(245,240,232,0.45);
-  margin-bottom: 4px;
+#page-cliente .photo-grid {
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
 }
-.op-nombre {
-  font-family: var(--font-display);
-  font-size: 20px;
-  color: var(--cream);
-  letter-spacing: -0.3px;
-  line-height: 1.2;
+#page-cliente .client-title {
+  font-size:30px;
 }
-.op-po {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--gold2);
-  margin-top: 4px;
+@media (min-width:700px) {
+  #page-cliente .client-meta-grid { grid-template-columns:repeat(3,1fr); }
+  #page-cliente .photo-grid { grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:10px; }
 }
-
-.op-temp-label {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(245,240,232,0.45);
-  text-align: right;
-}
-.op-temp-val {
-  font-family: var(--font-display);
-  font-size: 26px;
-  text-align: right;
-  line-height: 1;
-  margin-top: 2px;
-}
-.op-temp-val.ok { color: #6fcf97; }
-.op-temp-val.warn { color: #f2994a; }
-.op-temp-val.none { color: rgba(245,240,232,0.3); }
-
-.temp-alert {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  margin-top: 10px;
-  padding: 6px 10px;
-  border-radius: 4px;
-  text-align: center;
-  display: none;
-}
-.temp-alert.show { display: block; }
-.temp-alert.ok { background: rgba(111,207,151,0.15); color: #6fcf97; }
-.temp-alert.warn { background: rgba(242,153,74,0.15); color: #f2994a; }
-
-.progress-bar-bg { background: rgba(255,255,255,0.1); border-radius: 3px; height: 3px; margin-top: 14px; }
-.progress-bar-fill { background: var(--gold2); border-radius: 3px; height: 3px; transition: width 0.4s ease; }
-.progress-label {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  color: rgba(245,240,232,0.4);
-  margin-top: 5px;
-  text-transform: uppercase;
-}
-
-.op-section {
-  background: var(--cream2);
-  border: 1px solid var(--cream3);
-  border-radius: 10px;
-  padding: 16px;
-  margin-bottom: 14px;
-}
-.op-section-title {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--ink3);
-  margin-bottom: 14px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--cream3);
-}
-
-.big-btn {
-  width: 100%;
-  padding: 15px 16px;
-  border-radius: 8px;
-  border: 1.5px solid var(--cream3);
-  background: var(--cream);
-  font-family: var(--font-body);
-  font-size: 15px;
-  font-weight: 400;
-  color: var(--ink);
-  cursor: pointer;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  transition: all 0.15s;
-  text-align: left;
-}
-.big-btn:last-child { margin-bottom: 0; }
-.big-btn:hover { border-color: var(--leaf3); background: rgba(26,58,42,0.04); }
-.big-btn.done {
-  background: rgba(45,106,79,0.08);
-  border-color: rgba(45,106,79,0.3);
-  color: var(--ok);
-}
-
-.btn-icon-circle {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: var(--cream3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  font-size: 17px;
-  transition: background 0.15s;
-}
-.big-btn.done .btn-icon-circle { background: rgba(45,106,79,0.15); }
-
-.fruta-panel {
-  display: none;
-  background: rgba(26,58,42,0.05);
-  border: 1px solid rgba(26,58,42,0.12);
-  border-radius: 8px;
-  padding: 14px;
-  margin-top: 10px;
-}
-.fruta-panel.show { display: block; }
-.fruta-count {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--leaf3);
-  margin-bottom: 10px;
-}
-.fruta-thumbs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-.fruta-thumb {
-  width: 52px;
-  height: 52px;
-  background: rgba(26,58,42,0.08);
-  border: 1px solid rgba(26,58,42,0.15);
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  position: relative;
-}
-.fruta-thumb-num {
-  position: absolute;
-  bottom: 2px;
-  right: 4px;
-  font-family: var(--font-mono);
-  font-size: 9px;
-  color: var(--leaf3);
-  font-weight: 500;
-}
-.btn-add-fruta {
-  width: 100%;
-  background: var(--leaf);
-  color: var(--cream);
-  border: none;
-  border-radius: 6px;
-  padding: 10px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.btn-add-fruta:hover { background: var(--leaf2); }
-
-.pata-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 6px;
-  margin-bottom: 14px;
-}
-.pata-cell {
-  aspect-ratio: 1;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 500;
-  border: 1px solid var(--cream3);
-  background: var(--cream);
-  color: var(--ink3);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.pata-cell:hover { border-color: var(--leaf3); }
-.pata-cell.done { background: var(--ok-bg); border-color: rgba(45,106,79,0.3); color: var(--ok); }
-.pata-cell.active { background: var(--blue-bg); border-color: rgba(29,78,216,0.3); color: var(--blue); font-weight: 600; }
-
-.foto-btn {
-  width: 100%;
-  background: var(--leaf);
-  color: var(--cream);
-  border: none;
-  border-radius: 8px;
-  padding: 16px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 10px;
-  transition: all 0.15s;
-}
-.foto-btn:hover { background: var(--leaf2); }
-.foto-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-
-.completar-btn {
-  width: 100%;
-  background: transparent;
-  color: var(--ok);
-  border: 2px solid var(--ok);
-  border-radius: 8px;
-  padding: 14px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  transition: all 0.2s;
-}
-.completar-btn:hover { background: var(--ok-bg); }
-
-/* SELECTOR */
-.cont-selector {
-  background: var(--cream2);
-  border: 1px solid var(--cream3);
-  border-radius: 10px;
-  padding: 20px;
-}
-.cont-selector-title {
-  font-family: var(--font-display);
-  font-size: 22px;
-  color: var(--leaf);
-  margin-bottom: 4px;
-}
-.cont-selector-sub {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink3);
-  margin-bottom: 18px;
-}
-.cont-item {
-  border: 1.5px solid var(--cream3);
-  border-radius: 8px;
-  padding: 14px 16px;
-  margin-bottom: 8px;
-  cursor: pointer;
-  transition: all 0.15s;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--cream);
-}
-.cont-item:hover { border-color: var(--leaf3); background: rgba(26,58,42,0.03); }
-.cont-item.en-proceso { border-color: rgba(29,78,216,0.3); background: var(--blue-bg); }
-.cont-item-name { font-size: 14px; font-weight: 500; color: var(--ink); }
-.cont-item-meta { font-family: var(--font-mono); font-size: 11px; color: var(--ink3); margin-top: 3px; }
-.cont-item-badge { font-family: var(--font-mono); font-size: 10px; font-weight: 500; padding: 4px 10px; border-radius: 3px; letter-spacing: 0.06em; text-transform: uppercase; }
-
-/* CLIENTE */
-.client-wrap { max-width: 700px; margin: 0 auto; padding: 28px 20px; }
-.client-header {
-  background: var(--leaf);
-  border-radius: 10px;
-  padding: 24px 28px;
-  margin-bottom: 24px;
-  position: relative;
-  overflow: hidden;
-}
-.client-header::after {
-  content: '';
-  position: absolute;
-  bottom: -30px; right: -30px;
-  width: 140px; height: 140px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.03);
-}
-.client-po {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--gold2);
-  margin-bottom: 6px;
-}
-.client-title {
-  font-family: var(--font-display);
-  font-size: 26px;
-  color: var(--cream);
-  letter-spacing: -0.5px;
-  margin-bottom: 18px;
-}
-.client-meta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.client-meta-label {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: rgba(245,240,232,0.4);
-  margin-bottom: 4px;
-}
-.client-meta-val { font-size: 15px; font-weight: 500; color: var(--cream); }
-.client-meta-val.green { color: #6fcf97; }
-.client-meta-val.warn { color: #f2994a; }
-
-.download-all-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--leaf);
-  color: var(--cream);
-  border: none;
-  border-radius: 6px;
-  padding: 10px 16px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  margin-bottom: 20px;
-  transition: all 0.15s;
-}
-.download-all-btn:hover { background: var(--leaf2); }
-
-.gallery-section { margin-bottom: 24px; }
-.gallery-section-title {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--ink3);
-  margin-bottom: 12px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--cream3);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.gallery-badge {
-  background: var(--cream3);
-  color: var(--ink3);
-  border-radius: 3px;
-  padding: 2px 8px;
-  font-size: 9px;
-  letter-spacing: 0.1em;
-}
-.photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
-.photo-card {
-  background: var(--cream2);
-  border: 1px solid var(--cream3);
-  border-radius: 8px;
-  aspect-ratio: 4/3;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: var(--ink3);
-  font-size: 12px;
-  text-align: center;
-  gap: 8px;
-  cursor: pointer;
-  transition: all 0.15s;
-  position: relative;
-  overflow: hidden;
-}
-.photo-card:hover { border-color: var(--leaf3); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-.photo-card-icon { font-size: 26px; }
-.photo-card span { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; }
-.download-badge {
-  position: absolute;
-  top: 6px; right: 6px;
-  background: var(--leaf);
-  color: var(--cream);
-  border-radius: 4px;
-  padding: 2px 6px;
-  font-family: var(--font-mono);
-  font-size: 9px;
-  opacity: 0;
-  transition: opacity 0.15s;
-}
-.photo-card:hover .download-badge { opacity: 1; }
-
-/* TOAST */
-.global-toast {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--leaf);
-  color: var(--cream);
-  border-radius: 6px;
-  padding: 10px 20px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  display: none;
-  align-items: center;
-  gap: 8px;
-  z-index: 999;
-  white-space: nowrap;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
-  animation: slideUp 0.2s ease;
-}
-.global-toast.show { display: flex; }
-@keyframes slideUp { from { transform: translateX(-50%) translateY(10px); opacity:0; } to { transform: translateX(-50%) translateY(0); opacity:1; } }
-
-@media (max-width: 600px) {
-  .metrics { grid-template-columns: repeat(2, 1fr); }
-  .table-header, .table-row { grid-template-columns: 1fr auto; }
-  .table-header span:nth-child(n+2), .table-row > *:nth-child(n+2) { display: none; }
-  .table-header span:last-child, .table-row > *:last-child { display: flex; }
-  .client-meta-grid { grid-template-columns: repeat(2, 1fr); }
+@media (max-width:700px) {
+  #page-cliente .client-meta-grid { grid-template-columns:repeat(2,1fr); }
+  #page-cliente .client-wrap { padding:14px 12px; }
+  #page-cliente .client-title { font-size:22px; }
+  #page-cliente .photo-grid { grid-template-columns:repeat(2,1fr); gap:8px; }
+  #page-cliente .download-btns { flex-direction:column; }
+  #page-cliente .btn-download { width:100%; justify-content:center; }
 }
 </style>
 </head>
 <body>
-<!-- Firebase removed for stability -->
 
 <!-- LOGIN -->
-<div id="login-screen" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:#1a3a2a;">
-  <div style="background:#f5f0e8;border-radius:16px;padding:36px 28px;width:100%;max-width:380px;text-align:center;">
-    
-    <svg width="56" height="56" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto 14px;display:block;">
-      <rect width="64" height="64" rx="14" fill="#1a3a2a"/>
-      <path d="M32 8 C28 14 24 18 26 24 C28 28 32 27 32 27 C32 27 36 28 38 24 C40 18 36 14 32 8Z" fill="#52B788"/>
-      <circle cx="23" cy="40" r="9" fill="#C0392B"/>
-      <circle cx="41" cy="40" r="9" fill="#8E44AD"/>
-      <circle cx="32" cy="48" r="8" fill="#C0392B"/>
-    </svg>
-    
-    <div style="font-family:Georgia,serif;font-size:26px;color:#1a3a2a;margin-bottom:4px;">Encinas Track</div>
-    <div style="font-size:11px;color:#9E9B93;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:24px;">Sistema de registro de carga</div>
-
-    <div style="text-align:left;margin-bottom:6px;font-size:12px;color:#6B6860;letter-spacing:0.08em;text-transform:uppercase;">Selecciona tu rol</div>
-    <select id="rol-select" 
-      onchange="loginRole=this.value; document.getElementById('pin-label').textContent='PIN '+this.value; document.getElementById('pin-input').value='';"
-      style="width:100%;padding:12px;font-size:16px;border:2px solid #ddd6c6;border-radius:8px;background:#ece6d8;color:#1a1916;margin-bottom:16px;">
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="width:36px;height:36px;">
+        <path d="M32 4 C28 10 24 14 26 20 C28 24 32 23 32 23 C32 23 36 24 38 20 C40 14 36 10 32 4Z" fill="#52B788"/>
+        <line x1="32" y1="23" x2="32" y2="27" stroke="#52B788" stroke-width="1.5"/>
+        <ellipse cx="18" cy="37" rx="8" ry="9" fill="#E8352A"/>
+        <ellipse cx="16" cy="34" rx="2" ry="1.5" fill="#F56B5E" opacity="0.7"/>
+        <circle cx="31" cy="35" r="4" fill="#E8527A"/>
+        <circle cx="35" cy="37" r="4" fill="#E8527A"/>
+        <circle cx="29" cy="39" r="4" fill="#D4456C"/>
+        <circle cx="33" cy="40" r="4" fill="#E8527A"/>
+        <circle cx="46" cy="36" r="7" fill="#4A6FA5"/>
+        <circle cx="44" cy="33" r="2" fill="#6B8FC4" opacity="0.6"/>
+        <path d="M43 31 Q46 29 49 31" stroke="#3A5A8A" stroke-width="1" fill="none"/>
+        <circle cx="20" cy="50" r="3" fill="#3D1A5E"/>
+        <circle cx="25" cy="48" r="3" fill="#5B2D82"/>
+        <circle cx="30" cy="50" r="3" fill="#3D1A5E"/>
+        <circle cx="35" cy="48" r="3" fill="#5B2D82"/>
+        <circle cx="40" cy="50" r="3" fill="#3D1A5E"/>
+      </svg>
+    </div>
+    <div class="login-title">Encinas Track</div>
+    <div class="login-sub">Sistema de registro de carga</div>
+    <label class="lf-label" for="rol-select">Selecciona tu rol</label>
+    <select id="rol-select" class="lf-select" onchange="cambiarRol(this.value)">
       <option value="coordinador">Coordinador</option>
       <option value="operario">Operario</option>
       <option value="cliente">Cliente</option>
     </select>
-
-    <div style="text-align:left;margin-bottom:6px;font-size:12px;color:#6B6860;letter-spacing:0.08em;text-transform:uppercase;" id="pin-label">PIN coordinador</div>
-    <input id="pin-input" type="number" inputmode="numeric" max="9999" placeholder="PIN"
-      style="width:100%;padding:14px;font-size:22px;text-align:center;border:2px solid #ddd6c6;border-radius:8px;background:#ece6d8;color:#1a1916;outline:none;margin-bottom:8px;">
-    
-    <div id="login-error" style="display:none;font-size:13px;color:#991B1B;background:#FEE2E2;border-radius:6px;padding:8px 12px;margin-bottom:8px;">PIN incorrecto — intenta de nuevo</div>
-    
-    <button type="button" onclick="intentarLogin()" style="width:100%;background:#1a3a2a;color:#f5f0e8;border:none;border-radius:8px;padding:16px;font-size:16px;cursor:pointer;">Ingresar →</button>
+    <label class="lf-label" id="pin-label" for="pin-input">PIN coordinador</label>
+    <input type="number" id="pin-input" class="lf-pin" placeholder="----" maxlength="4">
+    <div id="login-error" class="lf-error">PIN incorrecto — intenta de nuevo</div>
+    <button class="lf-btn" onclick="ingresar()">Ingresar →</button>
   </div>
 </div>
 
+<!-- APP -->
 <div id="app">
-<nav class="nav">
-  <div class="nav-logo">
-    <svg width="26" height="26" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-      <rect width="64" height="64" rx="14" fill="#1a3a2a"/>
-      <path d="M32 8 C28 14 24 18 26 24 C28 28 32 27 32 27 C32 27 36 28 38 24 C40 18 36 14 32 8Z" fill="#52B788"/>
-      <line x1="32" y1="27" x2="32" y2="32" stroke="#52B788" stroke-width="2"/>
-      <circle cx="23" cy="40" r="9" fill="#C0392B"/>
-      <circle cx="41" cy="40" r="9" fill="#8E44AD"/>
-      <circle cx="32" cy="48" r="8" fill="#C0392B"/>
-    </svg>
-    <div>
-      <div class="nav-logo-text">Encinas Track</div>
-      <div class="nav-logo-sub">Control de carga · Contenedores</div>
-    </div>
-  </div>
-  <div class="nav-tab active" onclick="showPage('coordinador', this)">Coordinador</div>
-  <div class="nav-tab" onclick="showPage('operario', this)">Operario</div>
-  <div class="nav-tab" onclick="showPage('cliente', this)">Cliente</div>
-  <div class="nav-right">
-    <div id="db-status" style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.08em;padding:5px 12px;border-radius:20px;background:rgba(200,151,58,0.15);color:var(--gold2);border:1px solid rgba(200,151,58,0.3);text-transform:uppercase;">⏳ Conectando...</div>
-    <span class="nav-season">Temporada 2025 – 2026</span>
-  </div>
-</nav>
-
-<!-- COORDINADOR -->
-<div id="page-coordinador" class="page active">
-  <div class="coord-wrap">
-    <div class="page-header">
+  <nav id="main-nav">
+    <div class="nav-logo">
+      <svg class="nav-logo-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <!-- Hoja -->
+        <path d="M32 6 C29 11 25 15 27 21 C29 25 32 24 32 24 C32 24 35 25 37 21 C39 15 35 11 32 6Z" fill="#52B788"/>
+        <line x1="32" y1="24" x2="32" y2="28" stroke="#52B788" stroke-width="1.5"/>
+        <!-- Frutilla roja -->
+        <ellipse cx="20" cy="38" rx="8" ry="9" fill="#E8352A"/>
+        <ellipse cx="18" cy="35" rx="2" ry="1.5" fill="#F56B5E" opacity="0.7"/>
+        <circle cx="20" cy="38" r="1" fill="#B02218" opacity="0.4"/>
+        <!-- Frambuesa rosa -->
+        <circle cx="32" cy="36" r="4" fill="#E8527A"/>
+        <circle cx="36" cy="38" r="4" fill="#E8527A"/>
+        <circle cx="30" cy="40" r="4" fill="#D4456C"/>
+        <circle cx="34" cy="41" r="4" fill="#E8527A"/>
+        <!-- Arándano azul -->
+        <circle cx="46" cy="37" r="7" fill="#4A6FA5"/>
+        <circle cx="44" cy="34" r="2" fill="#6B8FC4" opacity="0.6"/>
+        <path d="M43 32 Q46 30 49 32" stroke="#3A5A8A" stroke-width="1" fill="none"/>
+        <!-- Mora -->
+        <circle cx="22" cy="50" r="3" fill="#3D1A5E"/>
+        <circle cx="27" cy="48" r="3" fill="#5B2D82"/>
+        <circle cx="32" cy="50" r="3" fill="#3D1A5E"/>
+        <circle cx="37" cy="48" r="3" fill="#5B2D82"/>
+        <circle cx="42" cy="50" r="3" fill="#3D1A5E"/>
+        <circle cx="24.5" cy="46" r="3" fill="#5B2D82"/>
+        <circle cx="29.5" cy="44" r="3" fill="#3D1A5E"/>
+        <circle cx="34.5" cy="46" r="3" fill="#5B2D82"/>
+        <circle cx="39.5" cy="44" r="3" fill="#3D1A5E"/>
+      </svg>
       <div>
-        <div class="page-title">Panel de coordinador</div>
-        <div class="page-sub">Temporada 2025 – 2026 · Control de carga · Contenedores</div>
+        <div class="nav-logo-text">Encinas Track</div>
+        <div class="nav-logo-sub">Control de carga · Contenedores</div>
       </div>
-      <button class="btn-primary" onclick="openModal('nuevo')">＋ Nuevo contenedor</button>
     </div>
-    <div class="metrics">
-      <div class="metric"><div class="metric-label">Total temporada</div><div class="metric-val" id="m-total">—</div></div>
-      <div class="metric"><div class="metric-label">Completados</div><div class="metric-val green" id="m-comp">—</div></div>
-      <div class="metric"><div class="metric-label">En proceso</div><div class="metric-val blue" id="m-prog">—</div></div>
-      <div class="metric"><div class="metric-label">Fotos totales</div><div class="metric-val" id="m-fotos">—</div></div>
-    </div>
-    <div class="search-section">
-      <div class="search-label">🔍 Buscador — PO · N° contenedor · Cliente</div>
-      <div class="search-row">
-        <input class="search-input" id="search-input" placeholder="Ej: L70045 — 20/50 — Pontiberry..." oninput="buscar(this.value)">
-        <button class="search-clear" onclick="clearSearch()">✕</button>
+    <div class="nav-tab active" id="tab-coord" onclick="irA('coordinador',this)">Coordinador</div>
+    <div class="nav-tab" id="tab-op" onclick="irA('operario',this)">Operario</div>
+    <div class="nav-tab" id="tab-cli" onclick="irA('cliente',this)">Cliente</div>
+    <div class="nav-right" style="display:flex;align-items:center;gap:10px;"><span id="db-status" style="font-family:var(--mono);font-size:10px;letter-spacing:0.08em;color:rgba(245,240,232,0.4);text-transform:uppercase;">⏳ Conectando...</span><span class="nav-season">Temporada 2025 – 2026</span></div>
+  </nav>
+
+  <!-- COORDINADOR -->
+  <div id="page-coordinador" class="page active">
+    <div class="wrap">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Panel coordinador</div>
+          <div class="page-sub">Temporada 2025 – 2026 · Control de carga · Contenedores</div>
+        </div>
+        <button class="btn-primary" onclick="abrirModal('nuevo')">＋ Nuevo contenedor</button>
       </div>
-      <div class="search-results" id="search-results"></div>
-      <p id="search-nores" style="display:none;font-family:var(--font-mono);font-size:11px;color:var(--ink3);margin-top:10px;text-align:center;letter-spacing:0.08em;">Sin resultados para esa búsqueda.</p>
-    </div>
-    <div class="table-card">
-      <div class="table-header">
-        <span>Cliente / Contenedor</span><span>Tipo carga</span><span>Temperatura</span><span>Estado</span><span>Acciones</span>
+      <div class="metrics">
+        <div class="metric"><div class="metric-label">Total temporada</div><div class="metric-val" id="m-total">0</div></div>
+        <div class="metric"><div class="metric-label">Completados</div><div class="metric-val green" id="m-comp">0</div></div>
+        <div class="metric"><div class="metric-label">En proceso</div><div class="metric-val blue" id="m-proc">0</div></div>
+        <div class="metric"><div class="metric-label">Fotos totales</div><div class="metric-val" id="m-fotos">0</div></div>
       </div>
-      <div id="tabla-body"></div>
+      <div class="search-box">
+        <div class="search-label">🔍 Buscador — PO · N° contenedor · Cliente</div>
+        <div class="search-row">
+          <input type="text" id="search-inp" class="search-input" placeholder="Ej: L70045 — 20/50 — Pontiberry..." oninput="buscar(this.value)">
+          <button class="search-clear" onclick="limpiarBusqueda()">✕</button>
+        </div>
+        <div id="search-results"></div>
+        <div id="search-nores" style="display:none;font-family:var(--mono);font-size:11px;color:var(--ink3);margin-top:8px;text-align:center;">Sin resultados.</div>
+      </div>
+      <div class="table-card">
+        <div class="table-head">
+          <span>Cliente / Contenedor</span><span>Tipo carga</span><span>Temperatura</span><span>Estado</span><span>Acciones</span>
+        </div>
+        <div id="tabla-body"></div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- OPERARIO -->
-<div id="page-operario" class="page">
-  <div class="op-wrap">
-    <div id="op-selector-view">
-      <div class="cont-selector">
-        <div class="cont-selector-title">Contenedores activos</div>
-        <div class="cont-selector-sub">Selecciona el contenedor que vas a cargar</div>
-        <div id="op-cont-list"></div>
+  <!-- OPERARIO -->
+  <div id="page-operario" class="page">
+    <div class="op-wrap">
+      <div id="op-selector">
+        <div class="cont-selector">
+          <div class="cont-selector-title">Contenedores activos</div>
+          <div class="cont-selector-sub">Selecciona el contenedor a cargar</div>
+          <div id="op-list"></div>
+        </div>
+        <button class="cambiar-rol-btn" style="display:block;margin-top:16px;" onclick="cerrarSesion()">⏏ Cambiar rol</button>
       </div>
-    </div>
-    <div id="op-carga-view" style="display:none;">
-      <div class="op-header">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-          <div>
-            <div class="op-campo">Campo / Cliente</div>
-            <div class="op-nombre" id="op-nombre-label">—</div>
-            <div class="op-po" id="op-po-label">—</div>
+      <div id="op-carga" style="display:none;">
+        <div class="op-header">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div>
+              <div class="op-field-label">Campo / Cliente</div>
+              <div class="op-name" id="op-name">—</div>
+              <div class="op-po" id="op-po">—</div>
+            </div>
+            <div>
+              <div class="op-field-label" style="text-align:right;">Temp. inicial</div>
+              <div class="op-temp-val none" id="op-temp">—</div>
+            </div>
           </div>
-          <div>
-            <div class="op-temp-label">Temp. inicial</div>
-            <div class="op-temp-val none" id="op-temp-val">—</div>
+          <div class="temp-alert" id="op-temp-alert"></div>
+          <div class="prog-bg"><div class="prog-fill" id="op-prog" style="width:0%"></div></div>
+          <div class="prog-label" id="op-prog-label">0 de 24 patas</div>
+        </div>
+        <div class="op-section">
+          <div class="op-section-title">Etapas iniciales</div>
+          <button class="big-btn" id="btn-temp" onclick="tomarFoto('temp')"><div class="btn-circle">🌡️</div><span id="lbl-temp">Temperatura inicial</span></button>
+          <button class="big-btn" id="btn-vacio" onclick="tomarFoto('vacio')"><div class="btn-circle">📦</div><span id="lbl-vacio">Contenedor vacío</span></button>
+          <button class="big-btn" id="btn-fruta" onclick="toggleFruta()">
+            <div class="btn-circle">🍓</div>
+            <span id="lbl-fruta">Fotos de fruta</span>
+            <span id="fruta-badge" style="margin-left:auto;font-family:var(--mono);font-size:10px;background:rgba(45,106,79,0.12);color:var(--ok);border-radius:3px;padding:2px 8px;display:none;"></span>
+          </button>
+          <div class="fruta-panel" id="fruta-panel">
+            <div class="fruta-count" id="fruta-count">0 fotos</div>
+            <div class="fruta-thumbs" id="fruta-thumbs"></div>
+            <button class="btn-add-fruta" onclick="tomarFoto('fruta')">📷 Agregar foto de fruta</button>
           </div>
         </div>
-        <div class="temp-alert" id="temp-alert"></div>
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" id="op-progress-fill" style="width:0%"></div>
+        <div class="op-section">
+          <div class="op-section-title">Patas de carga</div>
+          <div class="pata-grid" id="pata-grid"></div>
+          <button class="foto-btn" id="foto-btn" onclick="tomarFoto('pata')">📷 Fotografiar pata <span id="pata-num">1</span></button>
+          <button class="completar-btn" onclick="completarCarga()">✅ Carga completada</button>
         </div>
-        <div class="progress-label" id="op-progress-label">0 de 24 patas registradas</div>
-      </div>
-
-      <div class="op-section">
-        <div class="op-section-title">Etapas iniciales</div>
-        <button class="big-btn" id="btn-temp" onclick="toggleEtapa('temp')">
-          <div class="btn-icon-circle">🌡️</div><span id="lbl-temp">Temperatura inicial</span>
-        </button>
-        <button class="big-btn" id="btn-vacio" onclick="toggleEtapa('vacio')">
-          <div class="btn-icon-circle">📦</div><span id="lbl-vacio">Contenedor vacío</span>
-        </button>
-        <button class="big-btn" id="btn-fruta" onclick="toggleFrutaPanel()">
-          <div class="btn-icon-circle">🍓</div>
-          <span id="lbl-fruta">Fotos de fruta</span>
-          <span id="fruta-count-badge" style="margin-left:auto;font-family:var(--font-mono);font-size:10px;background:rgba(26,58,42,0.1);color:var(--leaf3);border-radius:3px;padding:2px 8px;display:none;"></span>
-        </button>
-        <div class="fruta-panel" id="fruta-panel">
-          <div class="fruta-count" id="fruta-count-label">0 fotos agregadas</div>
-          <div class="fruta-thumbs" id="fruta-thumbs"></div>
-          <button class="btn-add-fruta" onclick="agregarFotoFruta()">📷 Agregar foto de fruta</button>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button class="btn-ghost" style="flex:1;" onclick="volverOp()">← Volver</button>
+          <button class="cambiar-rol-btn" onclick="cerrarSesion()">⏏ Cambiar rol</button>
         </div>
       </div>
-
-      <div class="op-section">
-        <div class="op-section-title">Patas de carga</div>
-        <div class="pata-grid" id="pata-grid"></div>
-        <button class="foto-btn" id="foto-btn" onclick="agregarFotoPata()">
-          📷 Fotografiar pata <span id="pata-next-num">1</span>
-        </button>
-        <button class="completar-btn" onclick="completarCarga()">✅ Carga completada</button>
-      </div>
-      <button class="btn-ghost" style="width:100%;margin-top:4px;" onclick="volverSelector()">← Volver</button>
-      <button onclick="cerrarSesion()" style="width:100%;margin-top:8px;background:transparent;border:none;font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);cursor:pointer;padding:8px;">⏏ Cambiar rol</button>
     </div>
   </div>
-</div>
 
-<!-- CLIENTE -->
-<div id="page-cliente" class="page">
-  <div class="client-wrap">
-    <div id="client-selector" style="background:var(--cream2);border:1px solid var(--cream3);border-radius:10px;padding:20px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-        <div style="font-family:var(--font-display);font-size:22px;color:var(--leaf);">Galería del cliente</div>
-        <button onclick="cerrarSesion()" style="background:transparent;border:none;font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);cursor:pointer;padding:4px 0;">⏏ Cambiar rol</button>
-      </div>
-      <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:18px;">Selecciona un contenedor para ver las fotos</div>
-      <div id="client-cont-list"></div>
-    </div>
-    <div id="client-gallery" style="display:none;">
-      <div class="client-header">
-        <div class="client-po" id="cl-po-label"></div>
-        <div class="client-title" id="cl-title"></div>
-        <div class="client-meta-grid">
-          <div><div class="client-meta-label">Calidad</div><div class="client-meta-val" id="cl-cal"></div></div>
-          <div><div class="client-meta-label">Temperatura</div><div class="client-meta-val" id="cl-temp"></div></div>
-          <div><div class="client-meta-label">Fecha carga</div><div class="client-meta-val" id="cl-fecha"></div></div>
+  <!-- CLIENTE -->
+  <div id="page-cliente" class="page">
+    <div class="client-wrap">
+      <div id="cli-selector">
+        <div class="cont-selector">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+            <div class="cont-selector-title">Mis contenedores</div>
+            <button class="cambiar-rol-btn" onclick="cerrarSesion()">⏏ Salir</button>
+          </div>
+          <div class="cont-selector-sub">Selecciona un contenedor para ver las fotos</div>
+          <div id="cli-list"></div>
         </div>
       </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
-      <button class="download-all-btn" style="margin-bottom:0;" onclick="toast('⬇ Descargando fotos...')">⬇ Descargar todas las fotos</button>
-      <button class="download-all-btn" style="margin-bottom:0;background:var(--berry);border-color:var(--berry);" onclick="descargarPDF()">📄 Descargar como PDF</button>
-    </div>
-      <div id="cl-etapas-section" class="gallery-section">
-        <div class="gallery-section-title">Etapas iniciales <span class="gallery-badge" id="cl-etapas-count"></span></div>
-        <div class="photo-grid" id="cl-etapas-grid"></div>
-      </div>
-      <div id="cl-patas-container"></div>
-      <div style="display:flex;gap:8px;margin-top:12px;">
-        <button class="btn-ghost" onclick="document.getElementById('client-selector').style.display='block';document.getElementById('client-gallery').style.display='none';">← Volver</button>
-        <button onclick="cerrarSesion()" style="background:transparent;border:none;font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);cursor:pointer;padding:8px;">⏏ Cambiar rol</button>
+      <div id="cli-galeria" style="display:none;">
+        <div class="client-header">
+          <div class="client-po" id="cli-po"></div>
+          <div class="client-title" id="cli-title"></div>
+          <div class="client-meta-grid">
+            <div><div class="client-meta-label">Calidad</div><div class="client-meta-val" id="cli-cal"></div></div>
+            <div><div class="client-meta-label">Temperatura</div><div class="client-meta-val" id="cli-temp"></div></div>
+            <div><div class="client-meta-label">Fecha carga</div><div class="client-meta-val" id="cli-fecha"></div></div>
+          </div>
+        </div>
+        <div class="download-btns">
+          <button class="btn-download" onclick="descargarTodasFotos()">⬇ Todas las fotos</button>
+          <button class="btn-download btn-pdf" onclick="descargarPDF()">📄 Descargar PDF</button>
+        </div>
+        <div id="cli-etapas" class="gallery-section"></div>
+        <div id="cli-patas" class="gallery-section"></div>
+        <div style="display:flex;gap:8px;margin-top:12px;">
+          <button class="btn-ghost" onclick="document.getElementById('cli-selector').style.display='block';document.getElementById('cli-galeria').style.display='none';">← Volver</button>
+          <button class="cambiar-rol-btn" onclick="cerrarSesion()">⏏ Salir</button>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-
-<!-- MODAL GUÍAS -->
-<div class="overlay" id="modal-guias">
-  <div class="modal">
-    <div class="modal-title">Adjuntar guías</div>
-    <div class="modal-sub" id="guias-modal-sub">Documentos de despacho del contenedor</div>
-
-    <!-- Slot Guía Las Encinas -->
-    <div style="margin-bottom:12px;">
-      <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px;">Guía Las Encinas</div>
-      <div id="slot-encinas-preview" style="display:none;align-items:center;gap:10px;padding:10px 14px;background:var(--cream2);border:1px solid var(--cream3);border-radius:6px;margin-bottom:6px;">
-        <span id="slot-encinas-icon" style="font-size:20px;">📄</span>
-        <div style="flex:1;">
-          <div style="font-size:13px;font-weight:500;color:var(--ink);">Guía Las Encinas</div>
-          <div id="slot-encinas-tipo" style="font-family:var(--font-mono);font-size:10px;color:var(--ink3);text-transform:uppercase;letter-spacing:0.08em;"></div>
-        </div>
-        <button onclick="eliminarSlot('encinas')" style="background:none;border:none;color:var(--ink3);cursor:pointer;font-size:16px;padding:4px;">✕</button>
-      </div>
-      <div id="slot-encinas-drop" style="border:2px dashed var(--cream3);border-radius:8px;padding:18px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--cream2);"
-        onclick="triggerSlotInput('encinas')"
-        ondragover="event.preventDefault();this.style.borderColor='var(--leaf3)';this.style.background='rgba(26,58,42,0.05)'"
-        ondragleave="this.style.borderColor='var(--cream3)';this.style.background='var(--cream2)'"
-        ondrop="handleSlotDrop(event,'encinas')">
-        <div style="font-size:22px;margin-bottom:4px;">📎</div>
-        <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);">Arrastra o toca para subir</div>
-        <div style="font-family:var(--font-mono);font-size:9px;color:var(--ink3);margin-top:3px;opacity:0.7;">PDF · JPG · PNG</div>
-      </div>
-      <input type="file" id="input-encinas" accept=".pdf,image/*" style="display:none" onchange="handleSlotFile(this.files,'encinas')">
-    </div>
-
-    <!-- Slot Guía Cliente -->
-    <div style="margin-bottom:16px;">
-      <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px;">Guía Cliente</div>
-      <div id="slot-cliente-preview" style="display:none;align-items:center;gap:10px;padding:10px 14px;background:var(--cream2);border:1px solid var(--cream3);border-radius:6px;margin-bottom:6px;">
-        <span id="slot-cliente-icon" style="font-size:20px;">📄</span>
-        <div style="flex:1;">
-          <div style="font-size:13px;font-weight:500;color:var(--ink);">Guía Cliente</div>
-          <div id="slot-cliente-tipo" style="font-family:var(--font-mono);font-size:10px;color:var(--ink3);text-transform:uppercase;letter-spacing:0.08em;"></div>
-        </div>
-        <button onclick="eliminarSlot('cliente')" style="background:none;border:none;color:var(--ink3);cursor:pointer;font-size:16px;padding:4px;">✕</button>
-      </div>
-      <div id="slot-cliente-drop" style="border:2px dashed var(--cream3);border-radius:8px;padding:18px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--cream2);"
-        onclick="triggerSlotInput('cliente')"
-        ondragover="event.preventDefault();this.style.borderColor='var(--leaf3)';this.style.background='rgba(26,58,42,0.05)'"
-        ondragleave="this.style.borderColor='var(--cream3)';this.style.background='var(--cream2)'"
-        ondrop="handleSlotDrop(event,'cliente')">
-        <div style="font-size:22px;margin-bottom:4px;">📎</div>
-        <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);">Arrastra o toca para subir</div>
-        <div style="font-family:var(--font-mono);font-size:9px;color:var(--ink3);margin-top:3px;opacity:0.7;">PDF · JPG · PNG</div>
-      </div>
-      <input type="file" id="input-cliente" accept=".pdf,image/*" style="display:none" onchange="handleSlotFile(this.files,'cliente')">
-    </div>
-
-    <div class="modal-actions">
-      <button class="btn-ghost" onclick="closeModal('guias')">Cerrar</button>
-    </div>
-  </div>
-</div>
-
-</div><!-- /app -->
-
-<!-- MODAL NUEVO -->
+<!-- MODALES -->
 <div class="overlay" id="modal-nuevo">
   <div class="modal">
     <div class="modal-title">Nuevo contenedor</div>
-    <div class="modal-sub">El operario podrá ver este contenedor al iniciar sesión</div>
+    <div class="modal-sub">El operario verá este contenedor al iniciar sesión</div>
     <div class="field">
       <label>Campo / Cliente</label>
-      <select id="f-cliente" onchange="handleClienteChange(this.value)"><option value="">Seleccionar campo...</option></select>
+      <select id="f-cliente" onchange="cambiarCliente(this.value)"><option value="">Seleccionar campo...</option></select>
       <div class="new-client-box" id="new-client-box">
-        <label>Nombre del nuevo cliente</label>
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ok);margin-bottom:8px;">Nuevo cliente</div>
         <div class="new-client-row">
-          <input type="text" id="new-client-input" placeholder="Ej: Santa Ana, El Retiro...">
+          <input type="text" id="new-cli-nombre" placeholder="Nombre del campo">
+          <input type="text" id="new-cli-pin" placeholder="PIN" maxlength="4" style="width:80px;">
+          <button class="btn-add-cli" onclick="agregarCliente()">+</button>
         </div>
-        <label style="margin-top:8px;">PIN de acceso para el cliente</label>
-        <div class="new-client-row" style="margin-top:4px;">
-          <input type="text" id="new-client-pin" placeholder="Ej: 4455" maxlength="4" style="letter-spacing:6px;font-family:var(--font-mono);">
-          <button class="btn-add-client" onclick="agregarCliente()">Agregar</button>
-        </div>
-        <div class="client-added" id="client-added">✓ <span id="client-added-nombre"></span> agregado</div>
+        <div class="client-ok" id="client-ok"></div>
       </div>
     </div>
-    <div class="field">
-      <label>N° de contenedor <span class="field-optional">ej: 20/50</span></label>
-      <input type="text" id="f-num" placeholder="Ej: 20/50">
-    </div>
-    <div class="field">
-      <label>PO del cliente <span class="field-optional">— opcional</span></label>
-      <input type="text" id="f-po" placeholder="Dejar vacío si no aplica">
-    </div>
-    <div class="field">
-      <label>Calidad</label>
-      <select id="f-cal">
-        <option value="">Seleccionar calidad...</option>
-        <option>IQF</option><option>B</option><option>C</option><option>JUGO</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Tipo de carga</label>
-      <select id="f-tipo">
-        <option value="">Seleccionar tipo...</option>
-        <option>A piso</option><option>Pallet</option><option>Bins</option><option>Rejillas</option>
-      </select>
-    </div>
-    <div style="background:var(--cream2);border:1px solid var(--cream3);border-radius:var(--radius);padding:14px;margin-bottom:16px;">
-      <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px;">N° Guías <span style="font-weight:400;opacity:0.6;">— opcional, se pueden agregar después</span></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div>
-          <label style="display:block;font-family:var(--font-mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:5px;">Guía Las Encinas</label>
-          <input type="text" id="f-guia-encinas" placeholder="Ej: GE-2025-001" style="width:100%;border:1.5px solid var(--cream3);border-radius:var(--radius);padding:8px 10px;font-size:13px;background:var(--cream);color:var(--ink);outline:none;">
-        </div>
-        <div>
-          <label style="display:block;font-family:var(--font-mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:5px;">Guía Cliente</label>
-          <input type="text" id="f-guia-cliente" placeholder="Ej: GC-4521" style="width:100%;border:1.5px solid var(--cream3);border-radius:var(--radius);padding:8px 10px;font-size:13px;background:var(--cream);color:var(--ink);outline:none;">
-        </div>
+    <div class="field"><label>N° contenedor <span class="field-opt">ej: 20/50</span></label><input type="text" id="f-num" placeholder="Ej: 20/50"></div>
+    <div class="field"><label>PO del cliente <span class="field-opt">— opcional</span></label><input type="text" id="f-po" placeholder="Dejar vacío si no aplica"></div>
+    <div class="field"><label>Calidad</label><select id="f-cal"><option value="">Seleccionar...</option><option>IQF</option><option>B</option><option>C</option><option>JUGO</option></select></div>
+    <div class="field"><label>Tipo de carga</label><select id="f-tipo"><option value="">Seleccionar...</option><option>A piso</option><option>Pallet</option><option>Bins</option><option>Rejillas</option></select></div>
+    <div style="background:var(--cream2);border:1px solid var(--cream3);border-radius:var(--r);padding:12px;margin-bottom:14px;">
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px;">N° Guías — opcional</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div><label style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:4px;">Guía Las Encinas</label><input type="text" id="f-guia-enc" placeholder="Ej: GE-001" style="width:100%;padding:7px 10px;border:1px solid var(--cream3);border-radius:5px;font-size:13px;font-family:var(--body);background:var(--cream);outline:none;"></div>
+        <div><label style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:4px;">Guía Cliente</label><input type="text" id="f-guia-cli" placeholder="Ej: GC-4521" style="width:100%;padding:7px 10px;border:1px solid var(--cream3);border-radius:5px;font-size:13px;font-family:var(--body);background:var(--cream);outline:none;"></div>
       </div>
     </div>
-    <div class="field">
-      <label>Fecha de carga</label>
-      <input type="date" id="f-fecha">
-    </div>
+    <div class="field"><label>Fecha de carga</label><input type="date" id="f-fecha"></div>
     <div class="modal-actions">
-      <button class="btn-ghost" onclick="closeModal('nuevo')">Cancelar</button>
+      <button class="btn-ghost" onclick="cerrarModal('nuevo')">Cancelar</button>
       <button class="btn-primary" onclick="crearContenedor()">Crear contenedor →</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL LINK -->
 <div class="overlay" id="modal-link">
   <div class="modal">
     <div class="modal-title">Compartir con cliente</div>
-    <div class="modal-sub" id="link-modal-sub"></div>
-    <div style="background:var(--cream2);border:1px solid var(--cream3);border-radius:var(--radius);padding:14px;margin-bottom:14px;">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div><div style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:3px;">Cliente</div><div style="font-size:13px;font-weight:500;" id="link-cliente"></div></div>
-        <div><div style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:3px;">N° contenedor</div><div style="font-size:13px;font-weight:500;" id="link-num"></div></div>
-        <div><div style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:3px;">PO</div><div style="font-family:var(--font-mono);font-size:13px;font-weight:500;" id="link-po"></div></div>
-        <div><div style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:3px;">Calidad</div><div style="font-size:13px;font-weight:500;" id="link-cal"></div></div>
+    <div class="modal-sub" id="link-sub"></div>
+    <div style="background:var(--cream2);border:1px solid var(--cream3);border-radius:var(--r);padding:12px;margin-bottom:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div><div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:2px;">Cliente</div><div style="font-size:14px;font-weight:600;" id="link-cli"></div></div>
+        <div><div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:2px;">N° contenedor</div><div style="font-size:14px;font-weight:600;" id="link-num"></div></div>
+        <div><div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:2px;">PO</div><div style="font-family:var(--mono);font-size:13px;font-weight:500;" id="link-po"></div></div>
+        <div><div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:2px;">Calidad</div><div style="font-size:14px;font-weight:600;" id="link-cal"></div></div>
       </div>
     </div>
     <div class="link-box">
@@ -1617,255 +606,662 @@ body {
       <div class="link-url" id="link-url"></div>
     </div>
     <div class="wa-preview">
-      <div class="wa-label">📱 Así llega a WhatsApp</div>
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#6b5d4f;margin-bottom:8px;">📱 Así llega a WhatsApp</div>
       <div class="wa-bubble">
         <div class="wa-bubble-title" id="wa-title"></div>
         <div class="wa-bubble-url" id="wa-url"></div>
         <div class="wa-bubble-desc" id="wa-desc"></div>
       </div>
     </div>
-    <button class="copy-btn" onclick="copiarLink()">📋 Copiar link</button>
-    <button class="wa-btn" onclick="abrirWA()">💬 Abrir WhatsApp</button>
-    <div class="copied-toast" id="copied-toast">✓ Link copiado — listo para pegar en WhatsApp</div>
-    <div class="modal-actions" style="margin-top:16px;">
-      <button class="btn-ghost" onclick="closeModal('link')">Cerrar</button>
-    </div>
+    <button class="btn-copy" onclick="copiarLink()">📋 Copiar link</button>
+    <button class="btn-wa" onclick="abrirWA()">💬 Abrir WhatsApp</button>
+    <div class="copied-ok" id="copied-ok">✓ Link copiado — listo para pegar</div>
+    <div class="modal-actions"><button class="btn-ghost" onclick="cerrarModal('link')">Cerrar</button></div>
   </div>
 </div>
 
-<div class="global-toast" id="global-toast"></div>
+<div class="overlay" id="modal-guias">
+  <div class="modal">
+    <div class="modal-title">Adjuntar guías</div>
+    <div class="modal-sub" id="guias-sub"></div>
+    <div class="slot-box">
+      <div class="slot-label">Guía Las Encinas</div>
+      <div class="slot-preview" id="slot-enc-prev">
+        <span id="slot-enc-icon" style="font-size:20px;">📄</span>
+        <div style="flex:1;"><div style="font-size:14px;font-weight:600;">Guía Las Encinas</div><div id="slot-enc-tipo" style="font-family:var(--mono);font-size:10px;color:var(--ink3);"></div></div>
+        <button onclick="eliminarSlot('enc')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--ink3);">✕</button>
+      </div>
+      <div class="slot-drop" id="slot-enc-drop" onclick="seleccionarGuia('enc')">
+        <div style="font-size:26px;">📎</div>
+        <div class="slot-drop-text">Toca para subir PDF o foto</div>
+      </div>
+      <input type="file" id="input-enc" accept=".pdf,image/*" style="display:none" onchange="procesarGuia(this.files,'enc')">
+    </div>
+    <div class="slot-box">
+      <div class="slot-label">Guía Cliente</div>
+      <div class="slot-preview" id="slot-cli-prev">
+        <span id="slot-cli-icon" style="font-size:20px;">📄</span>
+        <div style="flex:1;"><div style="font-size:14px;font-weight:600;">Guía Cliente</div><div id="slot-cli-tipo" style="font-family:var(--mono);font-size:10px;color:var(--ink3);"></div></div>
+        <button onclick="eliminarSlot('cli')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--ink3);">✕</button>
+      </div>
+      <div class="slot-drop" id="slot-cli-drop" onclick="seleccionarGuia('cli')">
+        <div style="font-size:26px;">📎</div>
+        <div class="slot-drop-text">Toca para subir PDF o foto</div>
+      </div>
+      <input type="file" id="input-cli" accept=".pdf,image/*" style="display:none" onchange="procesarGuia(this.files,'cli')">
+    </div>
+    <div class="modal-actions"><button class="btn-ghost" onclick="cerrarModal('guias')">Cerrar</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 
 <script>
 
-let clientes = [{nombre:'Pontiberry', pin:'3333'}, {nombre:'Los Espinos', pin:'3333'}];
-let clienteActual = null; // cliente logueado
-let contenedores = [
-  {id:1,cliente:'Pontiberry',num:'50/50',po:'L70089',cal:'IQF',tipo:'Pallet',fecha:'12 jun 2026',tempNum:-18.5,temp:'-18.5°C',tempOk:true,fotos:44,estado:'completo',patas:24,etapas:{temp:true,vacio:true},frutaFotos:3,guiaEncinasNum:'GE-2025-001',guiaClienteNum:'GC-4521',guias:{encinas:{nombre:'Guía Las Encinas',tipo:'pdf'},cliente:{nombre:'Guía Cliente',tipo:'pdf'}}},
-  {id:2,cliente:'Pontiberry',num:'49/50',po:'L70078',cal:'B',tipo:'A piso',fecha:'10 jun 2026',tempNum:-18.2,temp:'-18.2°C',tempOk:true,fotos:41,estado:'completo',patas:24,etapas:{temp:true,vacio:true},frutaFotos:2,guiaEncinasNum:'GE-2025-002',guiaClienteNum:'GC-4489',guias:{encinas:null,cliente:null}},
-  {id:3,cliente:'Pontiberry',num:'20/50',po:'L70045',cal:'IQF',tipo:'Bins',fecha:'28 may 2026',tempNum:-18.4,temp:'-18.4°C',tempOk:true,fotos:27,estado:'proceso',patas:11,etapas:{temp:true,vacio:true},frutaFotos:2,guiaEncinasNum:'',guiaClienteNum:'',guias:{encinas:null,cliente:null}},
-  {id:4,cliente:'Los Espinos',num:'40/60',po:'V21034',cal:'C',tipo:'Rejillas',fecha:'5 jun 2026',tempNum:-18.7,temp:'-18.7°C',tempOk:true,fotos:39,estado:'completo',patas:24,etapas:{temp:true,vacio:true},frutaFotos:4,guiaEncinasNum:'GE-2025-003',guiaClienteNum:'',guias:{encinas:{nombre:'Guía Las Encinas',tipo:'img'},cliente:null}},
-  {id:5,cliente:'Los Espinos',num:'35/60',po:'V21018',cal:'JUGO',tipo:'A piso',fecha:'2 jun 2026',tempNum:-10.5,temp:'-10.5°C',tempOk:false,fotos:40,estado:'completo',patas:24,etapas:{temp:true,vacio:true},frutaFotos:2,guiaEncinasNum:'',guiaClienteNum:'',guias:{encinas:null,cliente:null}},
-  {id:6,cliente:'Los Espinos',num:'10/60',po:'',cal:'B',tipo:'Pallet',fecha:'20 may 2026',tempNum:-18.9,temp:'-18.9°C',tempOk:true,fotos:43,estado:'completo',patas:24,etapas:{temp:true,vacio:true},frutaFotos:3,guiaEncinasNum:'GE-2025-005',guiaClienteNum:'GC-4601',guias:{encinas:null,cliente:null}},
-];
-let currentContId = null;
+// ===== SUPABASE =====
+var SUPA_URL = "https://hpvtrnwsobvwfhgdyykj.supabase.co";
+var SUPA_KEY = "sb_publishable_g4FQHrJsNsFVEJHtDkfTKg_XcXnRsrM";
 
-function tempEsOk(num) { return num <= -12; }
-
-function showPage(page, el) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('page-' + page).classList.add('active');
-  el.classList.add('active');
-  if (page === 'operario') renderOperario();
-  if (page === 'cliente') renderClienteSelector();
+function supaHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    'apikey': SUPA_KEY,
+    'Authorization': 'Bearer ' + SUPA_KEY
+  };
 }
 
+function supaFetch(path, method, body) {
+  var opts = { method: method || 'GET', headers: supaHeaders() };
+  if (body) opts.body = JSON.stringify(body);
+  return fetch(SUPA_URL + '/rest/v1/' + path, opts);
+}
+
+// Convert DB row to app object
+function dbToApp(r) {
+  return {
+    id: r.id,
+    cliente: r.cliente || '',
+    num: r.num || '',
+    po: r.po || '',
+    cal: r.cal || '',
+    tipo: r.tipo || '',
+    fecha: r.fecha || '',
+    guiaEnc: r.guia_enc || '',
+    guiaCli: r.guia_cli || '',
+    temp: r.temp || '—',
+    tempOk: r.temp_ok || false,
+    fotos: r.fotos || 0,
+    estado: r.estado || 'proceso',
+    patas: r.patas || 0,
+    etapas: { temp: r.etapa_temp || false, vacio: r.etapa_vacio || false },
+    frutaFotos: r.fruta_fotos || 0,
+    fotoUrls: { temp: r.foto_temp || null, vacio: r.foto_vacio || null },
+    frutaUrls: r.fruta_urls || [],
+    pataUrls: r.pata_urls || [],
+    guias: {
+      enc: r.guias_enc_tipo ? { tipo: r.guias_enc_tipo } : null,
+      cli: r.guias_cli_tipo ? { tipo: r.guias_cli_tipo } : null
+    }
+  };
+}
+
+// Convert app object to DB row
+function appToDb(c) {
+  return {
+    id: String(c.id),
+    cliente: c.cliente,
+    num: c.num,
+    po: c.po || null,
+    cal: c.cal || null,
+    tipo: c.tipo || null,
+    fecha: c.fecha || null,
+    guia_enc: c.guiaEnc || null,
+    guia_cli: c.guiaCli || null,
+    temp: c.temp || '—',
+    temp_ok: c.tempOk || false,
+    fotos: c.fotos || 0,
+    estado: c.estado || 'proceso',
+    patas: c.patas || 0,
+    etapa_temp: c.etapas ? c.etapas.temp : false,
+    etapa_vacio: c.etapas ? c.etapas.vacio : false,
+    fruta_fotos: c.frutaFotos || 0,
+    foto_temp: c.fotoUrls ? c.fotoUrls.temp : null,
+    foto_vacio: c.fotoUrls ? c.fotoUrls.vacio : null,
+    fruta_urls: c.frutaUrls || [],
+    pata_urls: c.pataUrls || [],
+    guias_enc_tipo: c.guias && c.guias.enc ? c.guias.enc.tipo : null,
+    guias_cli_tipo: c.guias && c.guias.cli ? c.guias.cli.tipo : null
+  };
+}
+
+function guardarContenedor(c) {
+  var row = appToDb(c);
+  supaFetch('contenedores?id=eq.' + row.id, 'GET')
+    .then(function(r) { return r.json(); })
+    .then(function(existing) {
+      if (existing && existing.length > 0) {
+        return supaFetch('contenedores?id=eq.' + row.id, 'PATCH', row);
+      } else {
+        return supaFetch('contenedores', 'POST', row);
+      }
+    })
+    .catch(function(e) { console.error('guardar error:', e); });
+}
+
+function eliminarContenedorDB(id) {
+  supaFetch('contenedores?id=eq.' + id, 'DELETE')
+    .catch(function(e) { console.error('eliminar error:', e); });
+}
+
+function guardarClientesDB() {
+  clientes.forEach(function(c) {
+    supaFetch('clientes?nombre=eq.' + encodeURIComponent(c.nombre), 'GET')
+      .then(function(r) { return r.json(); })
+      .then(function(existing) {
+        if (existing && existing.length > 0) {
+          return supaFetch('clientes?nombre=eq.' + encodeURIComponent(c.nombre), 'PATCH', c);
+        } else {
+          return supaFetch('clientes', 'POST', c);
+        }
+      })
+      .catch(function(e) { console.error('cliente save error:', e); });
+  });
+}
+
+function cargarDatos(callback) {
+  var dbStatus = document.getElementById('db-status');
+  if (dbStatus) {
+    dbStatus.textContent = '⏳ Conectando...';
+    dbStatus.style.color = 'rgba(245,240,232,0.5)';
+  }
+  // Load clientes
+  supaFetch('clientes?select=*', 'GET')
+    .then(function(r) { return r.json(); })
+    .then(function(rows) {
+      if (rows && rows.length > 0) {
+        clientes = rows.map(function(r) { return { nombre: r.nombre, pin: r.pin }; });
+      }
+      // Load contenedores
+      return supaFetch('contenedores?select=*&order=created_at.desc', 'GET');
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(rows) {
+      if (rows && Array.isArray(rows)) {
+        contenedores = rows.map(dbToApp);
+      }
+      actualizarMetricas();
+      renderTabla();
+      if (dbStatus) {
+        dbStatus.textContent = '● Base de datos conectada';
+        dbStatus.style.color = '#6fcf97';
+      }
+      if (callback) callback();
+    })
+    .catch(function(e) {
+      console.error('cargar error:', e);
+      if (dbStatus) {
+        dbStatus.textContent = '⚠ Sin conexión';
+        dbStatus.style.color = '#f2994a';
+      }
+    });
+}
+
+
+
+
+// ===== DATOS =====
+var clientes = [];
+var contenedores = [];
+var currentId = null;
+var clienteActual = null;
+var guiasContId = null;
+var loginRole = 'coordinador';
+
+// ===== LOGIN =====
+function cambiarRol(rol) {
+  loginRole = rol;
+  var lbl = document.getElementById('pin-label');
+  if (lbl) lbl.textContent = rol === 'cliente' ? 'PIN de empresa' : 'PIN ' + rol;
+  var inp = document.getElementById('pin-input');
+  if (inp) inp.value = '';
+  var err = document.getElementById('login-error');
+  if (err) err.style.display = 'none';
+}
+
+function ingresar() {
+  var pin = String(document.getElementById('pin-input').value).trim();
+  var pins = {coordinador:'1979', operario:'1234'};
+  var err = document.getElementById('login-error');
+  
+  if (loginRole === 'cliente') {
+    var match = null;
+    for (var i = 0; i < clientes.length; i++) {
+      if (clientes[i].pin === pin) { match = clientes[i]; break; }
+    }
+    if (match) {
+      clienteActual = match.nombre;
+      entrar('cliente');
+    } else {
+      err.style.display = 'block';
+      document.getElementById('pin-input').value = '';
+    }
+    return;
+  }
+  
+  if (pin === pins[loginRole]) {
+    clienteActual = null;
+    entrar(loginRole);
+  } else {
+    err.style.display = 'block';
+    document.getElementById('pin-input').value = '';
+  }
+}
+
+function entrar(rol) {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  
+  var tabs = document.getElementById('main-nav');
+  var allTabs = document.querySelectorAll('.nav-tab');
+  
+  if (rol === 'operario') {
+    allTabs.forEach(function(t) { t.style.display = 'none'; });
+    mostrarPagina('operario');
+    cargarDatos(function() { renderOpSelector(); });
+  } else if (rol === 'cliente') {
+    allTabs.forEach(function(t) { t.style.display = 'none'; });
+    mostrarPagina('cliente');
+    cargarDatos(function() { renderCliSelector(); });
+  } else {
+    allTabs.forEach(function(t) { t.style.display = ''; });
+    mostrarPagina('coordinador');
+    actualizarMetricas();
+    renderTabla();
+  }
+}
+
+function cerrarSesion() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-screen').style.alignItems = 'center';
+  document.getElementById('login-screen').style.justifyContent = 'center';
+  document.getElementById('pin-input').value = '';
+  document.getElementById('login-error').style.display = 'none';
+  document.getElementById('rol-select').value = 'coordinador';
+  cambiarRol('coordinador');
+  clienteActual = null;
+  currentId = null;
+  document.getElementById('op-selector').style.display = 'block';
+  document.getElementById('op-carga').style.display = 'none';
+  document.getElementById('cli-selector').style.display = 'block';
+  document.getElementById('cli-galeria').style.display = 'none';
+}
+
+// ===== NAVEGACION =====
+function mostrarPagina(nombre) {
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('page-' + nombre).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(function(t) { t.classList.remove('active'); });
+  var tab = document.getElementById('tab-' + nombre.substring(0,2));
+  if (tab) tab.classList.add('active');
+}
+
+function irA(nombre, el) {
+  mostrarPagina(nombre);
+  if (nombre === 'operario') renderOpSelector();
+  if (nombre === 'cliente') renderCliSelector();
+}
+
+// ===== METRICAS Y TABLA =====
 function actualizarMetricas() {
   document.getElementById('m-total').textContent = contenedores.length;
-  document.getElementById('m-comp').textContent = contenedores.filter(c => c.estado === 'completo').length;
-  document.getElementById('m-prog').textContent = contenedores.filter(c => c.estado === 'proceso').length;
-  document.getElementById('m-fotos').textContent = contenedores.reduce((a, c) => a + c.fotos, 0);
+  document.getElementById('m-comp').textContent = contenedores.filter(function(c) { return c.estado === 'completo'; }).length;
+  document.getElementById('m-proc').textContent = contenedores.filter(function(c) { return c.estado === 'proceso'; }).length;
+  document.getElementById('m-fotos').textContent = contenedores.reduce(function(a,c) { return a + c.fotos; }, 0);
 }
 
 function renderTabla() {
-  const body = document.getElementById('tabla-body');
+  var body = document.getElementById('tabla-body');
+  if (!body) return;
   body.innerHTML = '';
-  contenedores.forEach(c => {
-    const enProceso = c.estado === 'proceso';
-    const poHtml = c.po ? 'PO: ' + c.po : '<span class="sin-po">Sin PO</span>';
-    const tempClass = !c.temp || c.temp === '—' ? 'temp-none' : (c.tempOk ? 'temp-ok' : 'temp-warn');
-    const stClass = enProceso ? 'status-prog' : 'status-done';
-    const stText = enProceso ? 'En carga (' + c.patas + ' patas)' : 'Completo';
-    const tipoHtml = c.tipo || '—';
-    const guiaBadge = contarGuias(c) > 0 ? ` (${contarGuias(c)})` : '';
-    const accionesHtml = enProceso
-      ? `<button class="btn-ver" onclick="irAOperario(${c.id})">Ver carga</button><button class="btn-link" onclick="openGuiasModal(${c.id})" style="color:#7b3000;background:#fff7ed;border-color:#fed7aa;">📄 Guías${guiaBadge}</button><button class="btn-icon" onclick="eliminarContenedor(${c.id})" title="Eliminar" style="color:#991B1B;border-color:#FCA5A5;">🗑</button>`
-      : `<button class="btn-link" onclick="openLinkModal(${c.id})">🔗 Link</button><button class="btn-link" onclick="openGuiasModal(${c.id})" style="color:#7b3000;background:#fff7ed;border-color:#fed7aa;">📄 Guías${guiaBadge}</button><button class="btn-icon" onclick="reabrirCarga(${c.id})" title="Reabrir carga" style="color:#92400E;border-color:#FCD34D;background:#FEF3C7;">↩</button><button class="btn-icon" onclick="eliminarContenedor(${c.id})" title="Eliminar" style="color:#991B1B;border-color:#FCA5A5;">🗑</button>`;
-    const guiaNumHtml = (c.guiaEncinasNum || c.guiaClienteNum)
-      ? `<div style="font-family:var(--font-mono);font-size:10px;color:var(--ink3);margin-top:2px;">G: ${c.guiaEncinasNum||'—'} / ${c.guiaClienteNum||'—'}</div>`
-      : '';
-    const row = document.createElement('div');
-    row.className = 'table-row' + (enProceso ? ' en-proceso' : '');
-    row.innerHTML = `
-      <div>
-        <div class="cont-name">${c.cliente} N° ${c.num}</div>
-        <div class="cont-po">${poHtml}</div>
-        ${guiaNumHtml}
-        <div class="cont-cal"><span class="cal-tag">${c.cal}</span></div>
-      </div>
-      <span style="font-size:12px;color:var(--text2);">${tipoHtml}</span>
-      <span class="temp-tag ${tempClass}">${c.temp || '—'}</span>
-      <span class="status-tag ${stClass}">${stText}</span>
-      <div class="actions">${accionesHtml}</div>`;
+  contenedores.forEach(function(c) {
+    var proc = c.estado === 'proceso';
+    var poHtml = c.po ? 'PO: ' + c.po : '<span class="sin-po">Sin PO</span>';
+    var guiaHtml = '';
+    if (c.guiaEnc || c.guiaCli) {
+      guiaHtml = 'G: ' + (c.guiaEnc || '—') + ' / ' + (c.guiaCli || '—');
+    }
+    var tempClass = !c.temp || c.temp === '—' ? 'temp-none' : (c.tempOk ? 'temp-ok' : 'temp-warn');
+    var stClass = proc ? 'status-proc' : 'status-done';
+    var stText = proc ? 'En carga (' + c.patas + ' patas)' : 'Completo';
+    var guiaBadge = contarGuias(c) > 0 ? ' (' + contarGuias(c) + ')' : '';
+    
+    var row = document.createElement('div');
+    row.className = 'table-row' + (proc ? ' proceso' : '');
+    row.innerHTML = '<div>' +
+      '<div class="cont-name">' + c.cliente + ' N° ' + c.num + '</div>' +
+      '<div class="cont-po">' + poHtml + '</div>' +
+      (guiaHtml ? '<div class="cont-guia">' + guiaHtml + '</div>' : '') +
+      '<div class="cont-cal"><span class="cal-tag">' + (c.cal || '—') + '</span></div>' +
+      '</div>' +
+      '<span style="font-size:12px;color:#6B6860;">' + (c.tipo || '—') + '</span>' +
+      '<span class="temp-tag ' + tempClass + '">' + (c.temp || '—') + '</span>' +
+      '<span class="status-tag ' + stClass + '">' + stText + '</span>' +
+      '<div class="actions">' +
+        (proc ? '<button class="btn-blue" onclick="irAOp(' + c.id + ')">Ver carga</button>' : '<button class="btn-link" onclick="abrirLink(' + c.id + ')">🔗 Link</button>') +
+        '<button class="btn-link" style="background:#fff7ed;color:#92400e;border-color:#fed7aa;" onclick="abrirGuias(' + c.id + ')">📄 Guías' + guiaBadge + '</button>' +
+        (!proc ? '<button class="btn-warn" onclick="reabrirCarga(' + c.id + ')">↩</button>' : '') +
+        '<button class="btn-danger" onclick="eliminarCont(' + c.id + ')">🗑</button>' +
+      '</div>';
     body.appendChild(row);
   });
 }
 
-function buscar(val) {
-  const v = val.trim().toUpperCase();
-  const res = document.getElementById('search-results');
-  const noRes = document.getElementById('search-nores');
-  res.innerHTML = ''; noRes.style.display = 'none';
-  if (!v) return;
-  const found = contenedores.filter(c =>
-    (c.po && c.po.toUpperCase().includes(v)) ||
-    c.num.toUpperCase().includes(v) ||
-    c.cliente.toUpperCase().includes(v)
-  );
-  if (found.length) {
-    found.forEach(c => {
-      const poText = c.po ? 'PO: ' + c.po : 'Sin PO';
-      const tempColor = !c.temp || c.temp === '—' ? 'var(--text3)' : (c.tempOk ? 'var(--accent)' : 'var(--warning)');
-      const stClass = c.estado === 'proceso' ? 'status-prog' : 'status-done';
-      const stText = c.estado === 'proceso' ? 'En carga (' + c.patas + ' patas)' : 'Completo';
-      const el = document.createElement('div');
-      el.className = 'result-card';
-      el.innerHTML = `
-        <div>
-          <div style="font-size:14px;font-weight:500;">${c.cliente} N° ${c.num}</div>
-          <div style="font-size:12px;color:var(--text2);margin-top:2px;">${poText} · <span class="cal-tag">${c.cal}</span></div>
-          <div style="font-size:11px;color:var(--text3);margin-top:2px;">Cargado: ${c.fecha}</div>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-size:13px;font-weight:600;color:${tempColor};">${c.temp || '—'}</div>
-          <span class="status-tag ${stClass}" style="margin-top:4px;display:inline-block;">${stText}</span>
-        </div>`;
-      res.appendChild(el);
-    });
-  } else { noRes.style.display = 'block'; }
+function contarGuias(c) {
+  var n = 0;
+  if (c.guias && c.guias.enc) n++;
+  if (c.guias && c.guias.cli) n++;
+  return n;
 }
 
-function clearSearch() {
-  document.getElementById('search-input').value = '';
+// ===== BUSCAR =====
+function buscar(val) {
+  var v = val.trim().toUpperCase();
+  var res = document.getElementById('search-results');
+  var nores = document.getElementById('search-nores');
+  res.innerHTML = '';
+  nores.style.display = 'none';
+  if (!v) return;
+  var found = contenedores.filter(function(c) {
+    return (c.po && c.po.toUpperCase().indexOf(v) >= 0) ||
+           c.num.toUpperCase().indexOf(v) >= 0 ||
+           c.cliente.toUpperCase().indexOf(v) >= 0;
+  });
+  if (found.length) {
+    found.forEach(function(c) {
+      var el = document.createElement('div');
+      el.className = 'result-card';
+      el.innerHTML = '<div>' +
+        '<div style="font-size:14px;font-weight:600;">' + c.cliente + ' N° ' + c.num + '</div>' +
+        '<div style="font-size:12px;color:#6B6860;">' + (c.po ? 'PO: ' + c.po : 'Sin PO') + ' · ' + (c.cal || '—') + ' · ' + c.fotos + ' fotos</div>' +
+        '</div>' +
+        '<span class="status-tag ' + (c.estado === 'proceso' ? 'status-proc' : 'status-done') + '">' + (c.estado === 'proceso' ? 'En carga' : 'Completo') + '</span>';
+      res.appendChild(el);
+    });
+  } else {
+    nores.style.display = 'block';
+  }
+}
+
+function limpiarBusqueda() {
+  document.getElementById('search-inp').value = '';
   document.getElementById('search-results').innerHTML = '';
   document.getElementById('search-nores').style.display = 'none';
 }
 
+// ===== MODAL NUEVO =====
 function buildClienteSelect() {
-  const sel = document.getElementById('f-cliente');
+  var sel = document.getElementById('f-cliente');
   sel.innerHTML = '<option value="">Seleccionar campo...</option>';
-  clientes.forEach(c => { const o = document.createElement('option'); o.value = c.nombre; o.textContent = c.nombre; sel.appendChild(o); });
-  const n = document.createElement('option'); n.value = '__nuevo__'; n.textContent = '+ Agregar nuevo cliente'; sel.appendChild(n);
+  clientes.forEach(function(c) {
+    var o = document.createElement('option');
+    o.value = c.nombre; o.textContent = c.nombre;
+    sel.appendChild(o);
+  });
+  var n = document.createElement('option');
+  n.value = '__nuevo__'; n.textContent = '+ Agregar nuevo cliente';
+  sel.appendChild(n);
 }
-function handleClienteChange(val) {
-  const box = document.getElementById('new-client-box');
-  if (val === '__nuevo__') { box.classList.add('show'); document.getElementById('new-client-input').value = ''; document.getElementById('client-added').classList.remove('show'); }
-  else box.classList.remove('show');
+
+function cambiarCliente(val) {
+  var box = document.getElementById('new-client-box');
+  if (val === '__nuevo__') {
+    box.classList.add('show');
+    document.getElementById('new-cli-nombre').value = '';
+    document.getElementById('new-cli-pin').value = '';
+    document.getElementById('client-ok').classList.remove('show');
+  } else {
+    box.classList.remove('show');
+  }
 }
+
 function agregarCliente() {
-  const nombre = document.getElementById('new-client-input').value.trim();
-  const pin = document.getElementById('new-client-pin') ? document.getElementById('new-client-pin').value.trim() : '0000';
+  var nombre = document.getElementById('new-cli-nombre').value.trim();
+  var pin = document.getElementById('new-cli-pin').value.trim() || '0000';
   if (!nombre) return;
-  if (!clientes.find(c => c.nombre === nombre)) {
-    clientes.push({nombre: nombre, pin: pin || '0000'});
-    guardarClientesFB();
+  var existe = clientes.some(function(c) { return c.nombre === nombre; });
+  if (!existe) {
+    clientes.push({nombre: nombre, pin: pin});
+    guardarClientesDB();
   }
   buildClienteSelect();
   document.getElementById('f-cliente').value = nombre;
   document.getElementById('new-client-box').classList.remove('show');
-  document.getElementById('client-added-nombre').textContent = nombre;
-  document.getElementById('client-added').classList.add('show');
+  var ok = document.getElementById('client-ok');
+  ok.textContent = '✓ ' + nombre + ' agregado';
+  ok.classList.add('show');
 }
-function openModal(id) {
+
+function abrirModal(id) {
   if (id === 'nuevo') {
     buildClienteSelect();
-    ['new-client-box','client-added'].forEach(x => document.getElementById(x).classList.remove('show'));
-    ['f-cliente','f-num','f-po','f-cal','f-tipo','f-fecha'].forEach(x => document.getElementById(x).value = ''); ['f-guia-encinas','f-guia-cliente'].forEach(x => { const el = document.getElementById(x); if(el) el.value=''; });
+    document.getElementById('new-client-box').classList.remove('show');
+    document.getElementById('client-ok').classList.remove('show');
+    ['f-cliente','f-num','f-po','f-cal','f-tipo','f-fecha','f-guia-enc','f-guia-cli'].forEach(function(x) {
+      var el = document.getElementById(x);
+      if (el) el.value = '';
+    });
   }
   document.getElementById('modal-' + id).classList.add('open');
 }
-function closeModal(id) { document.getElementById('modal-' + id).classList.remove('open'); }
 
-function crearContenedor() {
-  const cliente = document.getElementById('f-cliente').value;
-  const num = document.getElementById('f-num').value.trim();
-  const po = document.getElementById('f-po').value.trim();
-  const cal = document.getElementById('f-cal').value;
-  const tipo = document.getElementById('f-tipo').value;
-  const fechaRaw = document.getElementById('f-fecha').value;
-  if (!cliente || cliente === '__nuevo__' || !num || !cal) { toast('Completa: campo, N° contenedor y calidad'); return; }
-  const fecha = fechaRaw ? new Date(fechaRaw + 'T12:00:00').toLocaleDateString('es-CL', {day:'numeric',month:'short',year:'numeric'}) : 'Sin fecha';
-  const guiaEncinasNum = document.getElementById('f-guia-encinas') ? document.getElementById('f-guia-encinas').value.trim() : '';
-  const guiaClienteNum = document.getElementById('f-guia-cliente') ? document.getElementById('f-guia-cliente').value.trim() : '';
-  const nuevoId = String(Date.now());
-  const nuevoContenedor = {id:nuevoId, fbId:nuevoId, cliente, num, po, cal, tipo, fecha, guiaEncinasNum, guiaClienteNum, guias: {encinas:null,cliente:null}, createdAt:Date.now(), tempNum:null, temp:'—', tempOk:false, fotos:0, estado:'proceso', patas:0, etapas:{temp:false,vacio:false}, frutaFotos:0};
-  contenedores.unshift(nuevoContenedor);
-  guardarContenedorFB(nuevoContenedor);
-  actualizarMetricas(); renderTabla(); closeModal('nuevo');
-  toast('✓ ' + cliente + ' N° ' + num + ' creado — listo para el operario');
+function cerrarModal(id) {
+  document.getElementById('modal-' + id).classList.remove('open');
 }
 
-function openLinkModal(id) {
-  const c = contenedores.find(x => x.id === id);
+function crearContenedor() {
+  var cliente = document.getElementById('f-cliente').value;
+  var num = document.getElementById('f-num').value.trim();
+  if (!cliente || cliente === '__nuevo__' || !num) {
+    alert('Completa al menos: Campo/Cliente y N° de contenedor');
+    return;
+  }
+  var po = document.getElementById('f-po').value.trim();
+  var cal = document.getElementById('f-cal').value;
+  var tipo = document.getElementById('f-tipo').value;
+  var fechaRaw = document.getElementById('f-fecha').value;
+  var guiaEnc = document.getElementById('f-guia-enc').value.trim();
+  var guiaCli = document.getElementById('f-guia-cli').value.trim();
+  var fecha = 'Sin fecha';
+  if (fechaRaw) {
+    try { fecha = new Date(fechaRaw + 'T12:00:00').toLocaleDateString('es-CL', {day:'numeric',month:'short',year:'numeric'}); }
+    catch(e) { fecha = fechaRaw; }
+  }
+  var nuevo = {
+    id: Date.now(),
+    cliente: cliente,
+    num: num,
+    po: po,
+    cal: cal,
+    tipo: tipo,
+    fecha: fecha,
+    guiaEnc: guiaEnc,
+    guiaCli: guiaCli,
+    guias: {enc: null, cli: null},
+    temp: '—',
+    tempOk: false,
+    fotos: 0,
+    estado: 'proceso',
+    patas: 0,
+    etapas: {temp: false, vacio: false},
+    frutaFotos: 0,
+    fotoUrls: {},
+    frutaUrls: [],
+    pataUrls: []
+  };
+  contenedores.unshift(nuevo);
+  actualizarMetricas();
+  renderTabla();
+  guardarContenedor(nuevo);
+  cerrarModal('nuevo');
+  toast('✓ ' + cliente + ' N° ' + num + ' creado');
+}
+
+// ===== LINK MODAL =====
+function abrirLink(id) {
+  var c = contenedores.find(function(x) { return x.id === id; });
   if (!c) return;
-  const linkNombre = c.po ? 'PO: ' + c.po : c.cliente + ' N° ' + c.num;
-  const slug = c.po ? 'PO-' + c.po : c.cliente.replace(/\s+/g,'-') + '-' + c.num.replace('/','-');
-  const url = 'lasencinas.app/' + slug;
-  document.getElementById('link-modal-sub').textContent = c.cliente + ' N° ' + c.num + ' — ' + c.cal;
-  document.getElementById('link-cliente').textContent = c.cliente;
+  var linkNombre = c.po ? 'PO: ' + c.po : c.cliente + ' N° ' + c.num;
+  var slug = c.po ? 'PO-' + c.po : c.cliente.replace(/\s+/g,'-') + '-' + c.num.replace('/','-');
+  var url = 'encinastrack.app/' + slug;
+  document.getElementById('link-sub').textContent = c.cliente + ' N° ' + c.num;
+  document.getElementById('link-cli').textContent = c.cliente;
   document.getElementById('link-num').textContent = 'N° ' + c.num;
   document.getElementById('link-po').innerHTML = c.po ? c.po : '<span class="sin-po">Sin PO</span>';
-  document.getElementById('link-cal').textContent = c.cal;
+  document.getElementById('link-cal').textContent = c.cal || '—';
   document.getElementById('link-name').textContent = linkNombre;
   document.getElementById('link-url').textContent = url;
   document.getElementById('wa-title').textContent = linkNombre;
   document.getElementById('wa-url').textContent = url;
-  document.getElementById('wa-desc').textContent = c.cliente + ' N° ' + c.num + ' · ' + c.cal + ' · ' + c.fotos + ' fotos';
-  document.getElementById('copied-toast').classList.remove('show');
-  document.getElementById('modal-link').classList.add('open');
-}
-function copiarLink() {
-  navigator.clipboard.writeText(document.getElementById('link-url').textContent).catch(()=>{});
-  document.getElementById('copied-toast').classList.add('show');
-  setTimeout(() => document.getElementById('copied-toast').classList.remove('show'), 3000);
-}
-function abrirWA() {
-  const msg = encodeURIComponent(document.getElementById('link-name').textContent + '\n' + document.getElementById('link-url').textContent);
-  window.open('https://wa.me/?text=' + msg, '_blank');
+  document.getElementById('wa-desc').textContent = c.cliente + ' N° ' + c.num + ' · ' + (c.cal||'—') + ' · ' + c.fotos + ' fotos';
+  document.getElementById('copied-ok').classList.remove('show');
+  abrirModal('link');
 }
 
-// OPERARIO
-function renderOperario() {
-  const activos = contenedores.filter(c => c.estado === 'proceso');
-  const list = document.getElementById('op-cont-list');
+function copiarLink() {
+  var url = document.getElementById('link-url').textContent;
+  try { navigator.clipboard.writeText(url); } catch(e) {}
+  document.getElementById('copied-ok').classList.add('show');
+  setTimeout(function() { document.getElementById('copied-ok').classList.remove('show'); }, 3000);
+}
+
+function abrirWA() {
+  var txt = document.getElementById('link-name').textContent + '\n' + document.getElementById('link-url').textContent;
+  window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank');
+}
+
+// ===== ACCIONES TABLA =====
+function eliminarCont(id) {
+  var c = contenedores.find(function(x) { return x.id === id; });
+  if (!c) return;
+  if (!confirm('¿Eliminar "' + c.cliente + ' N° ' + c.num + '"?')) return;
+  eliminarContenedorDB(id);
+  contenedores = contenedores.filter(function(x) { return x.id !== id; });
+  actualizarMetricas();
+  renderTabla();
+  toast('🗑 Contenedor eliminado');
+}
+
+function reabrirCarga(id) {
+  var c = contenedores.find(function(x) { return x.id === id; });
+  if (!c) return;
+  if (!confirm('¿Reabrir la carga de "' + c.cliente + ' N° ' + c.num + '"?')) return;
+  c.estado = 'proceso';
+  guardarContenedor(c);
+  actualizarMetricas();
+  renderTabla();
+  toast('↩ Carga reabierta');
+}
+
+function irAOp(id) {
+  irA('operario', null);
+  setTimeout(function() { abrirCarga(id); }, 50);
+}
+
+// ===== GUIAS =====
+function abrirGuias(id) {
+  guiasContId = id;
+  var c = contenedores.find(function(x) { return x.id === id; });
+  if (!c) return;
+  if (!c.guias) c.guias = {enc: null, cli: null};
+  document.getElementById('guias-sub').textContent = c.cliente + ' N° ' + c.num + (c.po ? ' · PO: ' + c.po : '');
+  renderSlot('enc', c.guias.enc);
+  renderSlot('cli', c.guias.cli);
+  abrirModal('guias');
+}
+
+function renderSlot(slot, guia) {
+  var prev = document.getElementById('slot-' + slot + '-prev');
+  var drop = document.getElementById('slot-' + slot + '-drop');
+  if (guia) {
+    prev.classList.add('show');
+    drop.style.display = 'none';
+    document.getElementById('slot-' + slot + '-icon').textContent = guia.tipo === 'pdf' ? '📄' : '🖼️';
+    document.getElementById('slot-' + slot + '-tipo').textContent = guia.tipo === 'pdf' ? 'PDF' : 'Imagen';
+  } else {
+    prev.classList.remove('show');
+    drop.style.display = 'block';
+  }
+}
+
+function seleccionarGuia(slot) {
+  document.getElementById('input-' + slot).click();
+}
+
+function procesarGuia(files, slot) {
+  if (!files || !files[0]) return;
+  var c = contenedores.find(function(x) { return x.id === guiasContId; });
+  if (!c) return;
+  if (!c.guias) c.guias = {enc: null, cli: null};
+  var file = files[0];
+  var esPdf = file.type === 'application/pdf' || file.name.toLowerCase().indexOf('.pdf') >= 0;
+  c.guias[slot] = {nombre: slot === 'enc' ? 'Guía Las Encinas' : 'Guía Cliente', tipo: esPdf ? 'pdf' : 'img'};
+  renderSlot(slot, c.guias[slot]);
+  renderTabla();
+  toast('✓ Guía adjunta');
+  document.getElementById('input-' + slot).value = '';
+}
+
+function eliminarSlot(slot) {
+  var c = contenedores.find(function(x) { return x.id === guiasContId; });
+  if (!c || !c.guias) return;
+  c.guias[slot] = null;
+  renderSlot(slot, null);
+  renderTabla();
+  toast('Guía eliminada');
+}
+
+// ===== OPERARIO =====
+function renderOpSelector() {
+  var proc = contenedores.filter(function(c) { return c.estado === 'proceso'; });
+  var list = document.getElementById('op-list');
   list.innerHTML = '';
-  if (!activos.length) {
-    list.innerHTML = '<p style="font-size:13px;color:var(--text3);text-align:center;padding:16px 0;">No hay contenedores en proceso.<br>El coordinador debe crear uno primero.</p>';
+  if (!proc.length) {
+    list.innerHTML = '<div style="font-size:13px;color:#9E9B93;text-align:center;padding:20px;">No hay contenedores en proceso.</div>';
     return;
   }
-  activos.forEach(c => {
-    const el = document.createElement('div');
-    el.className = 'cont-item en-proceso';
-    el.innerHTML = `<div><div class="cont-item-name">${c.cliente} N° ${c.num}</div><div class="cont-item-meta">${c.po ? 'PO: '+c.po : 'Sin PO'} · ${c.cal}</div></div><span class="cont-item-badge status-prog">${c.patas} patas</span>`;
-    el.onclick = () => abrirCarga(c.id);
+  proc.forEach(function(c) {
+    var el = document.createElement('div');
+    el.className = 'cont-item proc';
+    el.innerHTML = '<div><div class="cont-item-name">' + c.cliente + ' N° ' + c.num + '</div><div class="cont-item-meta">' + (c.po ? 'PO: ' + c.po : 'Sin PO') + ' · ' + (c.cal||'—') + '</div></div><span class="cont-item-badge status-proc">' + c.patas + ' patas</span>';
+    el.onclick = function() { abrirCarga(c.id); };
     list.appendChild(el);
   });
-  document.getElementById('op-selector-view').style.display = 'block';
-  document.getElementById('op-carga-view').style.display = 'none';
 }
 
 function abrirCarga(id) {
-  currentContId = id;
-  const c = contenedores.find(x => x.id === id);
-  document.getElementById('op-selector-view').style.display = 'none';
-  document.getElementById('op-carga-view').style.display = 'block';
-  document.getElementById('op-nombre-label').textContent = c.cliente + ' N° ' + c.num;
-  document.getElementById('op-po-label').textContent = c.po ? 'PO: ' + c.po : 'Sin PO';
-  // Reset etapas and fruta for fresh session
+  currentId = id;
+  var c = contenedores.find(function(x) { return x.id === id; });
+  if (!c) return;
   if (c.estado === 'proceso') {
     c.etapas = {temp: false, vacio: false};
     c.frutaFotos = 0;
-    c.fotos = c.patas; // only count patas already done
+    c.frutaUrls = [];
+    c.fotoUrls = {};
   }
-  actualizarTempDisplay(c);
+  document.getElementById('op-selector').style.display = 'none';
+  document.getElementById('op-carga').style.display = 'block';
+  document.getElementById('op-name').textContent = c.cliente + ' N° ' + c.num;
+  document.getElementById('op-po').textContent = c.po ? 'PO: ' + c.po : 'Sin PO';
+  actualizarTemp(c);
   renderEtapas(c);
   renderPatas(c);
-  renderFrutaPanel(c);
 }
 
-function actualizarTempDisplay(c) {
-  const el = document.getElementById('op-temp-val');
-  const alert = document.getElementById('temp-alert');
+function actualizarTemp(c) {
+  var el = document.getElementById('op-temp');
+  var alert = document.getElementById('op-temp-alert');
   if (!c.temp || c.temp === '—') {
     el.textContent = '—'; el.className = 'op-temp-val none';
     alert.className = 'temp-alert'; alert.textContent = '';
@@ -1878,15 +1274,15 @@ function actualizarTempDisplay(c) {
     } else {
       el.className = 'op-temp-val warn';
       alert.className = 'temp-alert warn show';
-      alert.textContent = '⚠ Temperatura fuera de rango — no autorizado';
+      alert.textContent = '⚠ Temperatura fuera de rango';
     }
   }
 }
 
 function renderEtapas(c) {
-  const bt = document.getElementById('btn-temp');
-  const bv = document.getElementById('btn-vacio');
-  const bf = document.getElementById('btn-fruta');
+  var bt = document.getElementById('btn-temp');
+  var bv = document.getElementById('btn-vacio');
+  var bf = document.getElementById('btn-fruta');
   if (c.etapas.temp) { bt.classList.add('done'); document.getElementById('lbl-temp').textContent = 'Temperatura inicial ✓'; }
   else { bt.classList.remove('done'); document.getElementById('lbl-temp').textContent = 'Temperatura inicial'; }
   if (c.etapas.vacio) { bv.classList.add('done'); document.getElementById('lbl-vacio').textContent = 'Contenedor vacío ✓'; }
@@ -1894,574 +1290,432 @@ function renderEtapas(c) {
   if (c.frutaFotos > 0) {
     bf.classList.add('done');
     document.getElementById('lbl-fruta').textContent = 'Fotos de fruta ✓';
-    const badge = document.getElementById('fruta-count-badge');
+    var badge = document.getElementById('fruta-badge');
     badge.textContent = c.frutaFotos + ' foto' + (c.frutaFotos !== 1 ? 's' : '');
     badge.style.display = 'inline-block';
   } else {
     bf.classList.remove('done');
     document.getElementById('lbl-fruta').textContent = 'Fotos de fruta';
-    document.getElementById('fruta-count-badge').style.display = 'none';
+    document.getElementById('fruta-badge').style.display = 'none';
   }
+  renderFruta(c);
 }
 
-function toggleFrutaPanel() {
-  const panel = document.getElementById('fruta-panel');
-  panel.classList.toggle('show');
-}
-
-function renderFrutaPanel(c) {
-  const thumbs = document.getElementById('fruta-thumbs');
+function renderFruta(c) {
+  var thumbs = document.getElementById('fruta-thumbs');
   thumbs.innerHTML = '';
-  for (let i = 1; i <= c.frutaFotos; i++) {
-    thumbs.innerHTML += `<div class="fruta-thumb">🍓<span class="fruta-thumb-num">${i}</span></div>`;
+  for (var i = 0; i < c.frutaFotos; i++) {
+    var div = document.createElement('div');
+    div.className = 'fruta-thumb';
+    if (c.frutaUrls && c.frutaUrls[i]) {
+      div.innerHTML = '<img src="' + c.frutaUrls[i] + '">';
+    } else {
+      div.textContent = '🍓';
+    }
+    thumbs.appendChild(div);
   }
-  document.getElementById('fruta-count-label').textContent = c.frutaFotos + ' foto' + (c.frutaFotos !== 1 ? 's' : '') + ' agregada' + (c.frutaFotos !== 1 ? 's' : '');
-}
-
-function abrirCamara(callback, etiqueta) {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*';
-  input.capture = 'environment';
-  input.onchange = function() {
-    if (input.files && input.files[0]) {
-      var file = input.files[0];
-      toast('⬆ Guardando foto...');
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        var dataUrl = e.target.result;
-        callback(file, dataUrl);
-        toast('✓ Foto guardada');
-      };
-      reader.onerror = function() {
-        callback(file, null);
-        toast('⚠ Foto registrada');
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-  input.click();
-}
-
-function agregarFotoFruta() {
-  const c = contenedores.find(x => x.id === currentContId);
-  if (!c) return;
-  if (!c.fotoUrls) c.fotoUrls = {};
-  if (!c.frutaUrls) c.frutaUrls = [];
-  abrirCamara(function(file, dataUrl) {
-    c.frutaFotos++;
-    c.fotos++;
-    if (dataUrl) c.frutaUrls.push(dataUrl);
-    guardarContenedorFB(c);
-    renderFrutaPanel(c);
-    renderEtapas(c);
-    actualizarMetricas();
-    renderTabla();
-  }, 'Fruta — foto ' + c.frutaFotos);
-}
-
-function toggleEtapa(tipo) {
-  const c = contenedores.find(x => x.id === currentContId);
-  if (!c) return;
-  const etiquetas = {temp: 'Temperatura inicial', vacio: 'Contenedor vacío'};
-  if (!c.fotoUrls) c.fotoUrls = {};
-  abrirCamara(function(file, dataUrl) {
-    c.etapas[tipo] = true;
-    c.fotos++;
-    if (dataUrl) c.fotoUrls[tipo] = dataUrl;
-    if (tipo === 'temp') {
-      // Ask for temperature value
-      const tempVal = prompt('Ingresa la temperatura registrada (ej: -18.5):');
-      if (tempVal) {
-        const t = parseFloat(tempVal);
-        c.tempNum = t;
-        c.temp = t.toFixed(1) + '°C';
-        c.tempOk = tempEsOk(t);
-      }
-      actualizarTempDisplay(c);
-    }
-    guardarContenedorFB(c);
-    renderEtapas(c);
-    actualizarMetricas();
-    renderTabla();
-  }, etiquetas[tipo]);
+  document.getElementById('fruta-count').textContent = c.frutaFotos + ' foto' + (c.frutaFotos !== 1 ? 's' : '') + ' agregada' + (c.frutaFotos !== 1 ? 's' : '');
 }
 
 function renderPatas(c) {
-  const grid = document.getElementById('pata-grid');
+  var grid = document.getElementById('pata-grid');
   grid.innerHTML = '';
-  for (let i = 1; i <= 24; i++) {
-    const cell = document.createElement('div');
-    const isDone = i <= c.patas;
-    const isNext = i === c.patas + 1;
+  for (var i = 1; i <= 24; i++) {
+    var cell = document.createElement('div');
+    var isDone = i <= c.patas;
+    var isNext = i === c.patas + 1;
     cell.className = 'pata-cell' + (isDone ? ' done' : (isNext ? ' active' : ''));
     cell.textContent = i;
-    if (!isDone && isNext) cell.onclick = () => agregarFotoPata();
+    if (!isDone && isNext) { (function(n) { cell.onclick = function() { tomarFoto('pata'); }; })(i); }
     grid.appendChild(cell);
   }
-  const next = c.patas + 1;
-  document.getElementById('pata-next-num').textContent = next <= 24 ? next : '—';
-  const btn = document.getElementById('foto-btn');
-  btn.disabled = c.patas >= 24;
-  const pct = Math.round(c.patas / 24 * 100);
-  document.getElementById('op-progress-fill').style.width = pct + '%';
-  document.getElementById('op-progress-label').textContent = c.patas + ' de 24 patas registradas';
+  var next = c.patas + 1;
+  var pataNumEl = document.getElementById('pata-num');
+  if (pataNumEl) pataNumEl.textContent = next <= 24 ? next : '—';
+  var fotoBtn = document.getElementById('foto-btn');
+  if (fotoBtn) fotoBtn.disabled = c.patas >= 24;
+  var pct = Math.round(c.patas / 24 * 100);
+  document.getElementById('op-prog').style.width = pct + '%';
+  document.getElementById('op-prog-label').textContent = c.patas + ' de 24 patas';
 }
 
-function agregarFotoPata() {
-  const c = contenedores.find(x => x.id === currentContId);
-  if (!c || c.patas >= 24) return;
-  if (!c.pataUrls) c.pataUrls = [];
-  abrirCamara(function(file, dataUrl) {
-    c.patas++;
+function toggleFruta() {
+  var panel = document.getElementById('fruta-panel');
+  panel.classList.toggle('show');
+}
+
+function tomarFoto(tipo) {
+  var c = contenedores.find(function(x) { return x.id === currentId; });
+  if (!c) return;
+
+  // Show choice: camera or gallery
+  var overlay = document.createElement('div');
+  overlay.id = '_foto-choice';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,26,20,0.6);z-index:200;display:flex;align-items:flex-end;justify-content:center;padding:20px;';
+  overlay.innerHTML = '<div style="background:var(--cream);border-radius:12px;padding:20px;width:100%;max-width:400px;">' +
+    '<div style="font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px;text-align:center;">Agregar foto</div>' +
+    '<button id="_btn-camara" style="width:100%;padding:14px;background:var(--forest);color:var(--cream);border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:10px;">📷 Tomar foto ahora</button>' +
+    '<button id="_btn-galeria" style="width:100%;padding:14px;background:var(--cream2);color:var(--ink);border:1.5px solid var(--cream3);border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">🖼️ Elegir de galería</button>' +
+    '<button id="_btn-cancel" style="width:100%;padding:12px;background:transparent;color:var(--ink3);border:none;font-size:13px;cursor:pointer;margin-top:6px;font-family:var(--mono);letter-spacing:0.06em;text-transform:uppercase;">Cancelar</button>' +
+    '</div>';
+
+  document.body.appendChild(overlay);
+
+  function lanzarInput(usarCamara) {
+    overlay.remove();
+    var existing = document.getElementById('_foto-input');
+    if (existing) existing.parentNode.removeChild(existing);
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.id = '_foto-input';
+    input.accept = 'image/*';
+    if (usarCamara) input.capture = 'environment';
+    input.style.cssText = 'position:fixed;top:-200px;left:-200px;width:1px;height:1px;opacity:0;';
+    input.addEventListener('change', function() {
+      if (!input.files || !input.files[0]) return;
+      var file = input.files[0];
+      var reader = new FileReader();
+      reader.onload = function(e) { procesarFoto(tipo, c, e.target.result); };
+      reader.onerror = function() { procesarFoto(tipo, c, null); };
+      reader.readAsDataURL(file);
+    });
+    document.body.appendChild(input);
+    setTimeout(function() { input.click(); }, 50);
+  }
+
+  document.getElementById('_btn-camara').onclick = function() { lanzarInput(true); };
+  document.getElementById('_btn-galeria').onclick = function() { lanzarInput(false); };
+  document.getElementById('_btn-cancel').onclick = function() { overlay.remove(); };
+  overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+}
+
+function procesarFoto(tipo, c, dataUrl) {
+  if (tipo === 'temp') {
+    c.etapas.temp = true;
     c.fotos++;
-    if (dataUrl) c.pataUrls.push(dataUrl);
-    guardarContenedorFB(c);
-    renderPatas(c);
-    actualizarMetricas();
-    renderTabla();
-    toast('✓ Pata ' + c.patas + ' registrada');
-  }, 'Pata ' + (c.patas + 1));
-}
-
-
-function descargarPDF() {
-  toast('📄 Generando PDF — esto puede tomar unos segundos...');
-  setTimeout(() => toast('✓ PDF generado y descargado'), 2000);
+    if (dataUrl) c.fotoUrls.temp = dataUrl;
+    var tempStr = prompt('Ingresa la temperatura (ej: -18.5):');
+    if (tempStr) {
+      var t = parseFloat(tempStr);
+      if (!isNaN(t)) {
+        c.temp = t.toFixed(1) + '°C';
+        c.tempOk = t <= -12;
+      }
+    }
+    actualizarTemp(c);
+    toast('✓ Temperatura registrada');
+  } else if (tipo === 'vacio') {
+    c.etapas.vacio = true;
+    c.fotos++;
+    if (dataUrl) c.fotoUrls.vacio = dataUrl;
+    toast('✓ Contenedor vacío registrado');
+  } else if (tipo === 'fruta') {
+    c.frutaFotos++;
+    c.fotos++;
+    if (dataUrl) { if (!c.frutaUrls) c.frutaUrls = []; c.frutaUrls.push(dataUrl); }
+    toast('✓ Foto de fruta ' + c.frutaFotos + ' registrada');
+  } else if (tipo === 'pata') {
+    if (c.patas < 24) {
+      c.patas++;
+      c.fotos++;
+      if (dataUrl) { if (!c.pataUrls) c.pataUrls = []; c.pataUrls.push(dataUrl); }
+      toast('✓ Pata ' + c.patas + ' registrada');
+    }
+  }
+  renderEtapas(c);
+  renderPatas(c);
+  actualizarMetricas();
+  renderTabla();
 }
 
 function completarCarga() {
-  const c = contenedores.find(x => x.id === currentContId);
+  var c = contenedores.find(function(x) { return x.id === currentId; });
   if (!c) return;
-  // Show confirmation modal
-  const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,26,20,0.75);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);';
 
-  const checks = [
-    {label:'Temperatura inicial', ok: c.etapas.temp, val: c.etapas.temp ? '1 foto' : 'Sin foto'},
-    {label:'Contenedor vacío', ok: c.etapas.vacio, val: c.etapas.vacio ? '1 foto' : 'Sin foto'},
-    {label:'Fotos de fruta', ok: c.frutaFotos > 0, val: c.frutaFotos > 0 ? c.frutaFotos + ' foto' + (c.frutaFotos > 1 ? 's' : '') : 'Sin fotos'},
-    {label:'Patas registradas', ok: c.patas > 0, val: c.patas + ' pata' + (c.patas !== 1 ? 's' : '')},
+  var checks = [
+    {label: 'Temperatura inicial', ok: c.etapas.temp, val: c.etapas.temp ? '1 foto' : 'Sin foto'},
+    {label: 'Contenedor vacío', ok: c.etapas.vacio, val: c.etapas.vacio ? '1 foto' : 'Sin foto'},
+    {label: 'Fotos de fruta', ok: c.frutaFotos > 0, val: c.frutaFotos > 0 ? c.frutaFotos + ' fotos' : 'Sin fotos'},
+    {label: 'Patas registradas', ok: c.patas > 0, val: c.patas + ' patas'}
   ];
 
-  overlay.innerHTML = `<div style="background:var(--cream);border-radius:12px;padding:28px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,0.35);">
-    <div style="font-family:var(--font-display);font-size:20px;color:var(--leaf);margin-bottom:4px;">¿Cerrar la carga?</div>
-    <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:18px;">${c.cliente} N° ${c.num}</div>
+  var checksHtml = '';
+  checks.forEach(function(ch) {
+    checksHtml += '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #ece6d8;">' +
+      '<div style="display:flex;align-items:center;gap:8px;">' +
+      '<span style="font-size:16px;">' + (ch.ok ? '✅' : '⚠️') + '</span>' +
+      '<span style="font-size:14px;">' + ch.label + '</span></div>' +
+      '<span style="font-size:12px;color:' + (ch.ok ? '#2d6a4f' : '#92400e') + ';font-weight:600;">' + ch.val + '</span></div>';
+  });
 
-    <div style="margin-bottom:18px;">
-      ${checks.map(ch => `<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--cream3);">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span style="font-size:16px;">${ch.ok ? '✅' : '⚠️'}</span>
-          <span style="font-size:13px;color:var(--ink);">${ch.label}</span>
-        </div>
-        <span style="font-family:var(--font-mono);font-size:11px;color:${ch.ok ? 'var(--ok)' : 'var(--warn)'};">${ch.val}</span>
-      </div>`).join('')}
-    </div>
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;';
+  overlay.innerHTML = '<div style="background:#f5f0e8;border-radius:12px;padding:24px;width:100%;max-width:360px;">' +
+    '<div style="font-size:18px;font-weight:700;color:#1a3a2a;margin-bottom:4px;">¿Cerrar la carga?</div>' +
+    '<div style="font-size:12px;color:#6B6860;margin-bottom:16px;">' + c.cliente + ' N° ' + c.num + '</div>' +
+    '<div style="margin-bottom:16px;">' + checksHtml + '</div>' +
+    '<div style="font-size:13px;color:#6B6860;text-align:center;margin-bottom:16px;">¿Estás seguro que la carga está completa?</div>' +
+    '<div style="display:flex;gap:8px;">' +
+    '<button id="btn-cancelar-carga" style="flex:1;padding:12px;background:#fff;border:1px solid #ddd6c6;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;">Volver</button>' +
+    '<button id="btn-confirmar-carga" style="flex:1;padding:12px;background:#2d6a4f;color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;">Confirmar</button>' +
+    '</div></div>';
 
-    <p style="font-family:var(--font-mono);font-size:11px;color:var(--ink3);text-align:center;margin-bottom:16px;letter-spacing:0.06em;">¿Estás seguro que la carga está completa?</p>
-
-    <div style="display:flex;gap:8px;">
-      <button onclick="this.closest('div[style*=fixed]').remove()" style="flex:1;background:transparent;border:1.5px solid var(--cream3);border-radius:6px;padding:12px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;color:var(--ink2);">Volver</button>
-      <button onclick="confirmarCargaCompleta();this.closest('div[style*=fixed]').remove();" style="flex:1;background:var(--ok);color:#fff;border:none;border-radius:6px;padding:12px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;font-weight:500;">Confirmar</button>
-    </div>
-  </div>`;
-  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
   document.body.appendChild(overlay);
+
+  document.getElementById('btn-cancelar-carga').onclick = function() {
+    overlay.remove();
+  };
+
+  document.getElementById('btn-confirmar-carga').onclick = function() {
+    overlay.remove();
+    c.estado = 'completo';
+    guardarContenedor(c);
+    actualizarMetricas();
+    renderTabla();
+    toast('🎉 Carga completada');
+    setTimeout(function() { volverOp(); }, 1500);
+  };
 }
 
-function confirmarCargaCompleta() {
-  const c = contenedores.find(x => x.id === currentContId);
-  if (!c) return;
-  c.estado = 'completo';
-  guardarContenedorFB(c);
-  actualizarMetricas();
-  renderTabla();
-  toast('🎉 Carga completada y cerrada');
-  setTimeout(() => volverSelector(), 1500);
+function volverOp() {
+  document.getElementById('op-selector').style.display = 'block';
+  document.getElementById('op-carga').style.display = 'none';
+  document.getElementById('fruta-panel').classList.remove('show');
+  currentId = null;
+  renderOpSelector();
 }
 
-
-function volverSelector() {
-  document.getElementById('op-selector-view').style.display = 'block';
-  document.getElementById('op-carga-view').style.display = 'none';
-  const fp = document.getElementById('fruta-panel');
-  if (fp) fp.classList.remove('show');
-  renderOperario();
-}
-
-function irAOperario(id) {
-  showPage('operario', document.querySelectorAll('.nav-tab')[1]);
-  setTimeout(() => abrirCarga(id), 50);
-}
-
-// CLIENTE
-function renderClienteSelectorFiltrado(nombreCliente) {
-  const list = document.getElementById('client-cont-list');
+// ===== CLIENTE =====
+function renderCliSelector() {
+  var list = document.getElementById('cli-list');
   list.innerHTML = '';
-  const filtrados = contenedores.filter(c => c.cliente === nombreCliente);
-  if (!filtrados.length) {
-    list.innerHTML = '<p style="font-family:var(--font-mono);font-size:11px;color:var(--ink3);text-align:center;padding:16px 0;">No hay contenedores registrados aún.</p>';
+  var mios = clienteActual ? contenedores.filter(function(c) { return c.cliente === clienteActual; }) : contenedores;
+  if (!mios.length) {
+    list.innerHTML = '<div style="font-size:13px;color:#9E9B93;text-align:center;padding:20px;">No hay contenedores registrados.</div>';
     return;
   }
-  filtrados.forEach(c => {
-    const el = document.createElement('div');
-    el.className = 'cont-item' + (c.estado === 'proceso' ? ' en-proceso' : '');
-    const guiaMeta = (c.guiaEncinasNum || c.guiaClienteNum) ? ` · G: ${c.guiaEncinasNum||'—'}/${c.guiaClienteNum||'—'}` : '';
-    el.innerHTML = `<div><div class="cont-item-name">${c.cliente} N° ${c.num}</div><div class="cont-item-meta">${c.po ? 'PO: '+c.po : 'Sin PO'}${guiaMeta} · ${c.cal} · ${c.fotos} fotos</div></div><span class="cont-item-badge ${c.estado==='proceso'?'status-prog':'status-done'}">${c.estado==='proceso'?'En carga':'Completo'}</span>`;
-    el.onclick = () => abrirGaleria(c.id);
+  mios.forEach(function(c) {
+    var guiaMeta = (c.guiaEnc || c.guiaCli) ? ' · G: ' + (c.guiaEnc||'—') + '/' + (c.guiaCli||'—') : '';
+    var el = document.createElement('div');
+    el.className = 'cont-item' + (c.estado === 'proceso' ? ' proc' : '');
+    el.innerHTML = '<div><div class="cont-item-name">' + c.cliente + ' N° ' + c.num + '</div>' +
+      '<div class="cont-item-meta">' + (c.po ? 'PO: ' + c.po : 'Sin PO') + guiaMeta + ' · ' + (c.cal||'—') + ' · ' + c.fotos + ' fotos</div></div>' +
+      '<span class="cont-item-badge ' + (c.estado==='proceso' ? 'status-proc' : 'status-done') + '">' + (c.estado==='proceso' ? 'En carga' : 'Completo') + '</span>';
+    el.onclick = function() { abrirGaleria(c.id); };
     list.appendChild(el);
   });
-  document.getElementById('client-selector').style.display = 'block';
-  document.getElementById('client-gallery').style.display = 'none';
-}
-
-function renderClienteSelector() {
-  const list = document.getElementById('client-cont-list');
-  list.innerHTML = '';
-  contenedores.forEach(c => {
-    const el = document.createElement('div');
-    el.className = 'cont-item' + (c.estado === 'proceso' ? ' en-proceso' : '');
-    const guiaMeta = (c.guiaEncinasNum || c.guiaClienteNum) ? ` · G: ${c.guiaEncinasNum||'—'}/${c.guiaClienteNum||'—'}` : '';
-    el.innerHTML = `<div><div class="cont-item-name">${c.cliente} N° ${c.num}</div><div class="cont-item-meta">${c.po ? 'PO: '+c.po : 'Sin PO'}${guiaMeta} · ${c.cal} · ${c.fotos} fotos</div></div><span class="cont-item-badge ${c.estado==='proceso'?'status-prog':'status-done'}">${c.estado==='proceso'?'En carga':'Completo'}</span>`;
-    el.onclick = () => abrirGaleria(c.id);
-    list.appendChild(el);
-  });
-  document.getElementById('client-selector').style.display = 'block';
-  document.getElementById('client-gallery').style.display = 'none';
+  document.getElementById('cli-selector').style.display = 'block';
+  document.getElementById('cli-galeria').style.display = 'none';
 }
 
 function abrirGaleria(id) {
-  const c = contenedores.find(x => x.id === id);
-  document.getElementById('client-selector').style.display = 'none';
-  document.getElementById('client-gallery').style.display = 'block';
-  document.getElementById('cl-po-label').textContent = c.po ? 'PO: ' + c.po : '';
-  document.getElementById('cl-title').textContent = c.cliente + ' N° ' + c.num;
-  document.getElementById('cl-cal').textContent = c.cal;
-  const tempEl = document.getElementById('cl-temp');
+  var c = contenedores.find(function(x) { return x.id === id; });
+  if (!c) return;
+  document.getElementById('cli-selector').style.display = 'none';
+  document.getElementById('cli-galeria').style.display = 'block';
+  document.getElementById('cli-po').textContent = c.po ? 'PO: ' + c.po : '';
+  document.getElementById('cli-title').textContent = c.cliente + ' N° ' + c.num;
+  document.getElementById('cli-cal').textContent = c.cal || '—';
+  var tempEl = document.getElementById('cli-temp');
   tempEl.textContent = c.temp || '—';
-  tempEl.className = 'client-meta-val' + (!c.temp || c.temp==='—' ? '' : (c.tempOk ? ' green' : ' warn'));
-  document.getElementById('cl-fecha').textContent = c.fecha;
-
-  const etapas = [];
-  const fotoUrls = c.fotoUrls || {};
-  const frutaUrls = c.frutaUrls || [];
-  if (c.etapas.temp) etapas.push({icon:'🌡️', label:'Temperatura inicial', url: fotoUrls.temp||''});
-  if (c.etapas.vacio) etapas.push({icon:'📦', label:'Contenedor vacío', url: fotoUrls.vacio||''});
-  for (let i = 1; i <= c.frutaFotos; i++) etapas.push({icon:'🍓', label:'Fruta — foto ' + i, url: frutaUrls[i-1]||''});
-
-  document.getElementById('cl-etapas-count').textContent = etapas.length + ' foto' + (etapas.length !== 1 ? 's' : '');
-  // Add guias card if any
-  const guiasBadge = contarGuias(c) > 0 ? ` (${contarGuias(c)})` : '';
-  const guiasCard = `<div class="photo-card" onclick="verGuiasCliente(${c.id})" style="${contarGuias(c) > 0 ? '' : 'opacity:0.45;cursor:default;'}">
-    <div class="download-badge">⬇</div>
-    <div class="photo-card-icon">📄</div>
-    <div><span class="photo-card" style="all:unset;font-family:var(--font-mono);font-size:10px;letter-spacing:0.06em;">Guías${guiasBadge}</span></div>
-  </div>`;
-
-  document.getElementById('cl-etapas-grid').innerHTML = etapas.map(e =>
-    `<div class="photo-card" onclick="verFoto('${e.url||''}','${e.label}')" style="${e.url ? '' : 'cursor:default;'}">
-      <div class="download-badge">⬇</div>
-      ${e.url ? `<img src="${e.url}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;position:absolute;inset:0;">` : `<div class="photo-card-icon">${e.icon}</div>`}
-      <div style="position:relative;z-index:1;background:rgba(255,255,255,0.85);padding:2px 6px;border-radius:4px;font-size:11px;">${e.label}</div>
-    </div>`
-  ).join('') + guiasCard;
-
-  const patasContainer = document.getElementById('cl-patas-container');
-  patasContainer.innerHTML = '';
-  if (c.patas > 0) {
-    const sec = document.createElement('div');
-    sec.className = 'gallery-section';
-    sec.innerHTML = `<div class="gallery-section-title">Patas de carga <span class="gallery-badge">${c.patas} de 24</span></div>`;
-    const grid = document.createElement('div');
-    grid.className = 'photo-grid';
-    const pataUrls = c.pataUrls || [];
-    for (let i = 1; i <= c.patas; i++) {
-      const url = pataUrls[i-1] || '';
-      grid.innerHTML += `<div class="photo-card" onclick="verFoto('${url}','Pata ${i}')" style="${url ? '' : 'cursor:default;'}">
-        <div class="download-badge">⬇</div>
-        ${url ? `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;position:absolute;inset:0;">` : '<div class="photo-card-icon">📷</div>'}
-        <div style="position:relative;z-index:1;background:rgba(255,255,255,0.85);padding:2px 6px;border-radius:4px;font-size:11px;">Pata ${i}</div>
-      </div>`;
+  tempEl.className = 'client-meta-val' + (!c.temp || c.temp==='—' ? '' : (c.tempOk ? ' ok' : ' warn'));
+  document.getElementById('cli-fecha').textContent = c.fecha || '—';
+  
+  var etapas = [];
+  if (c.etapas && c.etapas.temp) etapas.push({icon:'🌡️', label:'Temp. inicial', url: c.fotoUrls && c.fotoUrls.temp});
+  if (c.etapas && c.etapas.vacio) etapas.push({icon:'📦', label:'Cont. vacío', url: c.fotoUrls && c.fotoUrls.vacio});
+  for (var i = 0; i < (c.frutaFotos||0); i++) etapas.push({icon:'🍓', label:'Fruta ' + (i+1), url: c.frutaUrls && c.frutaUrls[i]});
+  
+  var hasGuias = c.guias && (c.guias.enc || c.guias.cli);
+  
+  var etSec = document.getElementById('cli-etapas');
+  etSec.innerHTML = '<div class="gallery-title">Etapas iniciales <span class="gallery-badge">' + etapas.length + ' fotos</span></div>';
+  var etGrid = document.createElement('div');
+  etGrid.className = 'photo-grid';
+  etapas.forEach(function(e) {
+    var card = document.createElement('div');
+    card.className = 'photo-card';
+    if (e.url) {
+      card.innerHTML = '<img src="' + e.url + '"><div class="photo-card-label">' + e.label + '</div>';
+      card.onclick = function() { verFoto(e.url, e.label); };
+    } else {
+      card.innerHTML = '<div class="photo-card-icon">' + e.icon + '</div><div class="photo-card-text">' + e.label + '</div>';
     }
-    sec.appendChild(grid);
-    patasContainer.appendChild(sec);
+    etGrid.appendChild(card);
+  });
+  if (hasGuias) {
+    var gCard = document.createElement('div');
+    gCard.className = 'photo-card';
+    gCard.innerHTML = '<div class="photo-card-icon">📄</div><div class="photo-card-text">Guías (' + contarGuias(c) + ')</div>';
+    gCard.onclick = function() { mostrarGuiasCliente(c); };
+    etGrid.appendChild(gCard);
+  }
+  etSec.appendChild(etGrid);
+  
+  var ptSec = document.getElementById('cli-patas');
+  ptSec.innerHTML = '';
+  if (c.patas > 0) {
+    ptSec.innerHTML = '<div class="gallery-title">Patas de carga <span class="gallery-badge">' + c.patas + ' de 24</span></div>';
+    var ptGrid = document.createElement('div');
+    ptGrid.className = 'photo-grid';
+    for (var j = 0; j < c.patas; j++) {
+      var url = c.pataUrls && c.pataUrls[j];
+      var pCard = document.createElement('div');
+      pCard.className = 'photo-card';
+      if (url) {
+        pCard.innerHTML = '<img src="' + url + '"><div class="photo-card-label">Pata ' + (j+1) + '</div>';
+        (function(u, n) { pCard.onclick = function() { verFoto(u, 'Pata ' + n); }; })(url, j+1);
+      } else {
+        pCard.innerHTML = '<div class="photo-card-icon">📷</div><div class="photo-card-text">Pata ' + (j+1) + '</div>';
+      }
+      ptGrid.appendChild(pCard);
+    }
+    ptSec.appendChild(ptGrid);
   }
 }
 
-function reabrirCarga(id) {
-  const c = contenedores.find(x => x.id === id);
-  if (!c) return;
-  if (!confirm('¿Reabrir la carga de "' + c.cliente + ' N° ' + c.num + '"?\nEl operario podrá agregar fotos pendientes.')) return;
-  c.estado = 'proceso';
-  guardarContenedorFB(c);
-  actualizarMetricas();
-  renderTabla();
-  toast('↩ Carga reabierta — el operario puede agregar fotos');
-}
-
-function eliminarContenedor(id) {
-  const c = contenedores.find(x => x.id === id);
-  if (!c) return;
-  if (!confirm('¿Eliminar "' + c.cliente + ' N° ' + c.num + '"? Esta acción no se puede deshacer.')) return;
-  eliminarContenedorFB(c);
-  contenedores = contenedores.filter(x => x.id !== id);
-  actualizarMetricas();
-  renderTabla();
-  toast('🗑 Contenedor eliminado');
-}
-
-
-let guiasContId = null;
-
-function openGuiasModal(id) {
-  guiasContId = id;
-  const c = contenedores.find(x => x.id === id);
-  if (!c) return;
-  if (!c.guias) c.guias = {encinas: null, cliente: null};
-  if (Array.isArray(c.guias)) c.guias = {encinas: null, cliente: null};
-  document.getElementById('guias-modal-sub').textContent = c.cliente + ' N° ' + c.num + (c.po ? ' · PO: ' + c.po : '');
-  renderSlot('encinas', c.guias.encinas);
-  renderSlot('cliente', c.guias.cliente);
-  document.getElementById('modal-guias').classList.add('open');
-}
-
-function renderSlot(slot, guia) {
-  const preview = document.getElementById('slot-' + slot + '-preview');
-  const drop = document.getElementById('slot-' + slot + '-drop');
-  if (guia) {
-    preview.style.display = 'flex';
-    drop.style.display = 'none';
-    document.getElementById('slot-' + slot + '-icon').textContent = guia.tipo === 'pdf' ? '📄' : '🖼️';
-    document.getElementById('slot-' + slot + '-tipo').textContent = guia.tipo === 'pdf' ? 'PDF' : 'Imagen';
-  } else {
-    preview.style.display = 'none';
-    drop.style.display = 'block';
-  }
-}
-
-function triggerSlotInput(slot) {
-  document.getElementById('input-' + slot).click();
-}
-
-function handleSlotFile(files, slot) {
-  if (!files || !files[0]) return;
-  const c = contenedores.find(x => x.id === guiasContId);
-  if (!c) return;
-  if (!c.guias || Array.isArray(c.guias)) c.guias = {encinas: null, cliente: null};
-  const file = files[0];
-  const esPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
-  c.guias[slot] = {nombre: slot === 'encinas' ? 'Guía Las Encinas' : 'Guía Cliente', tipo: esPdf ? 'pdf' : 'img', file: file};
-  renderSlot(slot, c.guias[slot]);
-  renderTabla();
-  toast('✓ ' + (slot === 'encinas' ? 'Guía Las Encinas' : 'Guía Cliente') + ' adjunta');
-  document.getElementById('input-' + slot).value = '';
-}
-
-function handleSlotDrop(event, slot) {
-  event.preventDefault();
-  document.getElementById('slot-' + slot + '-drop').style.borderColor = 'var(--cream3)';
-  document.getElementById('slot-' + slot + '-drop').style.background = 'var(--cream2)';
-  handleSlotFile(event.dataTransfer.files, slot);
-}
-
-function eliminarSlot(slot) {
-  const c = contenedores.find(x => x.id === guiasContId);
-  if (!c || !c.guias) return;
-  c.guias[slot] = null;
-  renderSlot(slot, null);
-  renderTabla();
-  toast('Guía eliminada');
-}
-
-function contarGuias(c) {
-  if (!c.guias || Array.isArray(c.guias)) return 0;
-  return (c.guias.encinas ? 1 : 0) + (c.guias.cliente ? 1 : 0);
-}
-
-function verGuiasCliente(id) {
-  const c = contenedores.find(x => x.id === id);
-  if (!c || !c.guias || Array.isArray(c.guias)) return;
+function mostrarGuiasCliente(c) {
   var guiasArr = [];
-  if (c.guias.encinas) guiasArr.push({nombre:'Guía Las Encinas', tipo:c.guias.encinas.tipo});
-  if (c.guias.cliente) guiasArr.push({nombre:'Guía Cliente', tipo:c.guias.cliente.tipo});
-  if (!guiasArr.length) return;
-  const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,26,20,0.7);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);';
-  overlay.innerHTML = `<div style="background:var(--cream);border-radius:10px;padding:28px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
-    <div style="font-family:var(--font-display);font-size:20px;color:var(--leaf);margin-bottom:4px;">Guías de despacho</div>
-    <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:18px;">${c.cliente} N° ${c.num}</div>
-    ${guiasArr.map(g => `<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--cream2);border:1px solid var(--cream3);border-radius:6px;margin-bottom:8px;">
-      <span style="font-size:22px;">${g.tipo === 'pdf' ? '📄' : '🖼️'}</span>
-      <div style="flex:1;">
-        <div style="font-size:13px;font-weight:500;">${g.nombre}</div>
-        <div style="font-family:var(--font-mono);font-size:10px;color:var(--ink3);text-transform:uppercase;letter-spacing:0.06em;">${g.tipo === 'pdf' ? 'PDF' : 'Imagen'}</div>
-      </div>
-      <button style="background:var(--leaf);color:var(--cream);border:none;border-radius:4px;padding:6px 12px;font-family:var(--font-mono);font-size:10px;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;">⬇</button>
-    </div>`).join('')}
-    <button onclick="this.closest('div[style*=fixed]').remove()" style="width:100%;margin-top:8px;background:transparent;border:1.5px solid var(--cream3);border-radius:6px;padding:10px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;color:var(--ink2);">Cerrar</button>
-  </div>`;
-  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
-  document.body.appendChild(overlay);
-}
-
-function cerrarSesion() {
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('client-selector').style.display = 'block';
-  document.getElementById('client-gallery').style.display = 'none';
-  document.getElementById('op-selector-view').style.display = 'block';
-  document.getElementById('op-carga-view').style.display = 'none';
-  document.getElementById('fruta-panel').classList.remove('show');
-  document.getElementById('pin-input').value = '';
-  document.getElementById('login-error').style.display = 'none';
-  clienteActual = null;
-  // Restore nav tabs visibility
-  document.querySelectorAll('.nav-tab').forEach(t => t.style.display = '');
+  if (c.guias.enc) guiasArr.push({nombre:'Guía Las Encinas', tipo: c.guias.enc.tipo});
+  if (c.guias.cli) guiasArr.push({nombre:'Guía Cliente', tipo: c.guias.cli.tipo});
+  var html = '<div style="position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;" id="guias-overlay">' +
+    '<div style="background:#f5f0e8;border-radius:12px;padding:24px;width:100%;max-width:380px;">' +
+    '<div style="font-size:18px;font-weight:700;color:#1a3a2a;margin-bottom:4px;">Guías de despacho</div>' +
+    '<div style="font-size:12px;color:#6B6860;margin-bottom:16px;">' + c.cliente + ' N° ' + c.num + '</div>';
+  guiasArr.forEach(function(g) {
+    html += '<div style="display:flex;align-items:center;gap:10px;padding:12px;background:#ece6d8;border:1px solid #ddd6c6;border-radius:6px;margin-bottom:8px;">' +
+      '<span style="font-size:22px;">' + (g.tipo==='pdf' ? '📄' : '🖼️') + '</span>' +
+      '<div style="flex:1;"><div style="font-size:13px;font-weight:600;">' + g.nombre + '</div>' +
+      '<div style="font-size:11px;color:#9E9B93;">' + (g.tipo==='pdf' ? 'PDF' : 'Imagen') + '</div></div>' +
+      '<button style="background:#1a3a2a;color:#fff;border:none;border-radius:4px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;">⬇</button></div>';
+  });
+  html += '<button onclick="document.getElementById(\'guias-overlay\').remove()" style="width:100%;margin-top:8px;padding:12px;background:#fff;border:1px solid #ddd6c6;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;">Cerrar</button>' +
+    '</div></div>';
+  document.body.insertAdjacentHTML('beforeend', html);
+  document.getElementById('guias-overlay').onclick = function(e) { if (e.target === this) this.remove(); };
 }
 
 function verFoto(url, label) {
-  if (!url) return;
-  const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;';
-  overlay.innerHTML = `
-    <p style="font-family:var(--font-mono);font-size:11px;color:rgba(255,255,255,0.6);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;">${label}</p>
-    <img src="${url}" style="max-width:100%;max-height:75vh;object-fit:contain;border-radius:8px;">
-    <div style="display:flex;gap:10px;margin-top:16px;">
-      <a href="${url}" download style="background:var(--leaf);color:var(--cream);text-decoration:none;border-radius:6px;padding:10px 18px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;">⬇ Descargar</a>
-      <button onclick="this.closest('div[style*=fixed]').remove()" style="background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:10px 18px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;">Cerrar</button>
-    </div>`;
-  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
-  document.body.appendChild(overlay);
+  var html = '<div style="position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;" id="foto-overlay">' +
+    '<div style="font-size:12px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">' + label + '</div>' +
+    '<img src="' + url + '" style="max-width:100%;max-height:75vh;object-fit:contain;border-radius:8px;">' +
+    '<div style="display:flex;gap:10px;margin-top:16px;">' +
+    '<a href="' + url + '" download style="background:#1a3a2a;color:#fff;text-decoration:none;border-radius:6px;padding:10px 16px;font-size:13px;font-weight:600;">⬇ Descargar</a>' +
+    '<button onclick="document.getElementById(\'foto-overlay\').remove()" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3);border-radius:6px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;">Cerrar</button>' +
+    '</div></div>';
+  document.body.insertAdjacentHTML('beforeend', html);
+  document.getElementById('foto-overlay').onclick = function(e) { if (e.target === this) this.remove(); };
+}
+
+// ===== UTILS =====
+
+function descargarTodasFotos() {
+  var galerias = document.querySelectorAll('#cli-etapas img, #cli-patas img');
+  if (!galerias.length) {
+    toast('⚠ No hay fotos para descargar');
+    return;
+  }
+  var count = 0;
+  galerias.forEach(function(img, i) {
+    setTimeout(function() {
+      var a = document.createElement('a');
+      a.href = img.src;
+      a.download = 'foto_' + (i + 1) + '.jpg';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      count++;
+      if (count === galerias.length) toast('✓ ' + count + ' fotos descargadas');
+    }, i * 300);
+  });
+  toast('⬇ Descargando ' + galerias.length + ' fotos...');
+}
+
+function descargarPDF() {
+  var imgs = document.querySelectorAll('#cli-etapas img, #cli-patas img');
+  if (!imgs.length) {
+    toast('⚠ No hay fotos para generar PDF');
+    return;
+  }
+  toast('📄 Generando PDF...');
+  
+  // Build a print-friendly page with all photos
+  var titulo = document.getElementById('cli-title').textContent;
+  var po = document.getElementById('cli-po').textContent;
+  var cal = document.getElementById('cli-cal').textContent;
+  var temp = document.getElementById('cli-temp').textContent;
+  var fecha = document.getElementById('cli-fecha').textContent;
+  
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+    '<title>Encinas Track - ' + titulo + '</title>' +
+    '<style>body{font-family:Arial,sans-serif;margin:20px;color:#1a1916;}' +
+    'h1{color:#1a3a2a;font-size:22px;margin-bottom:4px;}' +
+    '.meta{display:flex;gap:20px;margin-bottom:20px;font-size:13px;color:#6B6860;}' +
+    '.meta span b{color:#1a1916;}' +
+    '.section-title{font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:#9E9B93;border-bottom:1px solid #ddd;padding-bottom:6px;margin:20px 0 12px;}' +
+    '.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}' +
+    '.photo-item{break-inside:avoid;}' +
+    '.photo-item img{width:100%;height:150px;object-fit:cover;border-radius:6px;border:1px solid #ddd;}' +
+    '.photo-label{font-size:11px;color:#6B6860;text-align:center;margin-top:4px;}' +
+    '@media print{body{margin:0;}.no-print{display:none;}}' +
+    '</style></head><body>' +
+    '<div class="no-print" style="background:#1a3a2a;color:#fff;padding:10px 16px;margin:-20px -20px 20px;display:flex;justify-content:space-between;align-items:center;">' +
+    '<span style="font-weight:700;">Encinas Track — ' + titulo + '</span>' +
+    '<button onclick="window.print()" style="background:#e8b84b;color:#1a1916;border:none;border-radius:6px;padding:8px 16px;font-weight:700;cursor:pointer;">🖨 Imprimir / Guardar PDF</button></div>' +
+    '<h1>' + titulo + '</h1>' +
+    (po ? '<div style="color:#e8b84b;font-size:13px;margin-bottom:8px;">' + po + '</div>' : '') +
+    '<div class="meta">' +
+    '<span><b>Calidad:</b> ' + cal + '</span>' +
+    '<span><b>Temperatura:</b> ' + temp + '</span>' +
+    '<span><b>Fecha:</b> ' + fecha + '</span>' +
+    '</div>';
+
+  // Etapas iniciales
+  var etapasImgs = document.querySelectorAll('#cli-etapas img');
+  if (etapasImgs.length) {
+    html += '<div class="section-title">Etapas iniciales</div><div class="photo-grid">';
+    etapasImgs.forEach(function(img) {
+      var label = img.nextElementSibling ? img.nextElementSibling.textContent : '';
+      html += '<div class="photo-item"><img src="' + img.src + '"><div class="photo-label">' + label + '</div></div>';
+    });
+    html += '</div>';
+  }
+  
+  // Patas
+  var patasImgs = document.querySelectorAll('#cli-patas img');
+  if (patasImgs.length) {
+    html += '<div class="section-title">Patas de carga</div><div class="photo-grid">';
+    patasImgs.forEach(function(img) {
+      var label = img.nextElementSibling ? img.nextElementSibling.textContent : '';
+      html += '<div class="photo-item"><img src="' + img.src + '"><div class="photo-label">' + label + '</div></div>';
+    });
+    html += '</div>';
+  }
+  
+  html += '</body></html>';
+  
+  var win = window.open('', '_blank');
+  if (win) {
+    win.document.write(html);
+    win.document.close();
+    setTimeout(function() { toast('✓ PDF listo — usa Imprimir para guardar'); }, 500);
+  } else {
+    toast('⚠ Permite ventanas emergentes para generar el PDF');
+  }
 }
 
 function toast(msg) {
-  const t = document.getElementById('global-toast');
+  var t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
+  setTimeout(function() { t.classList.remove('show'); }, 2800);
 }
 
-document.querySelectorAll('.overlay').forEach(ov => {
-  ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('open'); });
+document.querySelectorAll('.overlay').forEach(function(ov) {
+  ov.addEventListener('click', function(e) { if (e.target === ov) ov.classList.remove('open'); });
 });
 
-actualizarMetricas();
-renderTabla();
 
-
-
-// Firebase stubs - safe fallbacks
-window.db = null;
-window.fsCollection = function() { return null; };
-window.fsDoc = function() { return null; };
-window.fsSetDoc = function() { return Promise.resolve(); };
-window.fsDeleteDoc = function() { return Promise.resolve(); };
-window.fsOnSnapshot = function() { return function(){}; };
-window.firebaseReady = false;
-
-// ============ FIREBASE INTEGRATION ============
-let unsubscribeContenedores = null;
-
-function iniciarFirebase() { console.log("Firebase disabled"); }
-
-
-function mostrarErrorLogin() {
-  document.getElementById('login-error').style.display = 'block';
-  document.getElementById('pin-input').value = '';
-  document.getElementById('pin-input').focus();
-}
-
-function entrarApp(rol, clienteNombre) {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-
-  if (rol === 'operario') {
-    document.querySelectorAll('.nav-tab').forEach(t => t.style.display = 'none');
-    document.getElementById('page-operario').classList.add('active');
-    renderOperario();
-  } else if (rol === 'cliente') {
-    document.querySelectorAll('.nav-tab').forEach(t => t.style.display = 'none');
-    document.getElementById('page-cliente').classList.add('active');
-    renderClienteSelectorFiltrado(clienteNombre);
-  } else {
-    document.querySelectorAll('.nav-tab').forEach(t => t.style.display = '');
-    document.getElementById('page-coordinador').classList.add('active');
-    actualizarMetricas();
-    renderTabla();
-  }
-}
-
-function selectLoginRole(role) {
-  loginRole = role;
-  const lbl = document.getElementById('pin-label');
-  if (lbl) lbl.textContent = role === 'cliente' ? 'PIN de empresa' : 'PIN ' + role;
-  const inp = document.getElementById('pin-input');
-  if (inp) inp.value = '';
-  const err = document.getElementById('login-error');
-  if (err) err.style.display = 'none';
-}
-function intentarLogin() {
-  var pinEl = document.getElementById('pin-input');
-  var pin = pinEl ? String(pinEl.value).trim() : '';
-  var rolEl = document.getElementById('rol-select');
-  var rol = rolEl ? rolEl.value : loginRole;
-  loginRole = rol;
-  
-  var pins = { coordinador: '1979', operario: '1234' };
-  var errorEl = document.getElementById('login-error');
-  
-  if (rol === 'cliente') {
-    var match = null;
-    for (var i = 0; i < clientes.length; i++) {
-      if (clientes[i].pin === pin) { match = clientes[i]; break; }
-    }
-    if (match) {
-      clienteActual = match.nombre;
-      entrarApp('cliente', match.nombre);
-    } else {
-      if (errorEl) errorEl.style.display = 'block';
-      if (pinEl) pinEl.value = '';
-    }
-    return;
-  }
-  
-  if (pin === pins[rol]) {
-    clienteActual = null;
-    entrarApp(rol, null);
-  } else {
-    if (errorEl) errorEl.style.display = 'block';
-    if (pinEl) pinEl.value = '';
-  }
-}
-
-function mostrarErrorLogin() {
-  document.getElementById('login-error').style.display = 'block';
-  document.getElementById('pin-input').value = '';
-  document.getElementById('pin-input').focus();
-}
-
-function entrarApp(rol, clienteNombre) {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-
-  if (rol === 'operario') {
-    document.querySelectorAll('.nav-tab').forEach(t => t.style.display = 'none');
-    document.getElementById('page-operario').classList.add('active');
-    renderOperario();
-  } else if (rol === 'cliente') {
-    document.querySelectorAll('.nav-tab').forEach(t => t.style.display = 'none');
-    document.getElementById('page-cliente').classList.add('active');
-    renderClienteSelectorFiltrado(clienteNombre);
-  } else {
-    // coordinador
-    document.querySelectorAll('.nav-tab').forEach(t => t.style.display = '');
-    document.getElementById('page-coordinador').classList.add('active');
-    actualizarMetricas();
-    renderTabla();
-  }
-}
 </script>
 </body>
 </html>
