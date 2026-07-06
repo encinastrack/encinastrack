@@ -914,8 +914,7 @@ function entrar(rol) {
   } else {
     allTabs.forEach(function(t) { t.style.display = ''; });
     mostrarPagina('coordinador');
-    actualizarMetricas();
-    renderTabla();
+    cargarDatos(function() { actualizarMetricas(); renderTabla(); });
   }
 }
 
