@@ -672,7 +672,7 @@ function supaHeaders() {
 }
 
 function supaFetch(path, method, body) {
-  var opts = { method: method || 'GET', headers: supaHeaders() };
+  var opts = { method: method || 'GET', headers: supaHeaders(), mode: 'cors' };
   if (body) opts.body = JSON.stringify(body);
   return fetch(SUPA_URL + '/rest/v1/' + path, opts);
 }
@@ -1144,9 +1144,17 @@ function crearContenedor() {
 function abrirLink(id) {
   var c = contenedores.find(function(x) { return x.id === id; });
   if (!c) return;
-  var linkNombre = c.po ? 'PO: ' + c.po : c.cliente + ' N° ' + c.num;
-  var slug = c.po ? 'PO-' + c.po : c.cliente.replace(/\s+/g,'-') + '-' + c.num.replace('/','-');
-  var url = 'encinastrack.app/' + slug;
+  var linkNombre;
+  if (c.po) {
+    linkNombre = 'PO: ' + c.po;
+  } else if (c.guiaEnc) {
+    linkNombre = 'Guía: ' + c.guiaEnc;
+  } else if (c.guiaCli) {
+    linkNombre = 'Guía: ' + c.guiaCli;
+  } else {
+    linkNombre = c.cliente + ' N° ' + c.num;
+  }
+  var url = 'https://encinastrack.github.io/encinastrack/app.html';
   document.getElementById('link-sub').textContent = c.cliente + ' N° ' + c.num;
   document.getElementById('link-cli').textContent = c.cliente;
   document.getElementById('link-num').textContent = 'N° ' + c.num;
@@ -1644,19 +1652,37 @@ function verFoto(url, label) {
 function descargarTodasFotos() {
   var imgs = document.querySelectorAll('#cli-etapas img, #cli-patas img');
   if (!imgs.length) { toast('⚠ No hay fotos para descargar'); return; }
-  toast('⬇ Descargando ' + imgs.length + ' fotos...');
-  imgs.forEach(function(img, i) {
-    setTimeout(function() {
-      var a = document.createElement('a');
-      a.href = img.src;
-      var label = img.nextElementSibling ? img.nextElementSibling.textContent.replace(/\s+/g,'-') : ('foto-' + (i+1));
-      a.download = label + '.jpg';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      if (i === imgs.length - 1) toast('✓ ' + imgs.length + ' fotos descargadas');
-    }, i * 400);
-  });
+  
+  // Show instructions overlay
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,26,20,0.7);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;';
+  overlay.innerHTML = '<div style="background:var(--cream);border-radius:12px;padding:24px;width:100%;max-width:400px;">' +
+    '<div style="font-family:var(--display);font-size:20px;color:var(--forest);margin-bottom:8px;">Descargar fotos</div>' +
+    '<div style="font-size:13px;color:var(--ink2);margin-bottom:16px;line-height:1.6;">Se descargarán <strong>' + imgs.length + ' fotos</strong>. En iPhone quedan en <strong>Archivos → Descargas</strong>. En PC quedan en la carpeta Descargas.</div>' +
+    '<div style="display:flex;gap:8px;">' +
+    '<button id="_dl-cancel" style="flex:1;padding:11px;background:var(--cream2);border:1px solid var(--cream3);border-radius:6px;font-size:14px;cursor:pointer;">Cancelar</button>' +
+    '<button id="_dl-confirm" style="flex:1;padding:11px;background:var(--forest);color:var(--cream);border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;">Descargar todas</button>' +
+    '</div></div>';
+  document.body.appendChild(overlay);
+  
+  document.getElementById('_dl-cancel').onclick = function() { overlay.remove(); };
+  document.getElementById('_dl-confirm').onclick = function() {
+    overlay.remove();
+    toast('⬇ Descargando ' + imgs.length + ' fotos...');
+    imgs.forEach(function(img, i) {
+      setTimeout(function() {
+        var a = document.createElement('a');
+        a.href = img.src;
+        var label = img.nextElementSibling ? img.nextElementSibling.textContent.replace(/\s+/g,'-') : ('foto-' + (i+1));
+        a.download = label + '.jpg';
+        a.target = '_blank';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        if (i === imgs.length - 1) toast('✓ ' + imgs.length + ' fotos en Archivos → Descargas');
+      }, i * 500);
+    });
+  };
 }
 
 function descargarPDF() {
