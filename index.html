@@ -946,8 +946,9 @@ function mostrarPagina(nombre) {
 
 function irA(nombre, el) {
   mostrarPagina(nombre);
-  if (nombre === 'operario') renderOpSelector();
-  if (nombre === 'cliente') renderCliSelector();
+  if (nombre === 'operario') { cargarDatos(function() { renderOpSelector(); }); }
+  if (nombre === 'cliente') { cargarDatos(function() { renderCliSelector(); }); }
+  if (nombre === 'coordinador') { cargarDatos(function() { actualizarMetricas(); renderTabla(); }); }
 }
 
 // ===== METRICAS Y TABLA =====
@@ -986,10 +987,10 @@ function renderTabla() {
       '<span class="temp-tag ' + tempClass + '">' + (c.temp || '—') + '</span>' +
       '<span class="status-tag ' + stClass + '">' + stText + '</span>' +
       '<div class="actions">' +
-        (proc ? '<button class="btn-blue" onclick="irAOp(' + c.id + ')">Ver carga</button>' : '<button class="btn-link" onclick="abrirLink(' + c.id + ')">🔗 Link</button>') +
-        '<button class="btn-link" style="background:#fff7ed;color:#92400e;border-color:#fed7aa;" onclick="abrirGuias(' + c.id + ')">📄 Guías' + guiaBadge + '</button>' +
-        (!proc ? '<button class="btn-warn" onclick="reabrirCarga(' + c.id + ')">↩</button>' : '') +
-        '<button class="btn-danger" onclick="eliminarCont(' + c.id + ')">🗑</button>' +
+        (proc ? '<button class="btn-blue" onclick="irAOp(\'' + c.id + '\')">Ver carga</button>' : '<button class="btn-link" onclick="abrirLink(\'' + c.id + '\')">🔗 Link</button>') +
+        '<button class="btn-link" style="background:#fff7ed;color:#92400e;border-color:#fed7aa;" onclick="abrirGuias(\'' + c.id + '\')">📄 Guías' + guiaBadge + '</button>' +
+        (!proc ? '<button class="btn-warn" onclick="reabrirCarga(\'' + c.id + '\')">↩</button>' : '') +
+        '<button class="btn-danger" onclick="eliminarCont(\'' + c.id + '\')">🗑</button>' +
       '</div>';
     body.appendChild(row);
   });
@@ -1147,7 +1148,7 @@ function crearContenedor() {
 
 // ===== LINK MODAL =====
 function abrirLink(id) {
-  var c = contenedores.find(function(x) { return x.id === id; });
+  var c = contenedores.find(function(x) { return String(x.id) === String(id); });
   if (!c) return;
   var linkNombre;
   if (c.po) {
@@ -1188,18 +1189,18 @@ function abrirWA() {
 
 // ===== ACCIONES TABLA =====
 function eliminarCont(id) {
-  var c = contenedores.find(function(x) { return x.id === id; });
+  var c = contenedores.find(function(x) { return String(x.id) === String(id); });
   if (!c) return;
   if (!confirm('¿Eliminar "' + c.cliente + ' N° ' + c.num + '"?')) return;
   eliminarContenedorDB(id);
-  contenedores = contenedores.filter(function(x) { return x.id !== id; });
+  contenedores = contenedores.filter(function(x) { return String(x.id) !== String(id); });
   actualizarMetricas();
   renderTabla();
   toast('🗑 Contenedor eliminado');
 }
 
 function reabrirCarga(id) {
-  var c = contenedores.find(function(x) { return x.id === id; });
+  var c = contenedores.find(function(x) { return String(x.id) === String(id); });
   if (!c) return;
   if (!confirm('¿Reabrir la carga de "' + c.cliente + ' N° ' + c.num + '"?')) return;
   c.estado = 'proceso';
@@ -1211,13 +1212,13 @@ function reabrirCarga(id) {
 
 function irAOp(id) {
   irA('operario', null);
-  setTimeout(function() { abrirCarga(id); }, 50);
+  setTimeout(function() { abrirCarga(id); }, 400);
 }
 
 // ===== GUIAS =====
 function abrirGuias(id) {
   guiasContId = id;
-  var c = contenedores.find(function(x) { return x.id === id; });
+  var c = contenedores.find(function(x) { return String(x.id) === String(id); });
   if (!c) return;
   if (!c.guias) c.guias = {enc: null, cli: null};
   document.getElementById('guias-sub').textContent = c.cliente + ' N° ' + c.num + (c.po ? ' · PO: ' + c.po : '');
@@ -1246,7 +1247,7 @@ function seleccionarGuia(slot) {
 
 function procesarGuia(files, slot) {
   if (!files || !files[0]) return;
-  var c = contenedores.find(function(x) { return x.id === guiasContId; });
+  var c = contenedores.find(function(x) { return String(x.id) === String(guiasContId); });
   if (!c) return;
   if (!c.guias) c.guias = {enc: null, cli: null};
   var file = files[0];
@@ -1259,7 +1260,7 @@ function procesarGuia(files, slot) {
 }
 
 function eliminarSlot(slot) {
-  var c = contenedores.find(function(x) { return x.id === guiasContId; });
+  var c = contenedores.find(function(x) { return String(x.id) === String(guiasContId); });
   if (!c || !c.guias) return;
   c.guias[slot] = null;
   renderSlot(slot, null);
@@ -1287,14 +1288,8 @@ function renderOpSelector() {
 
 function abrirCarga(id) {
   currentId = id;
-  var c = contenedores.find(function(x) { return x.id === id; });
+  var c = contenedores.find(function(x) { return String(x.id) === String(id); });
   if (!c) return;
-  if (c.estado === 'proceso') {
-    c.etapas = {temp: false, vacio: false};
-    c.frutaFotos = 0;
-    c.frutaUrls = [];
-    c.fotoUrls = {};
-  }
   document.getElementById('op-selector').style.display = 'none';
   document.getElementById('op-carga').style.display = 'block';
   document.getElementById('op-name').textContent = c.cliente + ' N° ' + c.num;
@@ -1302,6 +1297,24 @@ function abrirCarga(id) {
   actualizarTemp(c);
   renderEtapas(c);
   renderPatas(c);
+  // Traer siempre la version mas reciente desde la base de datos.
+  // Esto asegura que si el operario cerro la app o si otro operario
+  // ya avanzo esta carga, se vea el progreso real y no se pierda nada.
+  supaFetch('contenedores?id=eq.' + encodeURIComponent(String(id)), 'GET')
+    .then(function(r) { return r.json(); })
+    .then(function(rows) {
+      if (rows && rows[0]) {
+        var fresh = dbToApp(rows[0]);
+        var idx = contenedores.findIndex(function(x) { return String(x.id) === String(id); });
+        if (idx >= 0) contenedores[idx] = fresh;
+        if (String(currentId) === String(id)) {
+          actualizarTemp(fresh);
+          renderEtapas(fresh);
+          renderPatas(fresh);
+        }
+      }
+    })
+    .catch(function(e) { console.error('refrescar carga error:', e); });
 }
 
 function actualizarTemp(c) {
@@ -1390,7 +1403,7 @@ function toggleFruta() {
 }
 
 function tomarFoto(tipo) {
-  var c = contenedores.find(function(x) { return x.id === currentId; });
+  var c = contenedores.find(function(x) { return String(x.id) === String(currentId); });
   if (!c) return;
 
   // Show choice: camera or gallery
@@ -1435,46 +1448,75 @@ function tomarFoto(tipo) {
 }
 
 function procesarFoto(tipo, c, dataUrl) {
-  if (tipo === 'temp') {
-    c.etapas.temp = true;
-    c.fotos++;
-    if (dataUrl) c.fotoUrls.temp = dataUrl;
-    var tempStr = prompt('Ingresa la temperatura (ej: -18.5):');
-    if (tempStr) {
-      var t = parseFloat(tempStr);
-      if (!isNaN(t)) {
-        c.temp = t.toFixed(1) + '°C';
-        c.tempOk = t <= -12;
+  var contId = c.id;
+  toast('Guardando...');
+
+  // Antes de aplicar la nueva foto, se trae el estado mas reciente
+  // de la base de datos. Esto evita perder fotos si el operario
+  // cerro la app a mitad de la carga, y evita que dos operarios
+  // trabajando el mismo contenedor se pisen el progreso entre si.
+  supaFetch('contenedores?id=eq.' + encodeURIComponent(String(contId)), 'GET')
+    .then(function(r) { return r.json(); })
+    .then(function(rows) {
+      var fresh = (rows && rows[0]) ? dbToApp(rows[0]) : c;
+      if (!fresh.etapas) fresh.etapas = { temp: false, vacio: false };
+      if (!fresh.fotoUrls) fresh.fotoUrls = {};
+      if (!fresh.frutaUrls) fresh.frutaUrls = [];
+      if (!fresh.pataUrls) fresh.pataUrls = [];
+
+      if (tipo === 'temp') {
+        fresh.etapas.temp = true;
+        if (dataUrl) fresh.fotoUrls.temp = dataUrl;
+        var tempStr = prompt('Ingresa la temperatura (ej: -18.5):');
+        if (tempStr) {
+          var t = parseFloat(tempStr);
+          if (!isNaN(t)) {
+            fresh.temp = t.toFixed(1) + '°C';
+            fresh.tempOk = t <= -12;
+          }
+        }
+        toast('✓ Temperatura registrada');
+      } else if (tipo === 'vacio') {
+        fresh.etapas.vacio = true;
+        if (dataUrl) fresh.fotoUrls.vacio = dataUrl;
+        toast('✓ Contenedor vacío registrado');
+      } else if (tipo === 'fruta') {
+        if (dataUrl) fresh.frutaUrls.push(dataUrl);
+        fresh.frutaFotos = fresh.frutaUrls.length;
+        toast('✓ Foto de fruta ' + fresh.frutaFotos + ' registrada');
+      } else if (tipo === 'pata') {
+        if (fresh.pataUrls.length < 24) {
+          if (dataUrl) fresh.pataUrls.push(dataUrl);
+          fresh.patas = fresh.pataUrls.length;
+          toast('✓ Pata ' + fresh.patas + ' registrada');
+        } else {
+          toast('⚠ Ya se registraron las 24 patas');
+        }
       }
-    }
-    actualizarTemp(c);
-    toast('✓ Temperatura registrada');
-  } else if (tipo === 'vacio') {
-    c.etapas.vacio = true;
-    c.fotos++;
-    if (dataUrl) c.fotoUrls.vacio = dataUrl;
-    toast('✓ Contenedor vacío registrado');
-  } else if (tipo === 'fruta') {
-    c.frutaFotos++;
-    c.fotos++;
-    if (dataUrl) { if (!c.frutaUrls) c.frutaUrls = []; c.frutaUrls.push(dataUrl); }
-    toast('✓ Foto de fruta ' + c.frutaFotos + ' registrada');
-  } else if (tipo === 'pata') {
-    if (c.patas < 24) {
-      c.patas++;
-      c.fotos++;
-      if (dataUrl) { if (!c.pataUrls) c.pataUrls = []; c.pataUrls.push(dataUrl); }
-      toast('✓ Pata ' + c.patas + ' registrada');
-    }
-  }
-  renderEtapas(c);
-  renderPatas(c);
-  actualizarMetricas();
-  renderTabla();
+
+      fresh.fotos = (fresh.etapas.temp ? 1 : 0) + (fresh.etapas.vacio ? 1 : 0) + (fresh.frutaFotos || 0) + (fresh.patas || 0);
+
+      var idx = contenedores.findIndex(function(x) { return String(x.id) === String(contId); });
+      if (idx >= 0) contenedores[idx] = fresh; else contenedores.push(fresh);
+
+      guardarContenedor(fresh);
+
+      if (String(currentId) === String(contId)) {
+        actualizarTemp(fresh);
+        renderEtapas(fresh);
+        renderPatas(fresh);
+      }
+      actualizarMetricas();
+      renderTabla();
+    })
+    .catch(function(e) {
+      console.error('procesar foto error:', e);
+      toast('⚠ No se pudo guardar — revisa tu conexión');
+    });
 }
 
 function completarCarga() {
-  var c = contenedores.find(function(x) { return x.id === currentId; });
+  var c = contenedores.find(function(x) { return String(x.id) === String(currentId); });
   if (!c) return;
 
   var checks = [
@@ -1554,7 +1596,7 @@ function renderCliSelector() {
 }
 
 function abrirGaleria(id) {
-  var c = contenedores.find(function(x) { return x.id === id; });
+  var c = contenedores.find(function(x) { return String(x.id) === String(id); });
   if (!c) return;
   document.getElementById('cli-selector').style.display = 'none';
   document.getElementById('cli-galeria').style.display = 'block';
