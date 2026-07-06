@@ -667,12 +667,18 @@ function supaHeaders() {
   return {
     'Content-Type': 'application/json',
     'apikey': SUPA_KEY,
-    'Authorization': 'Bearer ' + SUPA_KEY
+    'Authorization': 'Bearer ' + SUPA_KEY,
+    'Prefer': 'return=representation'
   };
 }
 
 function supaFetch(path, method, body) {
-  var opts = { method: method || 'GET', headers: supaHeaders(), mode: 'cors' };
+  var opts = { 
+    method: method || 'GET', 
+    headers: supaHeaders(),
+    mode: 'cors',
+    credentials: 'omit'
+  };
   if (body) opts.body = JSON.stringify(body);
   return fetch(SUPA_URL + '/rest/v1/' + path, opts);
 }
