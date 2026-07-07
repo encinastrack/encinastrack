@@ -743,16 +743,22 @@ function appToDb(c) {
 
 function guardarContenedor(c) {
   var row = appToDb(c);
-  supaFetch('contenedores?id=eq.' + row.id, 'GET')
+  supaFetch('contenedores?id=eq.' + encodeURIComponent(row.id), 'PATCH', row)
     .then(function(r) { return r.json(); })
-    .then(function(existing) {
-      if (existing && existing.length > 0) {
-        return supaFetch('contenedores?id=eq.' + row.id, 'PATCH', row);
-      } else {
+    .then(function(updated) {
+      if (!updated || updated.length === 0) {
         return supaFetch('contenedores', 'POST', row);
       }
     })
     .catch(function(e) { console.error('guardar error:', e); });
+}
+
+// Guarda SOLO los campos indicados, sin tocar el resto de la fila.
+// Esto evita que dos guardados casi simultaneos (por ejemplo, la ultima
+// foto de una carga y el boton "Carga completada") se pisen entre si.
+function patchContenedor(id, campos) {
+  return supaFetch('contenedores?id=eq.' + encodeURIComponent(String(id)), 'PATCH', campos)
+    .catch(function(e) { console.error('patch error:', e); });
 }
 
 function eliminarContenedorDB(id) {
@@ -1204,7 +1210,7 @@ function reabrirCarga(id) {
   if (!c) return;
   if (!confirm('¿Reabrir la carga de "' + c.cliente + ' N° ' + c.num + '"?')) return;
   c.estado = 'proceso';
-  guardarContenedor(c);
+  patchContenedor(id, { estado: 'proceso' });
   actualizarMetricas();
   renderTabla();
   toast('↩ Carga reabierta');
@@ -1499,7 +1505,22 @@ function procesarFoto(tipo, c, dataUrl) {
       var idx = contenedores.findIndex(function(x) { return String(x.id) === String(contId); });
       if (idx >= 0) contenedores[idx] = fresh; else contenedores.push(fresh);
 
-      guardarContenedor(fresh);
+      // Guardado PARCIAL: solo se envian los campos de esta foto.
+      // Nunca se toca "estado", asi que no puede pisar un cierre de
+      // carga que haya ocurrido casi al mismo tiempo (u otro operario).
+      patchContenedor(contId, {
+        etapa_temp: fresh.etapas.temp,
+        etapa_vacio: fresh.etapas.vacio,
+        foto_temp: fresh.fotoUrls.temp || null,
+        foto_vacio: fresh.fotoUrls.vacio || null,
+        temp: fresh.temp,
+        temp_ok: fresh.tempOk,
+        fruta_fotos: fresh.frutaFotos,
+        fruta_urls: fresh.frutaUrls,
+        patas: fresh.patas,
+        pata_urls: fresh.pataUrls,
+        fotos: fresh.fotos
+      });
 
       if (String(currentId) === String(contId)) {
         actualizarTemp(fresh);
@@ -1556,7 +1577,7 @@ function completarCarga() {
   document.getElementById('btn-confirmar-carga').onclick = function() {
     overlay.remove();
     c.estado = 'completo';
-    guardarContenedor(c);
+    patchContenedor(c.id, { estado: 'completo' });
     actualizarMetricas();
     renderTabla();
     toast('🎉 Carga completada');
