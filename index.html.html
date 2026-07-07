@@ -1,0 +1,1980 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Encinas Track</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --forest:  #1B3A2A;
+  --forest2: #2d5c42;
+  --forest3: #3d7a55;
+  --cream:   #F5F0E8;
+  --cream2:  #ECE6D8;
+  --cream3:  #DDD6C6;
+  --ink:     #1A1916;
+  --ink2:    #4A5240;
+  --ink3:    #8A8578;
+  --gold:    #C8973A;
+  --gold2:   #E8B84B;
+  --ok:      #2D6A4F;
+  --ok-bg:   #D8F3DC;
+  --warn:    #92400E;
+  --warn-bg: #FEF3C7;
+  --blue:    #1D4ED8;
+  --blue-bg: #DDEEFF;
+  --berry:   #8B1A3A;
+  --r: 8px;
+  --display: 'Playfair Display', Georgia, serif;
+  --body:    'DM Sans', -apple-system, Arial, sans-serif;
+  --mono:    'DM Mono', 'Courier New', monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--body); background: var(--cream); color: var(--ink); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+
+/* ── LOGIN ── */
+#login-screen { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; background:var(--forest); background-image: radial-gradient(ellipse at 20% 60%, rgba(61,122,85,0.3) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(139,26,58,0.15) 0%, transparent 50%); }
+.login-card { background:var(--cream); border-radius:14px; padding:40px 36px; width:100%; max-width:380px; text-align:center; box-shadow:0 24px 80px rgba(0,0,0,0.4); position:relative; overflow:hidden; }
+.login-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg, var(--forest3), var(--gold), var(--berry)); }
+.login-logo { width:60px; height:60px; background:var(--forest); border-radius:12px; margin:0 auto 18px; display:flex; align-items:center; justify-content:center; font-size:28px; }
+.login-title { font-family:var(--display); font-size:28px; color:var(--forest); margin-bottom:4px; }
+.login-sub { font-family:var(--mono); font-size:10px; color:var(--ink3); letter-spacing:0.16em; text-transform:uppercase; margin-bottom:28px; }
+.lf-label { font-family:var(--mono); font-size:10px; color:var(--ink3); letter-spacing:0.12em; text-transform:uppercase; text-align:left; display:block; margin-bottom:6px; }
+.lf-select { width:100%; padding:12px; font-size:15px; font-family:var(--body); border:1.5px solid var(--cream3); border-radius:var(--r); background:var(--cream2); color:var(--ink); margin-bottom:16px; outline:none; }
+.lf-pin { width:100%; padding:14px; font-size:26px; text-align:center; letter-spacing:10px; border:1.5px solid var(--cream3); border-radius:var(--r); background:var(--cream2); color:var(--ink); margin-bottom:8px; outline:none; font-family:var(--mono); }
+.lf-pin:focus { border-color:var(--forest3); }
+.lf-error { display:none; font-size:12px; color:#991B1B; background:#FEE2E2; border:1px solid rgba(153,27,27,0.2); border-radius:6px; padding:8px 12px; margin-bottom:8px; font-family:var(--mono); }
+.lf-btn { width:100%; background:var(--forest); color:var(--cream); border:none; border-radius:var(--r); padding:15px; font-family:var(--body); font-size:15px; font-weight:600; cursor:pointer; transition:background 0.15s; }
+.lf-btn:hover { background:var(--forest2); }
+
+/* ── APP ── */
+#app { display:none; }
+.page { display:none; }
+.page.active { display:block; animation:fadeIn 0.2s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── NAV ── */
+nav { background:var(--forest); display:flex; align-items:center; padding:0 20px; height:54px; position:sticky; top:0; z-index:50; }
+.nav-logo { display:flex; align-items:center; gap:10px; margin-right:32px; }
+.nav-logo-icon { width:26px; height:26px; }
+.nav-logo-text { font-family:var(--display); font-size:17px; color:var(--cream); letter-spacing:0.02em; line-height:1; }
+.nav-logo-sub { font-family:var(--mono); font-size:9px; color:rgba(245,240,232,0.4); letter-spacing:0.12em; text-transform:uppercase; }
+.nav-tab { font-family:var(--body); font-size:13px; font-weight:500; color:rgba(245,240,232,0.5); padding:0 14px; height:54px; display:flex; align-items:center; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:all 0.15s; white-space:nowrap; }
+.nav-tab:hover { color:var(--cream); }
+.nav-tab.active { color:var(--gold2); border-bottom-color:var(--gold2); }
+.nav-right { margin-left:auto; }
+.nav-season { font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:rgba(245,240,232,0.35); border:1px solid rgba(245,240,232,0.12); border-radius:20px; padding:4px 12px; }
+
+/* ── LAYOUT ── */
+.wrap { max-width:1120px; margin:0 auto; padding:24px 20px; }
+.page-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:24px; gap:12px; flex-wrap:wrap; }
+.page-title { font-family:var(--display); font-size:28px; color:var(--forest); }
+.page-sub { font-family:var(--mono); font-size:10px; color:var(--ink3); letter-spacing:0.12em; text-transform:uppercase; margin-top:4px; }
+
+/* ── BUTTONS ── */
+.btn-primary { background:var(--forest); color:var(--cream); border:none; border-radius:var(--r); padding:10px 18px; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:6px; transition:all 0.15s; white-space:nowrap; }
+.btn-primary:hover { background:var(--forest2); transform:translateY(-1px); }
+.btn-ghost { background:var(--cream); color:var(--ink2); border:1.5px solid var(--cream3); border-radius:var(--r); padding:9px 16px; font-size:13px; cursor:pointer; transition:all 0.15s; }
+.btn-ghost:hover { border-color:var(--ink3); background:var(--cream2); }
+
+/* ── METRICS ── */
+.metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px; }
+.metric { background:var(--cream2); border:1px solid var(--cream3); border-radius:var(--r); padding:14px 16px; position:relative; overflow:hidden; }
+.metric::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; }
+.metric:nth-child(1)::after { background:var(--forest3); }
+.metric:nth-child(2)::after { background:var(--ok); }
+.metric:nth-child(3)::after { background:var(--blue); }
+.metric:nth-child(4)::after { background:var(--gold); }
+.metric-label { font-family:var(--mono); font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink3); margin-bottom:6px; }
+.metric-val { font-family:var(--display); font-size:32px; color:var(--ink); }
+.metric-val.green { color:var(--ok); }
+.metric-val.blue { color:var(--blue); }
+
+/* ── SEARCH ── */
+.search-box { background:var(--cream2); border:1px solid var(--cream3); border-radius:var(--r); padding:16px; margin-bottom:14px; }
+.search-label { font-family:var(--mono); font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink3); margin-bottom:10px; }
+.search-row { display:flex; gap:8px; }
+.search-input { flex:1; padding:9px 12px; font-size:14px; font-family:var(--body); border:1px solid var(--cream3); border-radius:var(--r); background:var(--cream); outline:none; transition:border-color 0.15s; }
+.search-input:focus { border-color:var(--forest3); }
+.search-clear { padding:9px 12px; border:1px solid var(--cream3); border-radius:var(--r); background:var(--cream); cursor:pointer; color:var(--ink3); }
+.result-card { background:var(--cream); border:1px solid var(--cream3); border-radius:var(--r); padding:12px 14px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition:border-color 0.15s; }
+.result-card:hover { border-color:var(--forest3); }
+
+/* ── TABLE ── */
+.table-card { background:var(--cream2); border:1px solid var(--cream3); border-radius:var(--r); overflow:hidden; }
+.table-head { display:grid; grid-template-columns:1.6fr 90px 100px 100px 150px; padding:10px 18px; background:var(--forest); }
+.table-head span { font-family:var(--mono); font-size:9px; letter-spacing:0.14em; text-transform:uppercase; color:rgba(245,240,232,0.5); }
+.table-row { display:grid; grid-template-columns:1.6fr 90px 100px 100px 150px; padding:12px 18px; border-bottom:1px solid var(--cream3); align-items:center; transition:background 0.1s; }
+.table-row:last-child { border-bottom:none; }
+.table-row:hover { background:var(--cream); }
+.table-row.proceso { background:rgba(28,59,24,0.04); }
+.cont-name { font-size:14px; font-weight:600; }
+.cont-po { font-family:var(--mono); font-size:11px; color:var(--ink3); margin-top:2px; }
+.cont-guia { font-family:var(--mono); font-size:10px; color:var(--ink3); opacity:0.7; margin-top:1px; }
+.cont-cal { margin-top:3px; }
+.sin-po { font-style:italic; color:var(--ink3); opacity:0.6; }
+.cal-tag { display:inline-block; font-family:var(--mono); font-size:10px; font-weight:500; padding:2px 7px; border-radius:3px; background:var(--ink); color:var(--cream); letter-spacing:0.06em; }
+.temp-tag { display:inline-block; font-family:var(--mono); font-size:12px; font-weight:500; padding:3px 9px; border-radius:4px; }
+.temp-ok { background:var(--ok-bg); color:var(--ok); }
+.temp-warn { background:var(--warn-bg); color:var(--warn); }
+.temp-none { background:var(--cream3); color:var(--ink3); }
+.status-tag { display:inline-block; font-family:var(--mono); font-size:9px; letter-spacing:0.06em; text-transform:uppercase; font-weight:500; padding:3px 9px; border-radius:3px; }
+.status-done { background:var(--ok-bg); color:var(--ok); }
+.status-proc { background:var(--blue-bg); color:var(--blue); }
+.actions { display:flex; gap:5px; flex-wrap:wrap; }
+.btn-link { font-family:var(--mono); font-size:10px; color:var(--ok); background:var(--ok-bg); border:1px solid rgba(45,106,79,0.2); border-radius:4px; padding:4px 9px; cursor:pointer; white-space:nowrap; }
+.btn-warn { font-family:var(--mono); font-size:10px; color:var(--warn); background:var(--warn-bg); border:1px solid rgba(146,64,14,0.2); border-radius:4px; padding:4px 9px; cursor:pointer; }
+.btn-danger { font-family:var(--mono); font-size:10px; color:#991B1B; background:#FEE2E2; border:1px solid rgba(153,27,27,0.2); border-radius:4px; padding:4px 9px; cursor:pointer; }
+.btn-blue { font-family:var(--mono); font-size:10px; color:var(--blue); background:var(--blue-bg); border:1px solid rgba(29,78,216,0.2); border-radius:4px; padding:4px 9px; cursor:pointer; }
+
+/* ── MODALS ── */
+.overlay { display:none; position:fixed; inset:0; background:rgba(15,26,20,0.65); z-index:100; align-items:flex-start; justify-content:center; padding:30px 16px; overflow-y:auto; backdrop-filter:blur(3px); }
+.overlay.open { display:flex; }
+.modal { background:var(--cream); border-radius:12px; border:1px solid var(--cream3); padding:28px; width:100%; max-width:440px; box-shadow:0 20px 60px rgba(0,0,0,0.25); }
+.modal-title { font-family:var(--display); font-size:22px; color:var(--forest); margin-bottom:4px; }
+.modal-sub { font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink3); margin-bottom:22px; }
+.field { margin-bottom:14px; }
+.field label { display:block; font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink3); margin-bottom:5px; }
+.field input, .field select { width:100%; border:1.5px solid var(--cream3); border-radius:var(--r); padding:9px 12px; font-size:14px; font-family:var(--body); background:var(--cream2); color:var(--ink); outline:none; transition:border-color 0.15s; }
+.field input:focus, .field select:focus { border-color:var(--forest3); }
+.field-opt { font-size:9px; color:var(--ink3); font-weight:400; text-transform:none; letter-spacing:0; margin-left:4px; }
+.modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:22px; padding-top:16px; border-top:1px solid var(--cream3); }
+.new-client-box { background:rgba(45,106,79,0.06); border:1px solid rgba(45,106,79,0.15); border-radius:var(--r); padding:14px; margin-top:8px; display:none; }
+.new-client-box.show { display:block; }
+.new-client-row { display:flex; gap:8px; margin-top:6px; }
+.new-client-row input { flex:1; border:1px solid var(--cream3); border-radius:var(--r); padding:8px 10px; font-size:13px; font-family:var(--body); background:var(--cream); color:var(--ink); outline:none; }
+.btn-add-cli { background:var(--forest); color:var(--cream); border:none; border-radius:var(--r); padding:8px 12px; font-size:13px; font-weight:600; cursor:pointer; }
+.client-ok { display:none; font-family:var(--mono); font-size:11px; color:var(--ok); margin-top:6px; }
+.client-ok.show { display:block; }
+
+/* LINK MODAL */
+.link-box { background:rgba(45,106,79,0.05); border:1.5px solid rgba(45,106,79,0.15); border-radius:var(--r); padding:16px; margin:14px 0; }
+.link-box-label { font-family:var(--mono); font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--forest3); margin-bottom:8px; }
+.link-name { font-family:var(--display); font-size:22px; color:var(--forest); margin-bottom:4px; }
+.link-url { font-family:var(--mono); font-size:11px; color:var(--ink3); word-break:break-all; }
+.wa-preview { background:#e5ddd5; border-radius:var(--r); padding:14px; margin:12px 0; }
+.wa-bubble { background:#dcf8c6; border-radius:8px 8px 0 8px; padding:10px 14px; display:inline-block; max-width:88%; }
+.wa-bubble-title { font-size:13px; font-weight:700; color:#1a1a1a; }
+.wa-bubble-url { font-size:12px; color:#128c7e; word-break:break-all; }
+.wa-bubble-desc { font-size:11px; color:#555; margin-top:3px; }
+.btn-copy { width:100%; background:var(--forest); color:var(--cream); border:none; border-radius:var(--r); padding:12px; font-size:14px; font-weight:600; cursor:pointer; margin-bottom:8px; }
+.btn-copy:hover { background:var(--forest2); }
+.btn-wa { width:100%; background:#25d366; color:#fff; border:none; border-radius:var(--r); padding:12px; font-size:14px; font-weight:600; cursor:pointer; }
+.copied-ok { display:none; font-family:var(--mono); font-size:11px; color:var(--ok); text-align:center; margin-top:8px; }
+.copied-ok.show { display:block; }
+
+/* GUIAS */
+.slot-box { background:var(--cream2); border:1px solid var(--cream3); border-radius:var(--r); padding:14px; margin-bottom:12px; }
+.slot-label { font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink3); margin-bottom:8px; font-weight:500; }
+.slot-preview { display:none; align-items:center; gap:10px; background:var(--cream); border:1px solid var(--cream3); border-radius:var(--r); padding:10px 12px; margin-bottom:6px; }
+.slot-preview.show { display:flex; }
+.slot-drop { border:2px dashed var(--cream3); border-radius:var(--r); padding:18px; text-align:center; cursor:pointer; transition:all 0.15s; }
+.slot-drop:hover { border-color:var(--forest3); background:rgba(45,106,79,0.04); }
+.slot-drop-text { font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink3); margin-top:6px; }
+
+/* ── OPERARIO ── */
+.op-wrap { max-width:440px; margin:0 auto; padding:16px; }
+.op-header { background:var(--forest); border-radius:12px; padding:18px; margin-bottom:14px; position:relative; overflow:hidden; }
+.op-header::before { content:''; position:absolute; top:-20px; right:-20px; width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,0.04); }
+.op-field-label { font-family:var(--mono); font-size:9px; letter-spacing:0.14em; text-transform:uppercase; color:rgba(245,240,232,0.4); margin-bottom:2px; }
+.op-name { font-family:var(--display); font-size:20px; color:var(--cream); }
+.op-po { font-family:var(--mono); font-size:11px; color:var(--gold2); margin-top:3px; }
+.op-temp-val { font-family:var(--display); font-size:24px; text-align:right; }
+.op-temp-val.ok { color:#6fcf97; }
+.op-temp-val.warn { color:#f2994a; }
+.op-temp-val.none { color:rgba(245,240,232,0.25); }
+.temp-alert { font-family:var(--mono); font-size:10px; letter-spacing:0.06em; padding:5px 10px; border-radius:4px; text-align:center; margin-top:8px; display:none; }
+.temp-alert.show { display:block; }
+.temp-alert.ok { background:rgba(111,207,151,0.15); color:#6fcf97; }
+.temp-alert.warn { background:rgba(242,153,74,0.15); color:#f2994a; }
+.prog-bg { background:rgba(255,255,255,0.12); border-radius:3px; height:3px; margin-top:12px; }
+.prog-fill { background:var(--gold2); border-radius:3px; height:3px; transition:width 0.3s; }
+.prog-label { font-family:var(--mono); font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:rgba(245,240,232,0.35); margin-top:4px; }
+
+.op-section { background:var(--cream2); border:1px solid var(--cream3); border-radius:12px; padding:16px; margin-bottom:14px; }
+.op-section-title { font-family:var(--mono); font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink3); margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid var(--cream3); }
+.big-btn { width:100%; padding:14px 16px; border-radius:var(--r); border:1.5px solid var(--cream3); background:var(--cream); font-family:var(--body); font-size:15px; color:var(--ink); cursor:pointer; margin-bottom:10px; display:flex; align-items:center; gap:12px; text-align:left; transition:all 0.12s; -webkit-tap-highlight-color:transparent; }
+.big-btn:last-child { margin-bottom:0; }
+.big-btn:active { background:var(--cream2); }
+.big-btn.done { background:rgba(45,106,79,0.08); border-color:rgba(45,106,79,0.25); color:var(--ok); }
+.btn-circle { width:34px; height:34px; border-radius:50%; background:var(--cream2); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:18px; border:1px solid var(--cream3); }
+.big-btn.done .btn-circle { background:rgba(45,106,79,0.1); border-color:rgba(45,106,79,0.2); }
+.fruta-panel { display:none; background:rgba(45,106,79,0.06); border:1px solid rgba(45,106,79,0.15); border-radius:var(--r); padding:12px; margin-top:10px; }
+.fruta-panel.show { display:block; }
+.fruta-count { font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ok); margin-bottom:8px; }
+.fruta-thumbs { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
+.fruta-thumb { width:50px; height:50px; background:rgba(45,106,79,0.08); border:1px solid rgba(45,106,79,0.2); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:20px; overflow:hidden; }
+.fruta-thumb img { width:100%; height:100%; object-fit:cover; }
+.fruta-slot { aspect-ratio:1; border-radius:8px; border:1.5px dashed var(--cream3); background:var(--cream); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; font-size:18px; color:var(--ink3); cursor:pointer; overflow:hidden; position:relative; -webkit-tap-highlight-color:transparent; }
+.fruta-slot span { font-family:var(--mono); font-size:9px; letter-spacing:0.06em; }
+.fruta-slot.filled { border:1px solid rgba(45,106,79,0.3); }
+.fruta-slot img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
+.btn-add-fruta { width:100%; background:var(--forest); color:var(--cream); border:none; border-radius:6px; padding:10px; font-size:13px; font-weight:600; cursor:pointer; }
+.pata-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:6px; margin-bottom:14px; }
+.pata-cell { aspect-ratio:1; border-radius:6px; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:12px; font-weight:500; border:1px solid var(--cream3); background:var(--cream); color:var(--ink3); cursor:pointer; -webkit-tap-highlight-color:transparent; transition:all 0.1s; }
+.pata-cell:active { transform:scale(0.93); }
+.pata-cell.done { background:var(--ok-bg); border-color:rgba(45,106,79,0.25); color:var(--ok); }
+.pata-cell.active { background:var(--blue-bg); border-color:rgba(29,78,216,0.3); color:var(--blue); font-weight:700; }
+.foto-btn { width:100%; background:var(--forest); color:var(--cream); border:none; border-radius:var(--r); padding:15px; font-size:14px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:10px; transition:all 0.12s; -webkit-tap-highlight-color:transparent; }
+.foto-btn:hover { background:var(--forest2); }
+.foto-btn:disabled { opacity:0.35; cursor:not-allowed; }
+.completar-btn { width:100%; background:transparent; color:var(--ok); border:2px solid var(--ok); border-radius:var(--r); padding:14px; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.15s; -webkit-tap-highlight-color:transparent; }
+.completar-btn:hover { background:var(--ok-bg); }
+.cont-selector { background:var(--cream2); border:1px solid var(--cream3); border-radius:12px; padding:20px; }
+.cont-selector-title { font-family:var(--display); font-size:22px; color:var(--forest); margin-bottom:4px; }
+.cont-selector-sub { font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink3); margin-bottom:16px; }
+.cont-item { border:1.5px solid var(--cream3); border-radius:var(--r); padding:12px 14px; margin-bottom:8px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; background:var(--cream); transition:all 0.12s; -webkit-tap-highlight-color:transparent; }
+.cont-item:hover { border-color:var(--forest3); }
+.cont-item:active { background:var(--cream2); }
+.cont-item.proc { border-color:rgba(29,78,216,0.3); background:var(--blue-bg); }
+.cont-item-name { font-size:14px; font-weight:600; }
+.cont-item-meta { font-family:var(--mono); font-size:11px; color:var(--ink3); margin-top:2px; }
+.cont-item-badge { font-family:var(--mono); font-size:10px; font-weight:500; padding:3px 9px; border-radius:3px; letter-spacing:0.06em; text-transform:uppercase; }
+.cambiar-rol-btn { background:none; border:none; font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink3); cursor:pointer; padding:8px 0; }
+.cambiar-rol-btn:hover { color:var(--ink); }
+
+/* ── CLIENTE ── */
+.client-wrap { max-width:700px; margin:0 auto; padding:24px 16px; }
+.client-header { background:var(--forest); border-radius:12px; padding:22px 26px; margin-bottom:22px; position:relative; overflow:hidden; }
+.client-header::after { content:''; position:absolute; bottom:-30px; right:-30px; width:140px; height:140px; border-radius:50%; background:rgba(255,255,255,0.03); }
+.client-po { font-family:var(--mono); font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold2); margin-bottom:6px; }
+.client-title { font-family:var(--display); font-size:26px; color:var(--cream); margin-bottom:18px; }
+.client-meta-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.client-meta-label { font-family:var(--mono); font-size:9px; letter-spacing:0.14em; text-transform:uppercase; color:rgba(245,240,232,0.35); margin-bottom:4px; }
+.client-meta-val { font-size:15px; font-weight:600; color:var(--cream); }
+.client-meta-val.ok { color:#6fcf97; }
+.client-meta-val.warn { color:#f2994a; }
+.download-btns { display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap; }
+.btn-download { display:flex; align-items:center; gap:8px; background:var(--forest); color:var(--cream); border:none; border-radius:var(--r); padding:10px 18px; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.12s; }
+.btn-download:hover { background:var(--forest2); transform:translateY(-1px); }
+.btn-pdf { background:var(--berry); }
+.btn-pdf:hover { background:#7a1a35; }
+.gallery-section { margin-bottom:22px; }
+.gallery-title { font-family:var(--mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink3); margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid var(--cream3); display:flex; align-items:center; gap:10px; }
+.gallery-badge { background:var(--cream3); color:var(--ink3); border-radius:3px; padding:2px 8px; font-size:9px; letter-spacing:0.08em; }
+.photo-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:8px; }
+.photo-card { background:var(--cream2); border:1px solid var(--cream3); border-radius:var(--r); aspect-ratio:4/3; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; cursor:pointer; position:relative; overflow:hidden; transition:all 0.15s; -webkit-tap-highlight-color:transparent; }
+.photo-card:hover { transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.1); border-color:var(--forest3); }
+.photo-card:active { transform:scale(0.97); }
+.photo-card img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
+.photo-card-label { position:relative; z-index:1; background:rgba(245,240,232,0.92); padding:2px 7px; border-radius:4px; font-family:var(--mono); font-size:10px; letter-spacing:0.06em; font-weight:500; }
+.photo-card-icon { font-size:26px; }
+.photo-card-text { font-family:var(--mono); font-size:10px; color:var(--ink3); letter-spacing:0.06em; }
+
+/* ── TOAST ── */
+.toast { position:fixed; bottom:22px; left:50%; transform:translateX(-50%); background:var(--forest); color:var(--cream); border-radius:var(--r); padding:10px 22px; font-family:var(--mono); font-size:12px; letter-spacing:0.08em; display:none; align-items:center; gap:8px; z-index:999; white-space:nowrap; box-shadow:0 8px 24px rgba(0,0,0,0.25); }
+.toast.show { display:flex; animation:slideUp 0.2s ease; }
+.toast.error { background:#8B1A1A; white-space:normal; text-align:center; max-width:92vw; }
+@keyframes slideUp { from{transform:translateX(-50%) translateY(10px);opacity:0} to{transform:translateX(-50%) translateY(0);opacity:1} }
+
+/* ── COORDINADOR: responsivo para PC y móvil ── */
+@media (max-width:900px) {
+  .table-head { grid-template-columns: 1.4fr 80px 90px 90px 130px; }
+  .table-row  { grid-template-columns: 1.4fr 80px 90px 90px 130px; }
+}
+@media (max-width:700px) {
+  .metrics { grid-template-columns:repeat(2,1fr); }
+  .table-head { display:none; }
+  .table-row { grid-template-columns:1fr; gap:6px; padding:14px 16px; }
+  .table-row>*:nth-child(2), .table-row>*:nth-child(3) { display:none; }
+  .wrap { padding:14px 12px; }
+  .page-title { font-size:24px; }
+  .btn-primary { font-size:12px; padding:9px 14px; }
+  .actions { gap:4px; }
+}
+
+/* ── OPERARIO: siempre móvil — botones grandes, fácil de tocar ── */
+#page-operario .op-wrap { 
+  max-width:100%; 
+  padding:12px;
+}
+#page-operario .big-btn {
+  padding:18px 16px;
+  font-size:16px;
+  min-height:60px;
+}
+#page-operario .foto-btn {
+  padding:18px;
+  font-size:16px;
+  min-height:58px;
+}
+#page-operario .completar-btn {
+  padding:18px;
+  font-size:16px;
+  min-height:58px;
+}
+#page-operario .pata-cell {
+  font-size:14px;
+}
+#page-operario .op-name {
+  font-size:22px;
+}
+#page-operario .op-section {
+  border-radius:14px;
+}
+#page-operario .btn-circle {
+  width:40px;
+  height:40px;
+  font-size:20px;
+}
+
+/* ── CLIENTE: amplio en PC, adaptable en móvil ── */
+#page-cliente .client-wrap {
+  max-width:860px;
+}
+#page-cliente .photo-grid {
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+#page-cliente .client-title {
+  font-size:30px;
+}
+@media (min-width:700px) {
+  #page-cliente .client-meta-grid { grid-template-columns:repeat(3,1fr); }
+  #page-cliente .photo-grid { grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:10px; }
+}
+@media (max-width:700px) {
+  #page-cliente .client-meta-grid { grid-template-columns:repeat(2,1fr); }
+  #page-cliente .client-wrap { padding:14px 12px; }
+  #page-cliente .client-title { font-size:22px; }
+  #page-cliente .photo-grid { grid-template-columns:repeat(2,1fr); gap:8px; }
+  #page-cliente .download-btns { flex-direction:column; }
+  #page-cliente .btn-download { width:100%; justify-content:center; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="width:36px;height:36px;">
+        <path d="M32 4 C28 10 24 14 26 20 C28 24 32 23 32 23 C32 23 36 24 38 20 C40 14 36 10 32 4Z" fill="#52B788"/>
+        <line x1="32" y1="23" x2="32" y2="27" stroke="#52B788" stroke-width="1.5"/>
+        <ellipse cx="18" cy="37" rx="8" ry="9" fill="#E8352A"/>
+        <ellipse cx="16" cy="34" rx="2" ry="1.5" fill="#F56B5E" opacity="0.7"/>
+        <circle cx="31" cy="35" r="4" fill="#E8527A"/>
+        <circle cx="35" cy="37" r="4" fill="#E8527A"/>
+        <circle cx="29" cy="39" r="4" fill="#D4456C"/>
+        <circle cx="33" cy="40" r="4" fill="#E8527A"/>
+        <circle cx="46" cy="36" r="7" fill="#4A6FA5"/>
+        <circle cx="44" cy="33" r="2" fill="#6B8FC4" opacity="0.6"/>
+        <path d="M43 31 Q46 29 49 31" stroke="#3A5A8A" stroke-width="1" fill="none"/>
+        <circle cx="20" cy="50" r="3" fill="#3D1A5E"/>
+        <circle cx="25" cy="48" r="3" fill="#5B2D82"/>
+        <circle cx="30" cy="50" r="3" fill="#3D1A5E"/>
+        <circle cx="35" cy="48" r="3" fill="#5B2D82"/>
+        <circle cx="40" cy="50" r="3" fill="#3D1A5E"/>
+      </svg>
+    </div>
+    <div class="login-title">Encinas Track</div>
+    <div class="login-sub">Sistema de registro de carga</div>
+    <label class="lf-label" for="rol-select">Selecciona tu rol</label>
+    <select id="rol-select" class="lf-select" onchange="cambiarRol(this.value)">
+      <option value="coordinador">Coordinador</option>
+      <option value="operario">Operario</option>
+      <option value="cliente">Cliente</option>
+    </select>
+    <label class="lf-label" id="pin-label" for="pin-input">PIN coordinador</label>
+    <input type="number" id="pin-input" class="lf-pin" placeholder="----" maxlength="4">
+    <div id="login-error" class="lf-error">PIN incorrecto — intenta de nuevo</div>
+    <button class="lf-btn" onclick="ingresar()">Ingresar →</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <nav id="main-nav">
+    <div class="nav-logo">
+      <svg class="nav-logo-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <!-- Hoja -->
+        <path d="M32 6 C29 11 25 15 27 21 C29 25 32 24 32 24 C32 24 35 25 37 21 C39 15 35 11 32 6Z" fill="#52B788"/>
+        <line x1="32" y1="24" x2="32" y2="28" stroke="#52B788" stroke-width="1.5"/>
+        <!-- Frutilla roja -->
+        <ellipse cx="20" cy="38" rx="8" ry="9" fill="#E8352A"/>
+        <ellipse cx="18" cy="35" rx="2" ry="1.5" fill="#F56B5E" opacity="0.7"/>
+        <circle cx="20" cy="38" r="1" fill="#B02218" opacity="0.4"/>
+        <!-- Frambuesa rosa -->
+        <circle cx="32" cy="36" r="4" fill="#E8527A"/>
+        <circle cx="36" cy="38" r="4" fill="#E8527A"/>
+        <circle cx="30" cy="40" r="4" fill="#D4456C"/>
+        <circle cx="34" cy="41" r="4" fill="#E8527A"/>
+        <!-- Arándano azul -->
+        <circle cx="46" cy="37" r="7" fill="#4A6FA5"/>
+        <circle cx="44" cy="34" r="2" fill="#6B8FC4" opacity="0.6"/>
+        <path d="M43 32 Q46 30 49 32" stroke="#3A5A8A" stroke-width="1" fill="none"/>
+        <!-- Mora -->
+        <circle cx="22" cy="50" r="3" fill="#3D1A5E"/>
+        <circle cx="27" cy="48" r="3" fill="#5B2D82"/>
+        <circle cx="32" cy="50" r="3" fill="#3D1A5E"/>
+        <circle cx="37" cy="48" r="3" fill="#5B2D82"/>
+        <circle cx="42" cy="50" r="3" fill="#3D1A5E"/>
+        <circle cx="24.5" cy="46" r="3" fill="#5B2D82"/>
+        <circle cx="29.5" cy="44" r="3" fill="#3D1A5E"/>
+        <circle cx="34.5" cy="46" r="3" fill="#5B2D82"/>
+        <circle cx="39.5" cy="44" r="3" fill="#3D1A5E"/>
+      </svg>
+      <div>
+        <div class="nav-logo-text">Encinas Track</div>
+        <div class="nav-logo-sub">Control de carga · Contenedores</div>
+      </div>
+    </div>
+    <div class="nav-tab active" id="tab-coord" onclick="irA('coordinador',this)">Coordinador</div>
+    <div class="nav-tab" id="tab-op" onclick="irA('operario',this)">Operario</div>
+    <div class="nav-tab" id="tab-cli" onclick="irA('cliente',this)">Cliente</div>
+    <div class="nav-right" style="display:flex;align-items:center;gap:10px;"><span id="db-status" style="font-family:var(--mono);font-size:10px;letter-spacing:0.08em;color:rgba(245,240,232,0.4);text-transform:uppercase;">⏳ Conectando...</span><span class="nav-season">Temporada 2025 – 2026</span></div>
+  </nav>
+
+  <!-- COORDINADOR -->
+  <div id="page-coordinador" class="page active">
+    <div class="wrap">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Panel coordinador</div>
+          <div class="page-sub">Temporada 2025 – 2026 · Control de carga · Contenedores</div>
+        </div>
+        <button class="btn-primary" onclick="abrirModal('nuevo')">＋ Nuevo contenedor</button>
+      </div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-label">Total temporada</div><div class="metric-val" id="m-total">0</div></div>
+        <div class="metric"><div class="metric-label">Completados</div><div class="metric-val green" id="m-comp">0</div></div>
+        <div class="metric"><div class="metric-label">En proceso</div><div class="metric-val blue" id="m-proc">0</div></div>
+        <div class="metric"><div class="metric-label">Fotos totales</div><div class="metric-val" id="m-fotos">0</div></div>
+      </div>
+      <div class="search-box">
+        <div class="search-label">🔍 Buscador — PO · N° contenedor · Cliente</div>
+        <div class="search-row">
+          <input type="text" id="search-inp" class="search-input" placeholder="Ej: L70045 — 20/50 — Pontiberry..." oninput="buscar(this.value)">
+          <button class="search-clear" onclick="limpiarBusqueda()">✕</button>
+        </div>
+        <div id="search-results"></div>
+        <div id="search-nores" style="display:none;font-family:var(--mono);font-size:11px;color:var(--ink3);margin-top:8px;text-align:center;">Sin resultados.</div>
+      </div>
+      <div class="table-card">
+        <div class="table-head">
+          <span>Cliente / Contenedor</span><span>Tipo carga</span><span>Temperatura</span><span>Estado</span><span>Acciones</span>
+        </div>
+        <div id="tabla-body"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPERARIO -->
+  <div id="page-operario" class="page">
+    <div class="op-wrap">
+      <div id="op-selector">
+        <div class="cont-selector">
+          <div class="cont-selector-title">Contenedores activos</div>
+          <div class="cont-selector-sub">Selecciona el contenedor a cargar</div>
+          <div id="op-list"></div>
+        </div>
+        <button class="cambiar-rol-btn" style="display:block;margin-top:16px;" onclick="cerrarSesion()">⏏ Cambiar rol</button>
+      </div>
+      <div id="op-carga" style="display:none;">
+        <div class="op-header">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div>
+              <div class="op-field-label">Campo / Cliente</div>
+              <div class="op-name" id="op-name">—</div>
+              <div class="op-po" id="op-po">—</div>
+            </div>
+            <div>
+              <div class="op-field-label" style="text-align:right;">Temp. inicial</div>
+              <div class="op-temp-val none" id="op-temp">—</div>
+            </div>
+          </div>
+          <div class="temp-alert" id="op-temp-alert"></div>
+          <div class="prog-bg"><div class="prog-fill" id="op-prog" style="width:0%"></div></div>
+          <div class="prog-label" id="op-prog-label">0 de 24 patas</div>
+        </div>
+        <div class="op-section">
+          <div class="op-section-title">Etapas iniciales</div>
+          <button class="big-btn" id="btn-temp" onclick="tomarFoto('temp')"><div class="btn-circle">🌡️</div><span id="lbl-temp">Temperatura inicial</span></button>
+          <button class="big-btn" id="btn-vacio" onclick="tomarFoto('vacio')"><div class="btn-circle">📦</div><span id="lbl-vacio">Contenedor vacío</span></button>
+          <button class="big-btn" id="btn-fruta" onclick="toggleFruta()">
+            <div class="btn-circle">🍓</div>
+            <span id="lbl-fruta">Fotos de fruta</span>
+            <span id="fruta-badge" style="margin-left:auto;font-family:var(--mono);font-size:10px;background:rgba(45,106,79,0.12);color:var(--ok);border-radius:3px;padding:2px 8px;display:none;"></span>
+          </button>
+          <div class="fruta-panel" id="fruta-panel">
+            <div class="fruta-count" id="fruta-count">0 de 3 fotos</div>
+            <div class="fruta-thumbs" id="fruta-thumbs" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;"></div>
+          </div>
+        </div>
+        <div class="op-section">
+          <div class="op-section-title">Patas de carga</div>
+          <div class="pata-grid" id="pata-grid"></div>
+          <button class="foto-btn" id="foto-btn" onclick="tomarFoto('pata')">📷 Fotografiar pata <span id="pata-num">1</span></button>
+          <button class="completar-btn" onclick="completarCarga()">✅ Carga completada</button>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button class="btn-ghost" style="flex:1;" onclick="volverOp()">← Volver</button>
+          <button class="cambiar-rol-btn" onclick="cerrarSesion()">⏏ Cambiar rol</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIENTE -->
+  <div id="page-cliente" class="page">
+    <div class="client-wrap">
+      <div id="cli-selector">
+        <div class="cont-selector">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+            <div class="cont-selector-title">Mis contenedores</div>
+            <button class="cambiar-rol-btn" onclick="cerrarSesion()">⏏ Salir</button>
+          </div>
+          <div class="cont-selector-sub">Selecciona un contenedor para ver las fotos</div>
+          <div id="cli-list"></div>
+        </div>
+      </div>
+      <div id="cli-galeria" style="display:none;">
+        <div class="client-header">
+          <div class="client-po" id="cli-po"></div>
+          <div class="client-title" id="cli-title"></div>
+          <div class="client-meta-grid" style="grid-template-columns:repeat(2,1fr);">
+            <div><div class="client-meta-label">Calidad</div><div class="client-meta-val" id="cli-cal"></div></div>
+            <div><div class="client-meta-label">Fecha carga</div><div class="client-meta-val" id="cli-fecha"></div></div>
+            <div id="cli-temp" style="display:none;"></div>
+          </div>
+        </div>
+        <div class="download-btns">
+          <button class="btn-download" onclick="descargarTodasFotos()">⬇ Todas las fotos</button>
+          <button class="btn-download btn-pdf" onclick="descargarPDF()">📄 Descargar PDF</button>
+        </div>
+        <div id="cli-etapas" class="gallery-section"></div>
+        <div id="cli-patas" class="gallery-section"></div>
+        <div style="display:flex;gap:8px;margin-top:12px;">
+          <button class="btn-ghost" onclick="document.getElementById('cli-selector').style.display='block';document.getElementById('cli-galeria').style.display='none';">← Volver</button>
+          <button class="cambiar-rol-btn" onclick="cerrarSesion()">⏏ Salir</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALES -->
+<div class="overlay" id="modal-nuevo">
+  <div class="modal">
+    <div class="modal-title">Nuevo contenedor</div>
+    <div class="modal-sub">El operario verá este contenedor al iniciar sesión</div>
+    <div class="field">
+      <label>Campo / Cliente</label>
+      <select id="f-cliente" onchange="cambiarCliente(this.value)"><option value="">Seleccionar campo...</option></select>
+      <div class="new-client-box" id="new-client-box">
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ok);margin-bottom:8px;">Nuevo cliente</div>
+        <div class="new-client-row">
+          <input type="text" id="new-cli-nombre" placeholder="Nombre del campo">
+          <input type="text" id="new-cli-pin" placeholder="PIN" maxlength="4" style="width:80px;">
+          <button class="btn-add-cli" onclick="agregarCliente()">+</button>
+        </div>
+        <div class="client-ok" id="client-ok"></div>
+      </div>
+    </div>
+    <div class="field"><label>N° contenedor <span class="field-opt">ej: 20/50</span></label><input type="text" id="f-num" placeholder="Ej: 20/50"></div>
+    <div class="field"><label>PO del cliente <span class="field-opt">— opcional</span></label><input type="text" id="f-po" placeholder="Dejar vacío si no aplica"></div>
+    <div class="field"><label>Calidad</label><select id="f-cal"><option value="">Seleccionar...</option><option>IQF</option><option>B</option><option>C</option><option>JUGO</option></select></div>
+    <div class="field"><label>Tipo de carga</label><select id="f-tipo"><option value="">Seleccionar...</option><option>A piso</option><option>Pallet</option><option>Bins</option><option>Rejillas</option></select></div>
+    <div style="background:var(--cream2);border:1px solid var(--cream3);border-radius:var(--r);padding:12px;margin-bottom:14px;">
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px;">N° Guías — opcional</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div><label style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:4px;">Guía Las Encinas</label><input type="text" id="f-guia-enc" placeholder="Ej: GE-001" style="width:100%;padding:7px 10px;border:1px solid var(--cream3);border-radius:5px;font-size:13px;font-family:var(--body);background:var(--cream);outline:none;"></div>
+        <div><label style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:4px;">Guía Cliente</label><input type="text" id="f-guia-cli" placeholder="Ej: GC-4521" style="width:100%;padding:7px 10px;border:1px solid var(--cream3);border-radius:5px;font-size:13px;font-family:var(--body);background:var(--cream);outline:none;"></div>
+      </div>
+    </div>
+    <div class="field"><label>Fecha de carga</label><input type="date" id="f-fecha"></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="cerrarModal('nuevo')">Cancelar</button>
+      <button class="btn-primary" onclick="crearContenedor()">Crear contenedor →</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="modal-link">
+  <div class="modal">
+    <div class="modal-title">Compartir con cliente</div>
+    <div class="modal-sub" id="link-sub"></div>
+    <div style="background:var(--cream2);border:1px solid var(--cream3);border-radius:var(--r);padding:12px;margin-bottom:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div><div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:2px;">Cliente</div><div style="font-size:14px;font-weight:600;" id="link-cli"></div></div>
+        <div><div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:2px;">N° contenedor</div><div style="font-size:14px;font-weight:600;" id="link-num"></div></div>
+        <div><div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:2px;">PO</div><div style="font-family:var(--mono);font-size:13px;font-weight:500;" id="link-po"></div></div>
+        <div><div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:2px;">Calidad</div><div style="font-size:14px;font-weight:600;" id="link-cal"></div></div>
+      </div>
+    </div>
+    <div class="link-box">
+      <div class="link-box-label">Link generado</div>
+      <div class="link-name" id="link-name"></div>
+      <div class="link-url" id="link-url"></div>
+    </div>
+    <div class="wa-preview">
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#6b5d4f;margin-bottom:8px;">📱 Así llega a WhatsApp</div>
+      <div class="wa-bubble">
+        <div class="wa-bubble-title" id="wa-title"></div>
+        <div class="wa-bubble-url" id="wa-url"></div>
+        <div class="wa-bubble-desc" id="wa-desc"></div>
+      </div>
+    </div>
+    <button class="btn-copy" onclick="copiarLink()">📋 Copiar link</button>
+    <button class="btn-wa" onclick="abrirWA()">💬 Abrir WhatsApp</button>
+    <div class="copied-ok" id="copied-ok">✓ Link copiado — listo para pegar</div>
+    <div class="modal-actions"><button class="btn-ghost" onclick="cerrarModal('link')">Cerrar</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="modal-guias">
+  <div class="modal">
+    <div class="modal-title">Adjuntar guías</div>
+    <div class="modal-sub" id="guias-sub"></div>
+    <div class="slot-box">
+      <div class="slot-label">Guía Las Encinas</div>
+      <div class="slot-preview" id="slot-enc-prev">
+        <span id="slot-enc-icon" style="font-size:20px;">📄</span>
+        <div style="flex:1;"><div style="font-size:14px;font-weight:600;">Guía Las Encinas</div><div id="slot-enc-tipo" style="font-family:var(--mono);font-size:10px;color:var(--ink3);"></div></div>
+        <button onclick="eliminarSlot('enc')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--ink3);">✕</button>
+      </div>
+      <div class="slot-drop" id="slot-enc-drop" onclick="seleccionarGuia('enc')">
+        <div style="font-size:26px;">📎</div>
+        <div class="slot-drop-text">Toca para subir PDF o foto</div>
+      </div>
+      <input type="file" id="input-enc" accept=".pdf,image/*" style="display:none" onchange="procesarGuia(this.files,'enc')">
+    </div>
+    <div class="slot-box">
+      <div class="slot-label">Guía Cliente</div>
+      <div class="slot-preview" id="slot-cli-prev">
+        <span id="slot-cli-icon" style="font-size:20px;">📄</span>
+        <div style="flex:1;"><div style="font-size:14px;font-weight:600;">Guía Cliente</div><div id="slot-cli-tipo" style="font-family:var(--mono);font-size:10px;color:var(--ink3);"></div></div>
+        <button onclick="eliminarSlot('cli')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--ink3);">✕</button>
+      </div>
+      <div class="slot-drop" id="slot-cli-drop" onclick="seleccionarGuia('cli')">
+        <div style="font-size:26px;">📎</div>
+        <div class="slot-drop-text">Toca para subir PDF o foto</div>
+      </div>
+      <input type="file" id="input-cli" accept=".pdf,image/*" style="display:none" onchange="procesarGuia(this.files,'cli')">
+    </div>
+    <div class="modal-actions"><button class="btn-ghost" onclick="cerrarModal('guias')">Cerrar</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+
+// ===== SUPABASE =====
+var SUPA_URL = "https://hpvtrnwsobvwfhgdyykj.supabase.co";
+var SUPA_KEY = "sb_publishable_g4FQHrJsNsFVEJHtDkfTKg_XcXnRsrM";
+
+function supaHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    'apikey': SUPA_KEY,
+    'Authorization': 'Bearer ' + SUPA_KEY,
+    'Prefer': 'return=representation'
+  };
+}
+
+function supaFetch(path, method, body) {
+  var opts = { 
+    method: method || 'GET', 
+    headers: supaHeaders(),
+    mode: 'cors',
+    credentials: 'omit'
+  };
+  if (body) opts.body = JSON.stringify(body);
+  return fetch(SUPA_URL + '/rest/v1/' + path, opts);
+}
+
+// ===== COMPRESIÓN DE FOTOS (NUEVO) =====
+// Reduce cualquier foto a máx 1200px por lado y JPEG comprimido.
+// Una foto de celular pasa de ~4 MB a ~150-250 KB. Sin esto, el
+// guardado en Supabase fallaba por exceso de tamaño al acumular fotos.
+function comprimirImagen(dataUrl, callback) {
+  try {
+    var img = new Image();
+    img.onload = function() {
+      try {
+        var MAX = 1200;
+        var w = img.width, h = img.height;
+        if (w > MAX || h > MAX) {
+          if (w >= h) { h = Math.round(h * MAX / w); w = MAX; }
+          else { w = Math.round(w * MAX / h); h = MAX; }
+        }
+        var canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        var out = canvas.toDataURL('image/jpeg', 0.72);
+        callback(out && out.length > 100 && out.length < dataUrl.length ? out : dataUrl);
+      } catch (err) { callback(dataUrl); }
+    };
+    img.onerror = function() { callback(dataUrl); };
+    img.src = dataUrl;
+  } catch (e) { callback(dataUrl); }
+}
+
+// Convert DB row to app object
+function dbToApp(r) {
+  return {
+    id: r.id,
+    cliente: r.cliente || '',
+    num: r.num || '',
+    po: r.po || '',
+    cal: r.cal || '',
+    tipo: r.tipo || '',
+    fecha: r.fecha || '',
+    guiaEnc: r.guia_enc || '',
+    guiaCli: r.guia_cli || '',
+    temp: r.temp || '—',
+    tempOk: r.temp_ok || false,
+    fotos: r.fotos || 0,
+    estado: r.estado || 'proceso',
+    patas: r.patas || 0,
+    etapas: { temp: r.etapa_temp || false, vacio: r.etapa_vacio || false },
+    frutaFotos: r.fruta_fotos || 0,
+    fotoUrls: { temp: r.foto_temp || null, vacio: r.foto_vacio || null },
+    frutaUrls: r.fruta_urls || [],
+    pataUrls: r.pata_urls || [],
+    guias: {
+      enc: r.guias_enc_tipo ? { nombre: 'Guía Las Encinas', tipo: r.guias_enc_tipo, data: r.guias_enc_data || null } : null,
+      cli: r.guias_cli_tipo ? { nombre: 'Guía Cliente', tipo: r.guias_cli_tipo, data: r.guias_cli_data || null } : null
+    }
+  };
+}
+
+// Convert app object to DB row
+function appToDb(c) {
+  return {
+    id: String(c.id),
+    cliente: c.cliente,
+    num: c.num,
+    po: c.po || null,
+    cal: c.cal || null,
+    tipo: c.tipo || null,
+    fecha: c.fecha || null,
+    guia_enc: c.guiaEnc || null,
+    guia_cli: c.guiaCli || null,
+    temp: c.temp || '—',
+    temp_ok: c.tempOk || false,
+    fotos: c.fotos || 0,
+    estado: c.estado || 'proceso',
+    patas: c.patas || 0,
+    etapa_temp: c.etapas ? c.etapas.temp : false,
+    etapa_vacio: c.etapas ? c.etapas.vacio : false,
+    fruta_fotos: c.frutaFotos || 0,
+    foto_temp: c.fotoUrls ? c.fotoUrls.temp : null,
+    foto_vacio: c.fotoUrls ? c.fotoUrls.vacio : null,
+    fruta_urls: c.frutaUrls || [],
+    pata_urls: c.pataUrls || [],
+    guias_enc_tipo: c.guias && c.guias.enc ? c.guias.enc.tipo : null,
+    guias_enc_data: c.guias && c.guias.enc ? (c.guias.enc.data || null) : null,
+    guias_cli_tipo: c.guias && c.guias.cli ? c.guias.cli.tipo : null,
+    guias_cli_data: c.guias && c.guias.cli ? (c.guias.cli.data || null) : null
+  };
+}
+
+function guardarContenedor(c) {
+  var row = appToDb(c);
+  supaFetch('contenedores?id=eq.' + encodeURIComponent(row.id), 'PATCH', row)
+    .then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function(updated) {
+      if (!updated || updated.length === 0) {
+        return supaFetch('contenedores', 'POST', row).then(function(r2) {
+          if (!r2.ok) throw new Error('HTTP ' + r2.status);
+        });
+      }
+    })
+    .catch(function(e) {
+      console.error('guardar error:', e);
+      toast('⚠ NO SE GUARDÓ el contenedor — revisa internet y reintenta', true);
+    });
+}
+
+// Guarda SOLO los campos indicados, sin tocar el resto de la fila.
+// Esto evita que dos guardados casi simultaneos (por ejemplo, la ultima
+// foto de una carga y el boton "Carga completada") se pisen entre si.
+// CORREGIDO: ahora VERIFICA que Supabase acepto el guardado. Devuelve
+// una promesa que resuelve true si se guardo bien y false si fallo.
+// Si falla, muestra un aviso rojo — NUNCA falla en silencio.
+function patchContenedor(id, campos, etiqueta) {
+  return supaFetch('contenedores?id=eq.' + encodeURIComponent(String(id)), 'PATCH', campos)
+    .then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return true;
+    })
+    .catch(function(e) {
+      console.error('patch error:', e);
+      toast('⚠ NO SE GUARDÓ ' + (etiqueta || 'el cambio') + ' — revisa internet y vuelve a intentarlo', true);
+      return false;
+    });
+}
+
+function eliminarContenedorDB(id) {
+  supaFetch('contenedores?id=eq.' + id, 'DELETE')
+    .catch(function(e) { console.error('eliminar error:', e); });
+}
+
+function guardarClientesDB() {
+  clientes.forEach(function(c) {
+    supaFetch('clientes?nombre=eq.' + encodeURIComponent(c.nombre), 'GET')
+      .then(function(r) { return r.json(); })
+      .then(function(existing) {
+        if (existing && existing.length > 0) {
+          return supaFetch('clientes?nombre=eq.' + encodeURIComponent(c.nombre), 'PATCH', c);
+        } else {
+          return supaFetch('clientes', 'POST', c);
+        }
+      })
+      .catch(function(e) { console.error('cliente save error:', e); });
+  });
+}
+
+function cargarDatos(callback) {
+  var dbStatus = document.getElementById('db-status');
+  if (dbStatus) {
+    dbStatus.textContent = '⏳ Conectando...';
+    dbStatus.style.color = 'rgba(245,240,232,0.5)';
+  }
+  // Load clientes
+  supaFetch('clientes?select=*', 'GET')
+    .then(function(r) { return r.json(); })
+    .then(function(rows) {
+      if (rows && rows.length > 0) {
+        clientes = rows.map(function(r) { return { nombre: r.nombre, pin: r.pin }; });
+      }
+      // Load contenedores
+      return supaFetch('contenedores?select=*&order=created_at.desc', 'GET');
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(rows) {
+      if (rows && Array.isArray(rows)) {
+        contenedores = rows.map(dbToApp);
+      }
+      actualizarMetricas();
+      renderTabla();
+      if (dbStatus) {
+        dbStatus.textContent = '● Base de datos conectada';
+        dbStatus.style.color = '#6fcf97';
+      }
+      if (callback) callback();
+    })
+    .catch(function(e) {
+      console.error('cargar error:', e);
+      if (dbStatus) {
+        dbStatus.textContent = '⚠ Sin conexión';
+        dbStatus.style.color = '#f2994a';
+      }
+    });
+}
+
+
+
+
+// ===== DATOS =====
+var clientes = [];
+var contenedores = [];
+
+// Load clientes before login so PIN validation works
+function preCargarClientes() {
+  try {
+    fetch('https://hpvtrnwsobvwfhgdyykj.supabase.co/rest/v1/clientes?select=*', {
+      method: 'GET',
+      headers: {
+        'apikey': 'sb_publishable_g4FQHrJsNsFVEJHtDkfTKg_XcXnRsrM',
+        'Authorization': 'Bearer sb_publishable_g4FQHrJsNsFVEJHtDkfTKg_XcXnRsrM',
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function(r) {
+      if (!r.ok) return;
+      return r.json();
+    })
+    .then(function(rows) {
+      if (rows && Array.isArray(rows) && rows.length > 0) {
+        clientes = rows.map(function(r) { return {nombre: r.nombre, pin: r.pin}; });
+      }
+    })
+    .catch(function() {
+      // Silent fail - will retry when user logs in
+    });
+  } catch(e) {
+    // Silent fail on iOS
+  }
+}
+// Run after page loads - non-blocking
+window.addEventListener('load', function() {
+  setTimeout(preCargarClientes, 300);
+});
+var currentId = null;
+var clienteActual = null;
+var guiasContId = null;
+var loginRole = 'coordinador';
+
+// ===== LOGIN =====
+function cambiarRol(rol) {
+  loginRole = rol;
+  var lbl = document.getElementById('pin-label');
+  if (lbl) lbl.textContent = rol === 'cliente' ? 'PIN de empresa' : 'PIN ' + rol;
+  var inp = document.getElementById('pin-input');
+  if (inp) inp.value = '';
+  var err = document.getElementById('login-error');
+  if (err) err.style.display = 'none';
+}
+
+function ingresar() {
+  var pin = String(document.getElementById('pin-input').value).trim();
+  var pins = {coordinador:'1979', operario:'1234'};
+  var err = document.getElementById('login-error');
+  
+  if (loginRole === 'cliente') {
+    var match = null;
+    for (var i = 0; i < clientes.length; i++) {
+      if (clientes[i].pin === pin) { match = clientes[i]; break; }
+    }
+    if (match) {
+      clienteActual = match.nombre;
+      entrar('cliente');
+    } else {
+      err.style.display = 'block';
+      document.getElementById('pin-input').value = '';
+    }
+    return;
+  }
+  
+  if (pin === pins[loginRole]) {
+    clienteActual = null;
+    entrar(loginRole);
+  } else {
+    err.style.display = 'block';
+    document.getElementById('pin-input').value = '';
+  }
+}
+
+function entrar(rol) {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  
+  var tabs = document.getElementById('main-nav');
+  var allTabs = document.querySelectorAll('.nav-tab');
+  
+  if (rol === 'operario') {
+    allTabs.forEach(function(t) { t.style.display = 'none'; });
+    mostrarPagina('operario');
+    cargarDatos(function() { renderOpSelector(); });
+  } else if (rol === 'cliente') {
+    allTabs.forEach(function(t) { t.style.display = 'none'; });
+    mostrarPagina('cliente');
+    cargarDatos(function() { renderCliSelector(); });
+  } else {
+    allTabs.forEach(function(t) { t.style.display = ''; });
+    mostrarPagina('coordinador');
+    cargarDatos(function() { actualizarMetricas(); renderTabla(); });
+  }
+}
+
+function cerrarSesion() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-screen').style.alignItems = 'center';
+  document.getElementById('login-screen').style.justifyContent = 'center';
+  document.getElementById('pin-input').value = '';
+  document.getElementById('login-error').style.display = 'none';
+  document.getElementById('rol-select').value = 'coordinador';
+  cambiarRol('coordinador');
+  clienteActual = null;
+  currentId = null;
+  document.getElementById('op-selector').style.display = 'block';
+  document.getElementById('op-carga').style.display = 'none';
+  document.getElementById('cli-selector').style.display = 'block';
+  document.getElementById('cli-galeria').style.display = 'none';
+}
+
+// ===== NAVEGACION =====
+function mostrarPagina(nombre) {
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('page-' + nombre).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(function(t) { t.classList.remove('active'); });
+  var tab = document.getElementById('tab-' + nombre.substring(0,2));
+  if (tab) tab.classList.add('active');
+}
+
+function irA(nombre, el) {
+  mostrarPagina(nombre);
+  if (nombre === 'operario') { cargarDatos(function() { renderOpSelector(); }); }
+  if (nombre === 'cliente') { cargarDatos(function() { renderCliSelector(); }); }
+  if (nombre === 'coordinador') { cargarDatos(function() { actualizarMetricas(); renderTabla(); }); }
+}
+
+// ===== METRICAS Y TABLA =====
+function actualizarMetricas() {
+  document.getElementById('m-total').textContent = contenedores.length;
+  document.getElementById('m-comp').textContent = contenedores.filter(function(c) { return c.estado === 'completo'; }).length;
+  document.getElementById('m-proc').textContent = contenedores.filter(function(c) { return c.estado === 'proceso'; }).length;
+  document.getElementById('m-fotos').textContent = contenedores.reduce(function(a,c) { return a + c.fotos; }, 0);
+}
+
+function renderTabla() {
+  var body = document.getElementById('tabla-body');
+  if (!body) return;
+  body.innerHTML = '';
+  contenedores.forEach(function(c) {
+    var proc = c.estado === 'proceso';
+    var poHtml = c.po ? 'PO: ' + c.po : '<span class="sin-po">Sin PO</span>';
+    var guiaHtml = '';
+    if (c.guiaEnc || c.guiaCli) {
+      guiaHtml = 'G: ' + (c.guiaEnc || '—') + ' / ' + (c.guiaCli || '—');
+    }
+    var tempClass = !c.temp || c.temp === '—' ? 'temp-none' : (c.tempOk ? 'temp-ok' : 'temp-warn');
+    var stClass = proc ? 'status-proc' : 'status-done';
+    var stText = proc ? 'En carga (' + c.patas + ' patas)' : 'Completo';
+    var guiaBadge = contarGuias(c) > 0 ? ' (' + contarGuias(c) + ')' : '';
+    
+    var row = document.createElement('div');
+    row.className = 'table-row' + (proc ? ' proceso' : '');
+    row.innerHTML = '<div>' +
+      '<div class="cont-name">' + c.cliente + ' N° ' + c.num + '</div>' +
+      '<div class="cont-po">' + poHtml + '</div>' +
+      (guiaHtml ? '<div class="cont-guia">' + guiaHtml + '</div>' : '') +
+      '<div class="cont-cal"><span class="cal-tag">' + (c.cal || '—') + '</span></div>' +
+      '</div>' +
+      '<span style="font-size:12px;color:#6B6860;">' + (c.tipo || '—') + '</span>' +
+      '<span class="temp-tag ' + tempClass + '">' + (c.temp || '—') + '</span>' +
+      '<span class="status-tag ' + stClass + '">' + stText + '</span>' +
+      '<div class="actions">' +
+        (proc ? '<button class="btn-blue" onclick="irAOp(\'' + c.id + '\')">Ver carga</button>' : '<button class="btn-link" onclick="abrirLink(\'' + c.id + '\')">🔗 Link</button>') +
+        '<button class="btn-link" style="background:#fff7ed;color:#92400e;border-color:#fed7aa;" onclick="abrirGuias(\'' + c.id + '\')">📄 Guías' + guiaBadge + '</button>' +
+        (!proc ? '<button class="btn-warn" onclick="reabrirCarga(\'' + c.id + '\')">↩</button>' : '') +
+        '<button class="btn-danger" onclick="eliminarCont(\'' + c.id + '\')">🗑</button>' +
+      '</div>';
+    body.appendChild(row);
+  });
+}
+
+function contarGuias(c) {
+  var n = 0;
+  if (c.guias && c.guias.enc) n++;
+  if (c.guias && c.guias.cli) n++;
+  return n;
+}
+
+// ===== BUSCAR =====
+function buscar(val) {
+  var v = val.trim().toUpperCase();
+  var res = document.getElementById('search-results');
+  var nores = document.getElementById('search-nores');
+  res.innerHTML = '';
+  nores.style.display = 'none';
+  if (!v) return;
+  var found = contenedores.filter(function(c) {
+    return (c.po && c.po.toUpperCase().indexOf(v) >= 0) ||
+           c.num.toUpperCase().indexOf(v) >= 0 ||
+           c.cliente.toUpperCase().indexOf(v) >= 0;
+  });
+  if (found.length) {
+    found.forEach(function(c) {
+      var el = document.createElement('div');
+      el.className = 'result-card';
+      el.innerHTML = '<div>' +
+        '<div style="font-size:14px;font-weight:600;">' + c.cliente + ' N° ' + c.num + '</div>' +
+        '<div style="font-size:12px;color:#6B6860;">' + (c.po ? 'PO: ' + c.po : 'Sin PO') + ' · ' + (c.cal || '—') + ' · ' + c.fotos + ' fotos</div>' +
+        '</div>' +
+        '<span class="status-tag ' + (c.estado === 'proceso' ? 'status-proc' : 'status-done') + '">' + (c.estado === 'proceso' ? 'En carga' : 'Completo') + '</span>';
+      res.appendChild(el);
+    });
+  } else {
+    nores.style.display = 'block';
+  }
+}
+
+function limpiarBusqueda() {
+  document.getElementById('search-inp').value = '';
+  document.getElementById('search-results').innerHTML = '';
+  document.getElementById('search-nores').style.display = 'none';
+}
+
+// ===== MODAL NUEVO =====
+function buildClienteSelect() {
+  var sel = document.getElementById('f-cliente');
+  sel.innerHTML = '<option value="">Seleccionar campo...</option>';
+  clientes.forEach(function(c) {
+    var o = document.createElement('option');
+    o.value = c.nombre; o.textContent = c.nombre;
+    sel.appendChild(o);
+  });
+  var n = document.createElement('option');
+  n.value = '__nuevo__'; n.textContent = '+ Agregar nuevo cliente';
+  sel.appendChild(n);
+}
+
+function cambiarCliente(val) {
+  var box = document.getElementById('new-client-box');
+  if (val === '__nuevo__') {
+    box.classList.add('show');
+    document.getElementById('new-cli-nombre').value = '';
+    document.getElementById('new-cli-pin').value = '';
+    document.getElementById('client-ok').classList.remove('show');
+  } else {
+    box.classList.remove('show');
+  }
+}
+
+function agregarCliente() {
+  var nombre = document.getElementById('new-cli-nombre').value.trim();
+  var pin = document.getElementById('new-cli-pin').value.trim() || '0000';
+  if (!nombre) return;
+  var existe = clientes.some(function(c) { return c.nombre === nombre; });
+  if (!existe) {
+    clientes.push({nombre: nombre, pin: pin});
+    guardarClientesDB();
+  }
+  buildClienteSelect();
+  document.getElementById('f-cliente').value = nombre;
+  document.getElementById('new-client-box').classList.remove('show');
+  var ok = document.getElementById('client-ok');
+  ok.textContent = '✓ ' + nombre + ' agregado';
+  ok.classList.add('show');
+}
+
+function abrirModal(id) {
+  if (id === 'nuevo') {
+    buildClienteSelect();
+    document.getElementById('new-client-box').classList.remove('show');
+    document.getElementById('client-ok').classList.remove('show');
+    ['f-cliente','f-num','f-po','f-cal','f-tipo','f-fecha','f-guia-enc','f-guia-cli'].forEach(function(x) {
+      var el = document.getElementById(x);
+      if (el) el.value = '';
+    });
+  }
+  document.getElementById('modal-' + id).classList.add('open');
+}
+
+function cerrarModal(id) {
+  document.getElementById('modal-' + id).classList.remove('open');
+}
+
+function crearContenedor() {
+  var cliente = document.getElementById('f-cliente').value;
+  var num = document.getElementById('f-num').value.trim();
+  if (!cliente || cliente === '__nuevo__' || !num) {
+    alert('Completa al menos: Campo/Cliente y N° de contenedor');
+    return;
+  }
+  var po = document.getElementById('f-po').value.trim();
+  var cal = document.getElementById('f-cal').value;
+  var tipo = document.getElementById('f-tipo').value;
+  var fechaRaw = document.getElementById('f-fecha').value;
+  var guiaEnc = document.getElementById('f-guia-enc').value.trim();
+  var guiaCli = document.getElementById('f-guia-cli').value.trim();
+  var fecha = 'Sin fecha';
+  if (fechaRaw) {
+    try { fecha = new Date(fechaRaw + 'T12:00:00').toLocaleDateString('es-CL', {day:'numeric',month:'short',year:'numeric'}); }
+    catch(e) { fecha = fechaRaw; }
+  }
+  var nuevo = {
+    id: Date.now(),
+    cliente: cliente,
+    num: num,
+    po: po,
+    cal: cal,
+    tipo: tipo,
+    fecha: fecha,
+    guiaEnc: guiaEnc,
+    guiaCli: guiaCli,
+    guias: {enc: null, cli: null},
+    temp: '—',
+    tempOk: false,
+    fotos: 0,
+    estado: 'proceso',
+    patas: 0,
+    etapas: {temp: false, vacio: false},
+    frutaFotos: 0,
+    fotoUrls: {},
+    frutaUrls: [],
+    pataUrls: []
+  };
+  contenedores.unshift(nuevo);
+  actualizarMetricas();
+  renderTabla();
+  guardarContenedor(nuevo);
+  cerrarModal('nuevo');
+  toast('✓ ' + cliente + ' N° ' + num + ' creado');
+}
+
+// ===== LINK MODAL =====
+function abrirLink(id) {
+  var c = contenedores.find(function(x) { return String(x.id) === String(id); });
+  if (!c) return;
+  var linkNombre;
+  if (c.po) {
+    linkNombre = 'PO: ' + c.po;
+  } else if (c.guiaEnc) {
+    linkNombre = 'Guía: ' + c.guiaEnc;
+  } else if (c.guiaCli) {
+    linkNombre = 'Guía: ' + c.guiaCli;
+  } else {
+    linkNombre = c.cliente + ' N° ' + c.num;
+  }
+  var url = 'https://encinastrack.github.io/encinastrack/';
+  document.getElementById('link-sub').textContent = c.cliente + ' N° ' + c.num;
+  document.getElementById('link-cli').textContent = c.cliente;
+  document.getElementById('link-num').textContent = 'N° ' + c.num;
+  document.getElementById('link-po').innerHTML = c.po ? c.po : '<span class="sin-po">Sin PO</span>';
+  document.getElementById('link-cal').textContent = c.cal || '—';
+  document.getElementById('link-name').textContent = linkNombre;
+  document.getElementById('link-url').textContent = url;
+  document.getElementById('wa-title').textContent = linkNombre;
+  document.getElementById('wa-url').textContent = url;
+  document.getElementById('wa-desc').textContent = c.cliente + ' N° ' + c.num + ' · ' + (c.cal||'—') + ' · ' + c.fotos + ' fotos';
+  document.getElementById('copied-ok').classList.remove('show');
+  abrirModal('link');
+}
+
+function copiarLink() {
+  var url = document.getElementById('link-url').textContent;
+  try { navigator.clipboard.writeText(url); } catch(e) {}
+  document.getElementById('copied-ok').classList.add('show');
+  setTimeout(function() { document.getElementById('copied-ok').classList.remove('show'); }, 3000);
+}
+
+function abrirWA() {
+  var txt = document.getElementById('link-name').textContent + '\n' + document.getElementById('link-url').textContent;
+  window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank');
+}
+
+// ===== ACCIONES TABLA =====
+function eliminarCont(id) {
+  var c = contenedores.find(function(x) { return String(x.id) === String(id); });
+  if (!c) return;
+  if (!confirm('¿Eliminar "' + c.cliente + ' N° ' + c.num + '"?')) return;
+  eliminarContenedorDB(id);
+  contenedores = contenedores.filter(function(x) { return String(x.id) !== String(id); });
+  actualizarMetricas();
+  renderTabla();
+  toast('🗑 Contenedor eliminado');
+}
+
+function reabrirCarga(id) {
+  var c = contenedores.find(function(x) { return String(x.id) === String(id); });
+  if (!c) return;
+  if (!confirm('¿Reabrir la carga de "' + c.cliente + ' N° ' + c.num + '"?')) return;
+  c.estado = 'proceso';
+  patchContenedor(id, { estado: 'proceso' }, 'la reapertura');
+  actualizarMetricas();
+  renderTabla();
+  toast('↩ Carga reabierta');
+}
+
+function irAOp(id) {
+  irA('operario', null);
+  setTimeout(function() { abrirCarga(id); }, 400);
+}
+
+// ===== GUIAS =====
+function abrirGuias(id) {
+  guiasContId = id;
+  var c = contenedores.find(function(x) { return String(x.id) === String(id); });
+  if (!c) return;
+  if (!c.guias) c.guias = {enc: null, cli: null};
+  document.getElementById('guias-sub').textContent = c.cliente + ' N° ' + c.num + (c.po ? ' · PO: ' + c.po : '');
+  renderSlot('enc', c.guias.enc);
+  renderSlot('cli', c.guias.cli);
+  abrirModal('guias');
+}
+
+function renderSlot(slot, guia) {
+  var prev = document.getElementById('slot-' + slot + '-prev');
+  var drop = document.getElementById('slot-' + slot + '-drop');
+  if (guia) {
+    prev.classList.add('show');
+    drop.style.display = 'none';
+    document.getElementById('slot-' + slot + '-icon').textContent = guia.tipo === 'pdf' ? '📄' : '🖼️';
+    document.getElementById('slot-' + slot + '-tipo').textContent = guia.tipo === 'pdf' ? 'PDF' : 'Imagen';
+  } else {
+    prev.classList.remove('show');
+    drop.style.display = 'block';
+  }
+}
+
+function seleccionarGuia(slot) {
+  document.getElementById('input-' + slot).click();
+}
+
+// CORREGIDO: antes la guía solo se mostraba en pantalla y NUNCA se
+// guardaba en la base de datos (se perdía al recargar y el cliente no
+// la veía). Ahora se lee el archivo, se comprime si es imagen, y se
+// guarda en Supabase junto con su tipo.
+function procesarGuia(files, slot) {
+  if (!files || !files[0]) return;
+  var c = contenedores.find(function(x) { return String(x.id) === String(guiasContId); });
+  if (!c) return;
+  if (!c.guias) c.guias = {enc: null, cli: null};
+  var file = files[0];
+  var esPdf = file.type === 'application/pdf' || file.name.toLowerCase().indexOf('.pdf') >= 0;
+  var input = document.getElementById('input-' + slot);
+
+  if (esPdf && file.size > 4 * 1024 * 1024) {
+    toast('⚠ El PDF pesa más de 4 MB — usa uno más liviano o sube una foto de la guía', true);
+    input.value = '';
+    return;
+  }
+
+  toast('⏳ Guardando guía...');
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    function guardarGuia(data) {
+      c.guias[slot] = {nombre: slot === 'enc' ? 'Guía Las Encinas' : 'Guía Cliente', tipo: esPdf ? 'pdf' : 'img', data: data};
+      renderSlot(slot, c.guias[slot]);
+      renderTabla();
+      var campos = {};
+      campos['guias_' + slot + '_tipo'] = c.guias[slot].tipo;
+      campos['guias_' + slot + '_data'] = data;
+      patchContenedor(c.id, campos, 'la guía').then(function(ok) {
+        if (ok) toast('✓ Guía guardada');
+      });
+    }
+    if (esPdf) guardarGuia(e.target.result);
+    else comprimirImagen(e.target.result, guardarGuia);
+  };
+  reader.onerror = function() { toast('⚠ No se pudo leer el archivo — intenta de nuevo', true); };
+  reader.readAsDataURL(file);
+  input.value = '';
+}
+
+function eliminarSlot(slot) {
+  var c = contenedores.find(function(x) { return String(x.id) === String(guiasContId); });
+  if (!c || !c.guias) return;
+  c.guias[slot] = null;
+  renderSlot(slot, null);
+  renderTabla();
+  var campos = {};
+  campos['guias_' + slot + '_tipo'] = null;
+  campos['guias_' + slot + '_data'] = null;
+  patchContenedor(c.id, campos, 'la eliminación de la guía');
+  toast('Guía eliminada');
+}
+
+// ===== OPERARIO =====
+function renderOpSelector() {
+  var proc = contenedores.filter(function(c) { return c.estado === 'proceso'; });
+  var list = document.getElementById('op-list');
+  list.innerHTML = '';
+  if (!proc.length) {
+    list.innerHTML = '<div style="font-size:13px;color:#9E9B93;text-align:center;padding:20px;">No hay contenedores en proceso.</div>';
+    return;
+  }
+  proc.forEach(function(c) {
+    var el = document.createElement('div');
+    el.className = 'cont-item proc';
+    el.innerHTML = '<div><div class="cont-item-name">' + c.cliente + ' N° ' + c.num + '</div><div class="cont-item-meta">' + (c.po ? 'PO: ' + c.po : 'Sin PO') + ' · ' + (c.cal||'—') + '</div></div><span class="cont-item-badge status-proc">' + c.patas + ' patas</span>';
+    el.onclick = function() { abrirCarga(c.id); };
+    list.appendChild(el);
+  });
+}
+
+function abrirCarga(id) {
+  currentId = id;
+  var c = contenedores.find(function(x) { return String(x.id) === String(id); });
+  if (!c) return;
+  document.getElementById('op-selector').style.display = 'none';
+  document.getElementById('op-carga').style.display = 'block';
+  document.getElementById('op-name').textContent = c.cliente + ' N° ' + c.num;
+  document.getElementById('op-po').textContent = c.po ? 'PO: ' + c.po : 'Sin PO';
+  actualizarTemp(c);
+  renderEtapas(c);
+  renderPatas(c);
+  // Traer siempre la version mas reciente desde la base de datos.
+  // Esto asegura que si el operario cerro la app o si otro operario
+  // ya avanzo esta carga, se vea el progreso real y no se pierda nada.
+  supaFetch('contenedores?id=eq.' + encodeURIComponent(String(id)), 'GET')
+    .then(function(r) { return r.json(); })
+    .then(function(rows) {
+      if (rows && rows[0]) {
+        var fresh = dbToApp(rows[0]);
+        var idx = contenedores.findIndex(function(x) { return String(x.id) === String(id); });
+        if (idx >= 0) contenedores[idx] = fresh;
+        if (String(currentId) === String(id)) {
+          actualizarTemp(fresh);
+          renderEtapas(fresh);
+          renderPatas(fresh);
+        }
+      }
+    })
+    .catch(function(e) { console.error('refrescar carga error:', e); });
+}
+
+function actualizarTemp(c) {
+  var el = document.getElementById('op-temp');
+  var alert = document.getElementById('op-temp-alert');
+  if (!c.temp || c.temp === '—') {
+    el.textContent = '—'; el.className = 'op-temp-val none';
+    alert.className = 'temp-alert'; alert.textContent = '';
+  } else {
+    el.textContent = c.temp;
+    if (c.tempOk) {
+      el.className = 'op-temp-val ok';
+      alert.className = 'temp-alert ok show';
+      alert.textContent = '✓ Temperatura autorizada para cargar';
+    } else {
+      el.className = 'op-temp-val warn';
+      alert.className = 'temp-alert warn show';
+      alert.textContent = '⚠ Temperatura fuera de rango';
+    }
+  }
+}
+
+function renderEtapas(c) {
+  var bt = document.getElementById('btn-temp');
+  var bv = document.getElementById('btn-vacio');
+  var bf = document.getElementById('btn-fruta');
+  if (c.etapas.temp) { bt.classList.add('done'); document.getElementById('lbl-temp').textContent = 'Temperatura inicial ✓'; }
+  else { bt.classList.remove('done'); document.getElementById('lbl-temp').textContent = 'Temperatura inicial'; }
+  if (c.etapas.vacio) { bv.classList.add('done'); document.getElementById('lbl-vacio').textContent = 'Contenedor vacío ✓'; }
+  else { bv.classList.remove('done'); document.getElementById('lbl-vacio').textContent = 'Contenedor vacío'; }
+  if (c.frutaFotos > 0) {
+    bf.classList.add('done');
+    document.getElementById('lbl-fruta').textContent = 'Fotos de fruta ✓';
+    var badge = document.getElementById('fruta-badge');
+    badge.textContent = c.frutaFotos + ' foto' + (c.frutaFotos !== 1 ? 's' : '');
+    badge.style.display = 'inline-block';
+  } else {
+    bf.classList.remove('done');
+    document.getElementById('lbl-fruta').textContent = 'Fotos de fruta';
+    document.getElementById('fruta-badge').style.display = 'none';
+  }
+  renderFruta(c);
+}
+
+function renderFruta(c) {
+  var thumbs = document.getElementById('fruta-thumbs');
+  thumbs.innerHTML = '';
+  var urls = c.frutaUrls || [];
+  for (var i = 0; i < 3; i++) {
+    var url = urls[i];
+    var div = document.createElement('div');
+    div.className = 'fruta-slot' + (url ? ' filled' : '');
+    if (url) {
+      div.innerHTML = '<img src="' + url + '">';
+    } else {
+      div.innerHTML = '📷<span>Foto ' + (i + 1) + '</span>';
+    }
+    (function(slotIdx) { div.onclick = function() { tomarFoto('fruta', slotIdx); }; })(i);
+    thumbs.appendChild(div);
+  }
+  var n = c.frutaFotos || 0;
+  document.getElementById('fruta-count').textContent = n + ' de 3 fotos';
+}
+
+function renderPatas(c) {
+  var grid = document.getElementById('pata-grid');
+  grid.innerHTML = '';
+  var urls = c.pataUrls || [];
+  for (var i = 1; i <= 24; i++) {
+    var filled = !!urls[i - 1];
+    var cell = document.createElement('div');
+    cell.className = 'pata-cell' + (filled ? ' done' : '');
+    cell.textContent = i;
+    (function(slotIdx) { cell.onclick = function() { tomarFoto('pata', slotIdx); }; })(i - 1);
+    grid.appendChild(cell);
+  }
+  var pataNumEl = document.getElementById('pata-num');
+  var proxima = urls.findIndex(function(u) { return !u; });
+  if (pataNumEl) pataNumEl.textContent = proxima >= 0 ? (proxima + 1) : '—';
+  var fotoBtn = document.getElementById('foto-btn');
+  if (fotoBtn) fotoBtn.disabled = c.patas >= 24;
+  var pct = Math.round((c.patas || 0) / 24 * 100);
+  document.getElementById('op-prog').style.width = pct + '%';
+  document.getElementById('op-prog-label').textContent = (c.patas || 0) + ' de 24 patas';
+}
+
+function toggleFruta() {
+  var panel = document.getElementById('fruta-panel');
+  panel.classList.toggle('show');
+}
+
+function tomarFoto(tipo, slotIdx) {
+  var c = contenedores.find(function(x) { return String(x.id) === String(currentId); });
+  if (!c) return;
+
+  // Show choice: camera or gallery
+  var overlay = document.createElement('div');
+  overlay.id = '_foto-choice';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,26,20,0.6);z-index:200;display:flex;align-items:flex-end;justify-content:center;padding:20px;';
+  overlay.innerHTML = '<div style="background:var(--cream);border-radius:12px;padding:20px;width:100%;max-width:400px;">' +
+    '<div style="font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px;text-align:center;">Agregar foto</div>' +
+    '<button id="_btn-camara" style="width:100%;padding:14px;background:var(--forest);color:var(--cream);border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:10px;">📷 Tomar foto ahora</button>' +
+    '<button id="_btn-galeria" style="width:100%;padding:14px;background:var(--cream2);color:var(--ink);border:1.5px solid var(--cream3);border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">🖼️ Elegir de galería</button>' +
+    '<button id="_btn-cancel" style="width:100%;padding:12px;background:transparent;color:var(--ink3);border:none;font-size:13px;cursor:pointer;margin-top:6px;font-family:var(--mono);letter-spacing:0.06em;text-transform:uppercase;">Cancelar</button>' +
+    '</div>';
+
+  document.body.appendChild(overlay);
+
+  function lanzarInput(usarCamara) {
+    overlay.remove();
+    var existing = document.getElementById('_foto-input');
+    if (existing) existing.parentNode.removeChild(existing);
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.id = '_foto-input';
+    input.accept = 'image/*';
+    if (usarCamara) input.capture = 'environment';
+    input.style.cssText = 'position:fixed;top:-200px;left:-200px;width:1px;height:1px;opacity:0;';
+    input.addEventListener('change', function() {
+      if (!input.files || !input.files[0]) return;
+      var file = input.files[0];
+      var reader = new FileReader();
+      // CORREGIDO: la foto se COMPRIME antes de guardarse. Sin esto,
+      // las fotos originales del celular (3-6 MB cada una) hacían que
+      // el guardado en Supabase fallara al acumular varias patas.
+      reader.onload = function(e) {
+        toast('⏳ Guardando foto...');
+        comprimirImagen(e.target.result, function(comprimida) {
+          procesarFoto(tipo, c, comprimida, slotIdx);
+        });
+      };
+      reader.onerror = function() { procesarFoto(tipo, c, null, slotIdx); };
+      reader.readAsDataURL(file);
+    });
+    document.body.appendChild(input);
+    setTimeout(function() { input.click(); }, 50);
+  }
+
+  document.getElementById('_btn-camara').onclick = function() { lanzarInput(true); };
+  document.getElementById('_btn-galeria').onclick = function() { lanzarInput(false); };
+  document.getElementById('_btn-cancel').onclick = function() { overlay.remove(); };
+  overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+}
+
+function procesarFoto(tipo, c, dataUrl, slotIdx) {
+  // IMPORTANTE: se trabaja directamente sobre el objeto ya cargado en
+  // memoria (el mismo que esta en el arreglo "contenedores"), en vez de
+  // volver a consultar Supabase en cada foto. Consultar antes de cada
+  // guardado causaba que, al tomar fotos muy rapido seguidas, una
+  // respuesta que llegaba fuera de orden pisara la foto recien tomada.
+  // El estado se sincroniza con el servidor UNA vez al abrir el
+  // contenedor (ver abrirCarga), lo cual sigue permitiendo retomar
+  // una carga aunque se haya cerrado la app.
+  if (!c.etapas) c.etapas = { temp: false, vacio: false };
+  if (!c.fotoUrls) c.fotoUrls = {};
+  if (!c.frutaUrls) c.frutaUrls = [];
+  if (!c.pataUrls) c.pataUrls = [];
+
+  var campos = {};
+  var etiqueta = 'la foto';
+
+  if (tipo === 'temp') {
+    c.etapas.temp = true;
+    if (dataUrl) c.fotoUrls.temp = dataUrl;
+    var tempStr = prompt('Ingresa la temperatura (ej: -18.5):');
+    if (tempStr) {
+      var t = parseFloat(tempStr);
+      if (!isNaN(t)) {
+        c.temp = t.toFixed(1) + '°C';
+        c.tempOk = t <= -12;
+      }
+    }
+    toast('✓ Temperatura registrada');
+    etiqueta = 'la temperatura';
+    campos.etapa_temp = c.etapas.temp;
+    campos.foto_temp = c.fotoUrls.temp || null;
+    campos.temp = c.temp;
+    campos.temp_ok = c.tempOk;
+  } else if (tipo === 'vacio') {
+    c.etapas.vacio = true;
+    if (dataUrl) c.fotoUrls.vacio = dataUrl;
+    toast('✓ Contenedor vacío registrado');
+    etiqueta = 'la foto del contenedor vacío';
+    campos.etapa_vacio = c.etapas.vacio;
+    campos.foto_vacio = c.fotoUrls.vacio || null;
+  } else if (tipo === 'fruta') {
+    while (c.frutaUrls.length < 3) c.frutaUrls.push(null);
+    var slotF = (typeof slotIdx === 'number' && slotIdx >= 0 && slotIdx < 3) ? slotIdx : c.frutaUrls.findIndex(function(u) { return !u; });
+    if (slotF < 0) slotF = 0;
+    if (dataUrl) c.frutaUrls[slotF] = dataUrl;
+    c.frutaFotos = c.frutaUrls.filter(function(u) { return !!u; }).length;
+    toast('✓ Foto de fruta ' + (slotF + 1) + ' registrada');
+    etiqueta = 'la foto de fruta ' + (slotF + 1);
+    campos.fruta_fotos = c.frutaFotos;
+    campos.fruta_urls = c.frutaUrls;
+  } else if (tipo === 'pata') {
+    while (c.pataUrls.length < 24) c.pataUrls.push(null);
+    var slotP = (typeof slotIdx === 'number' && slotIdx >= 0 && slotIdx < 24) ? slotIdx : c.pataUrls.findIndex(function(u) { return !u; });
+    if (slotP < 0) {
+      toast('⚠ Ya se registraron las 24 patas');
+    } else {
+      if (dataUrl) c.pataUrls[slotP] = dataUrl;
+      c.patas = c.pataUrls.filter(function(u) { return !!u; }).length;
+      toast('✓ Pata ' + (slotP + 1) + ' registrada');
+      etiqueta = 'la foto de la pata ' + (slotP + 1);
+      campos.patas = c.patas;
+      campos.pata_urls = c.pataUrls;
+    }
+  }
+
+  c.fotos = (c.etapas.temp ? 1 : 0) + (c.etapas.vacio ? 1 : 0) + (c.frutaFotos || 0) + (c.patas || 0);
+  campos.fotos = c.fotos;
+
+  // Guardado PARCIAL: cada tipo de foto guarda UNICAMENTE sus propios
+  // campos (nunca "estado" ni los campos de otras etapas), para que un
+  // guardado de un tipo nunca pueda pisar el de otro tipo distinto.
+  // Ahora ademas se confirma: si Supabase rechaza, sale aviso rojo.
+  patchContenedor(c.id, campos, etiqueta).then(function(ok) {
+    if (ok) toast('✓ Se guardó ' + etiqueta);
+  });
+
+  if (String(currentId) === String(c.id)) {
+    actualizarTemp(c);
+    renderEtapas(c);
+    renderPatas(c);
+  }
+  actualizarMetricas();
+  renderTabla();
+}
+
+function completarCarga() {
+  var c = contenedores.find(function(x) { return String(x.id) === String(currentId); });
+  if (!c) return;
+
+  var checks = [
+    {label: 'Temperatura inicial', ok: c.etapas.temp, val: c.etapas.temp ? '1 foto' : 'Sin foto'},
+    {label: 'Contenedor vacío', ok: c.etapas.vacio, val: c.etapas.vacio ? '1 foto' : 'Sin foto'},
+    {label: 'Fotos de fruta', ok: c.frutaFotos > 0, val: c.frutaFotos > 0 ? c.frutaFotos + ' fotos' : 'Sin fotos'},
+    {label: 'Patas registradas', ok: c.patas > 0, val: c.patas + ' patas'}
+  ];
+
+  var checksHtml = '';
+  checks.forEach(function(ch) {
+    checksHtml += '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #ece6d8;">' +
+      '<div style="display:flex;align-items:center;gap:8px;">' +
+      '<span style="font-size:16px;">' + (ch.ok ? '✅' : '⚠️') + '</span>' +
+      '<span style="font-size:14px;">' + ch.label + '</span></div>' +
+      '<span style="font-size:12px;color:' + (ch.ok ? '#2d6a4f' : '#92400e') + ';font-weight:600;">' + ch.val + '</span></div>';
+  });
+
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;';
+  overlay.innerHTML = '<div style="background:#f5f0e8;border-radius:12px;padding:24px;width:100%;max-width:360px;">' +
+    '<div style="font-size:18px;font-weight:700;color:#1a3a2a;margin-bottom:4px;">¿Cerrar la carga?</div>' +
+    '<div style="font-size:12px;color:#6B6860;margin-bottom:16px;">' + c.cliente + ' N° ' + c.num + '</div>' +
+    '<div style="margin-bottom:16px;">' + checksHtml + '</div>' +
+    '<div style="font-size:13px;color:#6B6860;text-align:center;margin-bottom:16px;">¿Estás seguro que la carga está completa?</div>' +
+    '<div style="display:flex;gap:8px;">' +
+    '<button id="btn-cancelar-carga" style="flex:1;padding:12px;background:#fff;border:1px solid #ddd6c6;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;">Volver</button>' +
+    '<button id="btn-confirmar-carga" style="flex:1;padding:12px;background:#2d6a4f;color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;">Confirmar</button>' +
+    '</div></div>';
+
+  document.body.appendChild(overlay);
+
+  document.getElementById('btn-cancelar-carga').onclick = function() {
+    overlay.remove();
+  };
+
+  document.getElementById('btn-confirmar-carga').onclick = function() {
+    overlay.remove();
+    c.estado = 'completo';
+    patchContenedor(c.id, { estado: 'completo' }, 'el cierre de la carga');
+    actualizarMetricas();
+    renderTabla();
+    toast('🎉 Carga completada');
+    setTimeout(function() { volverOp(); }, 1500);
+  };
+}
+
+function volverOp() {
+  document.getElementById('op-selector').style.display = 'block';
+  document.getElementById('op-carga').style.display = 'none';
+  document.getElementById('fruta-panel').classList.remove('show');
+  currentId = null;
+  renderOpSelector();
+}
+
+// ===== CLIENTE =====
+function renderCliSelector() {
+  var list = document.getElementById('cli-list');
+  list.innerHTML = '';
+  var mios = clienteActual ? contenedores.filter(function(c) { return c.cliente === clienteActual; }) : contenedores;
+  if (!mios.length) {
+    list.innerHTML = '<div style="font-size:13px;color:#9E9B93;text-align:center;padding:20px;">No hay contenedores registrados.</div>';
+    return;
+  }
+  mios.forEach(function(c) {
+    var guiaMeta = (c.guiaEnc || c.guiaCli) ? ' · G: ' + (c.guiaEnc||'—') + '/' + (c.guiaCli||'—') : '';
+    var el = document.createElement('div');
+    el.className = 'cont-item' + (c.estado === 'proceso' ? ' proc' : '');
+    el.innerHTML = '<div><div class="cont-item-name">' + c.cliente + ' N° ' + c.num + '</div>' +
+      '<div class="cont-item-meta">' + (c.po ? 'PO: ' + c.po : 'Sin PO') + guiaMeta + ' · ' + (c.cal||'—') + ' · ' + c.fotos + ' fotos</div></div>' +
+      '<span class="cont-item-badge ' + (c.estado==='proceso' ? 'status-proc' : 'status-done') + '">' + (c.estado==='proceso' ? 'En carga' : 'Completo') + '</span>';
+    el.onclick = function() { abrirGaleria(c.id); };
+    list.appendChild(el);
+  });
+  document.getElementById('cli-selector').style.display = 'block';
+  document.getElementById('cli-galeria').style.display = 'none';
+}
+
+function abrirGaleria(id) {
+  var c = contenedores.find(function(x) { return String(x.id) === String(id); });
+  if (!c) return;
+  document.getElementById('cli-selector').style.display = 'none';
+  document.getElementById('cli-galeria').style.display = 'block';
+  document.getElementById('cli-po').textContent = c.po ? 'PO: ' + c.po : '';
+  document.getElementById('cli-title').textContent = c.cliente + ' N° ' + c.num;
+  document.getElementById('cli-cal').textContent = c.cal || '—';
+  var tempEl = document.getElementById('cli-temp');
+  tempEl.textContent = c.temp || '—';
+  tempEl.className = 'client-meta-val' + (!c.temp || c.temp==='—' ? '' : (c.tempOk ? ' ok' : ' warn'));
+  document.getElementById('cli-fecha').textContent = c.fecha || '—';
+  
+  var etapas = [];
+  if (c.etapas && c.etapas.temp) etapas.push({icon:'🌡️', label:'Temp. inicial', url: c.fotoUrls && c.fotoUrls.temp});
+  if (c.etapas && c.etapas.vacio) etapas.push({icon:'📦', label:'Cont. vacío', url: c.fotoUrls && c.fotoUrls.vacio});
+  (c.frutaUrls || []).forEach(function(u, i) { if (u) etapas.push({icon:'🍓', label:'Fruta ' + (i + 1), url: u}); });
+  
+  var hasGuias = c.guias && (c.guias.enc || c.guias.cli);
+  
+  var etSec = document.getElementById('cli-etapas');
+  etSec.innerHTML = '<div class="gallery-title">Etapas iniciales <span class="gallery-badge">' + etapas.length + ' fotos</span></div>';
+  var etGrid = document.createElement('div');
+  etGrid.className = 'photo-grid';
+  etapas.forEach(function(e) {
+    var card = document.createElement('div');
+    card.className = 'photo-card';
+    if (e.url) {
+      card.innerHTML = '<img src="' + e.url + '"><div class="photo-card-label">' + e.label + '</div>';
+      card.onclick = function() { verFoto(e.url, e.label); };
+    } else {
+      card.innerHTML = '<div class="photo-card-icon">' + e.icon + '</div><div class="photo-card-text">' + e.label + '</div>';
+    }
+    etGrid.appendChild(card);
+  });
+  if (hasGuias) {
+    var gCard = document.createElement('div');
+    gCard.className = 'photo-card';
+    gCard.innerHTML = '<div class="photo-card-icon">📄</div><div class="photo-card-text">Guías (' + contarGuias(c) + ')</div>';
+    gCard.onclick = function() { mostrarGuiasCliente(c); };
+    etGrid.appendChild(gCard);
+  }
+  etSec.appendChild(etGrid);
+  
+  var ptSec = document.getElementById('cli-patas');
+  ptSec.innerHTML = '';
+  if (c.patas > 0) {
+    ptSec.innerHTML = '<div class="gallery-title">Patas de carga <span class="gallery-badge">' + c.patas + ' de 24</span></div>';
+    var ptGrid = document.createElement('div');
+    ptGrid.className = 'photo-grid';
+    (c.pataUrls || []).forEach(function(url, j) {
+      if (!url) return;
+      var pCard = document.createElement('div');
+      pCard.className = 'photo-card';
+      pCard.innerHTML = '<img src="' + url + '"><div class="photo-card-label">Pata ' + (j + 1) + '</div>';
+      pCard.onclick = function() { verFoto(url, 'Pata ' + (j + 1)); };
+      ptGrid.appendChild(pCard);
+    });
+    ptSec.appendChild(ptGrid);
+  }
+}
+
+// CORREGIDO: el botón ⬇ de cada guía ahora abre o descarga el archivo
+// real guardado en la base de datos (antes no hacía nada).
+function mostrarGuiasCliente(c) {
+  var guiasArr = [];
+  if (c.guias.enc) guiasArr.push({nombre:'Guía Las Encinas', tipo: c.guias.enc.tipo, data: c.guias.enc.data});
+  if (c.guias.cli) guiasArr.push({nombre:'Guía Cliente', tipo: c.guias.cli.tipo, data: c.guias.cli.data});
+
+  var overlay = document.createElement('div');
+  overlay.id = 'guias-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;';
+  var card = document.createElement('div');
+  card.style.cssText = 'background:#f5f0e8;border-radius:12px;padding:24px;width:100%;max-width:380px;';
+  card.innerHTML = '<div style="font-size:18px;font-weight:700;color:#1a3a2a;margin-bottom:4px;">Guías de despacho</div>' +
+    '<div style="font-size:12px;color:#6B6860;margin-bottom:16px;">' + c.cliente + ' N° ' + c.num + '</div>';
+
+  guiasArr.forEach(function(g) {
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:12px;background:#ece6d8;border:1px solid #ddd6c6;border-radius:6px;margin-bottom:8px;';
+    row.innerHTML = '<span style="font-size:22px;">' + (g.tipo==='pdf' ? '📄' : '🖼️') + '</span>' +
+      '<div style="flex:1;"><div style="font-size:13px;font-weight:600;">' + g.nombre + '</div>' +
+      '<div style="font-size:11px;color:#9E9B93;">' + (g.tipo==='pdf' ? 'PDF' : 'Imagen') + '</div></div>';
+    var btn = document.createElement('button');
+    btn.style.cssText = 'background:#1a3a2a;color:#fff;border:none;border-radius:4px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;';
+    btn.textContent = g.tipo === 'pdf' ? '⬇' : 'Ver';
+    btn.onclick = function() {
+      if (!g.data) {
+        toast('⚠ Esta guía se adjuntó con la versión anterior y no quedó guardada — pide al coordinador volver a adjuntarla', true);
+        return;
+      }
+      if (g.tipo === 'img') {
+        verFoto(g.data, g.nombre);
+      } else {
+        var a = document.createElement('a');
+        a.href = g.data;
+        a.download = g.nombre.replace(/\s+/g, '-') + '.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+    };
+    row.appendChild(btn);
+    card.appendChild(row);
+  });
+
+  var cerrar = document.createElement('button');
+  cerrar.style.cssText = 'width:100%;margin-top:8px;padding:12px;background:#fff;border:1px solid #ddd6c6;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;';
+  cerrar.textContent = 'Cerrar';
+  cerrar.onclick = function() { overlay.remove(); };
+  card.appendChild(cerrar);
+  overlay.appendChild(card);
+  overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+  document.body.appendChild(overlay);
+}
+
+function verFoto(url, label) {
+  var html = '<div style="position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;" id="foto-overlay">' +
+    '<div style="font-size:12px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">' + label + '</div>' +
+    '<img src="' + url + '" style="max-width:100%;max-height:75vh;object-fit:contain;border-radius:8px;">' +
+    '<div style="display:flex;gap:10px;margin-top:16px;">' +
+    '<a href="' + url + '" download style="background:#1a3a2a;color:#fff;text-decoration:none;border-radius:6px;padding:10px 16px;font-size:13px;font-weight:600;">⬇ Descargar</a>' +
+    '<button onclick="document.getElementById(\'foto-overlay\').remove()" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3);border-radius:6px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;">Cerrar</button>' +
+    '</div></div>';
+  document.body.insertAdjacentHTML('beforeend', html);
+  document.getElementById('foto-overlay').onclick = function(e) { if (e.target === this) this.remove(); };
+}
+
+// ===== UTILS =====
+
+function descargarTodasFotos() {
+  var imgs = document.querySelectorAll('#cli-etapas img, #cli-patas img');
+  if (!imgs.length) { toast('⚠ No hay fotos para descargar'); return; }
+  
+  // Show instructions overlay
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,26,20,0.7);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;';
+  overlay.innerHTML = '<div style="background:var(--cream);border-radius:12px;padding:24px;width:100%;max-width:400px;">' +
+    '<div style="font-family:var(--display);font-size:20px;color:var(--forest);margin-bottom:8px;">Descargar fotos</div>' +
+    '<div style="font-size:13px;color:var(--ink2);margin-bottom:16px;line-height:1.6;">Se descargarán <strong>' + imgs.length + ' fotos</strong>. En iPhone quedan en <strong>Archivos → Descargas</strong>. En PC quedan en la carpeta Descargas.</div>' +
+    '<div style="display:flex;gap:8px;">' +
+    '<button id="_dl-cancel" style="flex:1;padding:11px;background:var(--cream2);border:1px solid var(--cream3);border-radius:6px;font-size:14px;cursor:pointer;">Cancelar</button>' +
+    '<button id="_dl-confirm" style="flex:1;padding:11px;background:var(--forest);color:var(--cream);border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;">Descargar todas</button>' +
+    '</div></div>';
+  document.body.appendChild(overlay);
+  
+  document.getElementById('_dl-cancel').onclick = function() { overlay.remove(); };
+  document.getElementById('_dl-confirm').onclick = function() {
+    overlay.remove();
+    toast('⬇ Descargando ' + imgs.length + ' fotos...');
+    imgs.forEach(function(img, i) {
+      setTimeout(function() {
+        var a = document.createElement('a');
+        a.href = img.src;
+        var label = img.nextElementSibling ? img.nextElementSibling.textContent.replace(/\s+/g,'-') : ('foto-' + (i+1));
+        a.download = label + '.jpg';
+        a.target = '_blank';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        if (i === imgs.length - 1) toast('✓ ' + imgs.length + ' fotos en Archivos → Descargas');
+      }, i * 500);
+    });
+  };
+}
+
+function descargarPDF() {
+  var etapasImgs = document.querySelectorAll('#cli-etapas img');
+  var patasImgs  = document.querySelectorAll('#cli-patas img');
+  if (!etapasImgs.length && !patasImgs.length) { toast('⚠ No hay fotos para generar PDF'); return; }
+
+  var titulo = document.getElementById('cli-title').textContent;
+  var po     = document.getElementById('cli-po').textContent;
+  var cal    = document.getElementById('cli-cal').textContent;
+  var fecha  = document.getElementById('cli-fecha').textContent;
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+    '<title>Encinas Track — ' + titulo + '</title>' +
+    '<style>' +
+    '*{box-sizing:border-box;margin:0;padding:0;}' +
+    'body{font-family:Arial,sans-serif;background:#fff;color:#1a1916;padding:0;}' +
+    '.no-print{background:#1B3A2A;color:#fff;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;}' +
+    '.no-print h2{font-size:15px;font-weight:700;}' +
+    '.btn-print{background:#E8B84B;color:#1a1916;border:none;border-radius:6px;padding:8px 18px;font-size:14px;font-weight:700;cursor:pointer;}' +
+    '.doc{padding:28px 32px;}' +
+    '.doc-header{border-bottom:2px solid #1B3A2A;padding-bottom:16px;margin-bottom:20px;}' +
+    '.po{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#C8973A;margin-bottom:6px;}' +
+    '.titulo{font-size:24px;font-weight:700;color:#1B3A2A;margin-bottom:14px;}' +
+    '.meta-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}' +
+    '.meta-item label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#9E9B93;display:block;margin-bottom:3px;}' +
+    '.meta-item span{font-size:14px;font-weight:600;}' +
+    '.section{margin-top:24px;}' +
+    '.section-title{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#9E9B93;border-bottom:1px solid #ddd;padding-bottom:8px;margin-bottom:14px;}' +
+    '.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}' +
+    '.photo-item{break-inside:avoid;page-break-inside:avoid;}' +
+    '.photo-item img{width:100%;height:140px;object-fit:cover;border-radius:6px;border:1px solid #e0dbd0;display:block;}' +
+    '.photo-label{font-size:10px;color:#6B6860;text-align:center;margin-top:4px;letter-spacing:0.04em;}' +
+    '.footer{margin-top:32px;padding-top:12px;border-top:1px solid #ddd;font-size:10px;color:#9E9B93;text-align:center;letter-spacing:0.06em;}' +
+    '@media print{.no-print{display:none!important;}body{padding:0;}.doc{padding:16px 20px;}}' +
+    '</style></head><body>' +
+    '<div class="no-print">' +
+    '<h2>🫐 Encinas Track — ' + titulo + '</h2>' +
+    '<button class="btn-print" onclick="window.print()">🖨 Guardar como PDF</button>' +
+    '</div>' +
+    '<div class="doc">' +
+    '<div class="doc-header">' +
+    (po ? '<div class="po">' + po + '</div>' : '') +
+    '<div class="titulo">' + titulo + '</div>' +
+    '<div class="meta-grid">' +
+    '<div class="meta-item"><label>Calidad</label><span>' + (cal||'—') + '</span></div>' +
+    '<div class="meta-item"><label>Fecha de carga</label><span>' + (fecha||'—') + '</span></div>' +
+    '</div></div>';
+
+  if (etapasImgs.length) {
+    html += '<div class="section"><div class="section-title">Etapas iniciales</div><div class="photo-grid">';
+    etapasImgs.forEach(function(img) {
+      var lbl = img.nextElementSibling ? img.nextElementSibling.textContent : '';
+      html += '<div class="photo-item"><img src="' + img.src + '"><div class="photo-label">' + lbl + '</div></div>';
+    });
+    html += '</div></div>';
+  }
+
+  if (patasImgs.length) {
+    html += '<div class="section"><div class="section-title">Patas de carga — ' + patasImgs.length + ' registradas</div><div class="photo-grid">';
+    patasImgs.forEach(function(img) {
+      var lbl = img.nextElementSibling ? img.nextElementSibling.textContent : '';
+      html += '<div class="photo-item"><img src="' + img.src + '"><div class="photo-label">' + lbl + '</div></div>';
+    });
+    html += '</div></div>';
+  }
+
+  html += '<div class="footer">Encinas Track · Sistema de registro de carga · ' + new Date().toLocaleDateString('es-CL') + '</div>';
+  html += '</div></body></html>';
+
+  var win = window.open('', '_blank');
+  if (win) {
+    win.document.write(html);
+    win.document.close();
+    toast('✓ PDF listo — presiona "Guardar como PDF"');
+  } else {
+    toast('⚠ Activa ventanas emergentes en tu navegador');
+  }
+}
+
+// CORREGIDO: ahora acepta un segundo parámetro. toast(mensaje, true)
+// muestra el aviso en ROJO y por más tiempo (para errores de guardado).
+function toast(msg, esError) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.toggle('error', !!esError);
+  t.classList.add('show');
+  clearTimeout(t._tm);
+  t._tm = setTimeout(function() { t.classList.remove('show'); }, esError ? 6000 : 2800);
+}
+
+document.querySelectorAll('.overlay').forEach(function(ov) {
+  ov.addEventListener('click', function(e) { if (e.target === ov) ov.classList.remove('open'); });
+});
+
+
+</script>
+</body>
+</html>
