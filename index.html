@@ -731,6 +731,50 @@ function comprimirImagen(dataUrl, callback) {
   } catch (e) { callback(dataUrl); }
 }
 
+// ===== SUBIDA A SUPABASE STORAGE (NUEVO) =====
+// A partir de la migración de fotos viejas, las fotos NUEVAS se suben
+// directo al bucket 'fotos-contenedores' en vez de guardarse como
+// base64 en la tabla. Esto evita que la base de datos vuelva a
+// crecer y a causar los timeouts que ya tuvimos.
+// Si la subida a Storage falla (ej: sin internet un instante), se usa
+// el base64 comprimido como respaldo para no perder la foto — se
+// puede volver a intentar la migración más adelante si eso pasa.
+var STORAGE_BUCKET = 'fotos-contenedores';
+
+function subirFotoAStorage(dataUrl, path, callback) {
+  try {
+    var partes = dataUrl.split(',');
+    var mimeMatch = partes[0].match(/data:(.*?);base64/);
+    var mime = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+    var binary = atob(partes[1]);
+    var arr = new Uint8Array(binary.length);
+    for (var i = 0; i < binary.length; i++) arr[i] = binary.charCodeAt(i);
+    var blob = new Blob([arr], { type: mime });
+    var ext = mime.indexOf('pdf') > -1 ? 'pdf' : (mime.indexOf('png') > -1 ? 'png' : 'jpg');
+
+    fetch(SUPA_URL + '/storage/v1/object/' + STORAGE_BUCKET + '/' + path + '.' + ext, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer ' + SUPA_KEY,
+        'Content-Type': mime,
+        'x-upsert': 'true'
+      },
+      body: blob
+    }).then(function(r) {
+      if (!r.ok) throw new Error('storage upload failed: ' + r.status);
+      var url = SUPA_URL + '/storage/v1/object/public/' + STORAGE_BUCKET + '/' + path + '.' + ext;
+      callback(url);
+    }).catch(function(err) {
+      console.warn('Subida a Storage falló, se usa respaldo local:', err);
+      callback(dataUrl); // respaldo: guarda el base64 comprimido igual que antes
+    });
+  } catch (e) {
+    console.warn('Error preparando subida a Storage:', e);
+    callback(dataUrl);
+  }
+}
+
 // Convert DB row to app object
 function dbToApp(r) {
   return {
@@ -1426,8 +1470,14 @@ function procesarGuia(files, slot) {
         if (ok) toast('✓ Guía guardada');
       });
     }
-    if (esPdf) guardarGuia(e.target.result);
-    else comprimirImagen(e.target.result, guardarGuia);
+    var path = c.id + '/guia_' + slot + '_' + Date.now();
+    if (esPdf) {
+      subirFotoAStorage(e.target.result, path, guardarGuia);
+    } else {
+      comprimirImagen(e.target.result, function(comprimida) {
+        subirFotoAStorage(comprimida, path, guardarGuia);
+      });
+    }
   };
   reader.onerror = function() { toast('⚠ No se pudo leer el archivo — intenta de nuevo', true); };
   reader.readAsDataURL(file);
@@ -1622,7 +1672,11 @@ function tomarFoto(tipo, slotIdx) {
       reader.onload = function(e) {
         toast('⏳ Guardando foto...');
         comprimirImagen(e.target.result, function(comprimida) {
-          procesarFoto(tipo, c, comprimida, slotIdx);
+          var slotParaPath = (typeof slotIdx === 'number') ? slotIdx : 0;
+          var path = c.id + '/' + tipo + '_' + slotParaPath + '_' + Date.now();
+          subirFotoAStorage(comprimida, path, function(urlOResp) {
+            procesarFoto(tipo, c, urlOResp, slotIdx);
+          });
         });
       };
       reader.onerror = function() { procesarFoto(tipo, c, null, slotIdx); };
