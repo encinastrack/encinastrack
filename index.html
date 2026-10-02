@@ -342,6 +342,30 @@ nav { background:var(--forest); display:flex; align-items:center; padding:0 20px
   #page-cliente .download-btns { flex-direction:column; }
   #page-cliente .btn-download { width:100%; justify-content:center; }
 }
+/* ===== NUEVO: fotos multiples, ficha coordinador, editor cliente ===== */
+.mf-thumbs { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.mf-slot { aspect-ratio:1; border-radius:8px; border:1px solid rgba(45,106,79,0.3); background:var(--cream); position:relative; overflow:hidden; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+.mf-slot img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
+.mf-add { border:1.5px dashed var(--cream3); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; font-size:20px; color:var(--ink3); }
+.mf-add span { font-family:var(--mono); font-size:9px; letter-spacing:0.06em; }
+.mf-badge { margin-left:auto; font-family:var(--mono); font-size:10px; background:rgba(45,106,79,0.12); color:var(--ok); border-radius:3px; padding:2px 8px; display:none; }
+.mf-panel { margin-top:-2px; margin-bottom:10px; }
+.mf-x { position:absolute; top:4px; right:4px; width:26px; height:26px; border-radius:50%; background:rgba(0,0,0,0.65); color:#fff; border:none; font-size:13px; cursor:pointer; z-index:2; padding:0; line-height:26px; text-align:center; }
+.cli-excluida img { opacity:0.25; }
+.cli-excluida .photo-card-label { text-decoration:line-through; }
+.ed-block { background:var(--cream2); border:1px solid var(--cream3); border-radius:var(--r); padding:14px; margin-bottom:12px; }
+.ed-grid { display:grid; grid-template-columns:1fr 1fr; gap:0 10px; }
+.ed-sec { margin-bottom:14px; }
+.ed-sec:last-child { margin-bottom:0; }
+.ed-check { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid var(--cream3); font-size:13px; }
+.ed-check:last-child { border-bottom:none; }
+.cli-editor { background:var(--cream2); border:1.5px solid var(--gold2); border-radius:var(--r); padding:14px; margin-bottom:18px; }
+.cli-ed-note { font-size:12px; color:var(--ink2); background:rgba(232,184,75,0.15); border-radius:6px; padding:8px 10px; margin-bottom:12px; line-height:1.5; }
+.cli-doc-row { display:flex; align-items:center; gap:10px; padding:8px 10px; background:var(--cream); border:1px solid var(--cream3); border-radius:6px; margin-bottom:6px; font-size:13px; }
+.cli-doc-row input[type=checkbox] { width:18px; height:18px; }
+.cli-ed-btns { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+.cli-ed-btns button { flex:1; min-width:140px; }
+@media (max-width:600px) { .ed-grid { grid-template-columns:1fr; } .mf-thumbs { grid-template-columns:repeat(3,1fr); } }
 </style>
 </head>
 <body>
@@ -503,12 +527,17 @@ nav { background:var(--forest); display:flex; align-items:center; padding:0 20px
           </div>
           <div class="temp-alert" id="op-temp-alert"></div>
           <div class="prog-bg"><div class="prog-fill" id="op-prog" style="width:0%"></div></div>
-          <div class="prog-label" id="op-prog-label">0 de 24 patas</div>
+          <div class="prog-label" id="op-prog-label">0 fotos de carga</div>
         </div>
         <div class="op-section">
           <div class="op-section-title">Etapas iniciales</div>
           <button class="big-btn" id="btn-temp" onclick="tomarFoto(&#39;temp&#39;)"><div class="btn-circle">🌡️</div><span id="lbl-temp">Temperatura inicial</span></button>
-          <button class="big-btn" id="btn-vacio" onclick="tomarFoto(&#39;vacio&#39;)"><div class="btn-circle">📦</div><span id="lbl-vacio">Contenedor vacío</span></button>
+          <button class="big-btn" id="btn-vacio" onclick="togglePanel(&#39;vacio&#39;)"><div class="btn-circle">📦</div><span id="lbl-vacio">Contenedor vacío</span><span class="mf-badge" id="badge-vacio"></span></button>
+          <div class="fruta-panel mf-panel" id="panel-vacio"><div class="mf-thumbs" id="thumbs-vacio"></div></div>
+          <button class="big-btn" id="btn-sello" onclick="togglePanel(&#39;sello&#39;)"><div class="btn-circle">🔒</div><span id="lbl-sello">Sello</span><span class="mf-badge" id="badge-sello"></span></button>
+          <div class="fruta-panel mf-panel" id="panel-sello"><div class="mf-thumbs" id="thumbs-sello"></div></div>
+          <button class="big-btn" id="btn-termografo" onclick="togglePanel(&#39;termografo&#39;)"><div class="btn-circle">📈</div><span id="lbl-termografo">Termógrafo</span><span class="mf-badge" id="badge-termografo"></span></button>
+          <div class="fruta-panel mf-panel" id="panel-termografo"><div class="mf-thumbs" id="thumbs-termografo"></div></div>
           <button class="big-btn" id="btn-fruta" onclick="toggleFruta()">
             <div class="btn-circle">🍓</div>
             <span id="lbl-fruta">Fotos de fruta</span>
@@ -521,8 +550,8 @@ nav { background:var(--forest); display:flex; align-items:center; padding:0 20px
         </div>
         <div class="op-section">
           <div class="op-section-title">Patas de carga</div>
-          <div class="pata-grid" id="pata-grid"></div>
-          <button class="foto-btn" id="foto-btn" onclick="tomarFoto(&#39;pata&#39;)">📷 Fotografiar pata <span id="pata-num">1</span></button>
+          <div class="mf-thumbs" id="pata-grid" style="margin-bottom:14px;"></div>
+          <button class="foto-btn" id="foto-btn" onclick="tomarFoto(&#39;pata&#39;)">📷 Agregar foto de carga</button>
           <button class="completar-btn" onclick="completarCarga()">✅ Carga completada</button>
         </div>
         <div style="display:flex;gap:8px;margin-top:8px;">
@@ -560,8 +589,11 @@ nav { background:var(--forest); display:flex; align-items:center; padding:0 20px
           <button class="btn-download" onclick="descargarTodasFotos()">⬇ Todas las fotos</button>
           <button class="btn-download btn-pdf" onclick="descargarPDF()">📄 Descargar PDF</button>
         </div>
+        <button class="btn-ghost" id="btn-cli-editar" style="width:100%;margin-bottom:14px;" onclick="toggleEditarDocCliente()">✏️ Editar documento antes de descargar</button>
+        <div id="cli-editor" class="cli-editor" style="display:none;"></div>
         <div id="cli-etapas" class="gallery-section"></div>
         <div id="cli-patas" class="gallery-section"></div>
+        <div id="cli-extras" class="gallery-section"></div>
         <div style="display:flex;gap:8px;margin-top:12px;">
           <button class="btn-ghost" onclick="document.getElementById(&#39;cli-selector&#39;).style.display=&#39;block&#39;;document.getElementById(&#39;cli-galeria&#39;).style.display=&#39;none&#39;;">← Volver</button>
           <button class="cambiar-rol-btn" onclick="cerrarSesion()">⏏ Salir</button>
@@ -572,6 +604,41 @@ nav { background:var(--forest); display:flex; align-items:center; padding:0 20px
 </div>
 
 <!-- MODALES -->
+<div class="overlay" id="modal-editar">
+  <div class="modal" style="max-width:620px;">
+    <div class="modal-title">Ficha del contenedor</div>
+    <div class="modal-sub" id="ed-sub"></div>
+    <div class="ed-block">
+      <div class="slot-label">Revisión de la carga</div>
+      <div id="ed-revision"></div>
+    </div>
+    <div class="ed-block">
+      <div class="slot-label">Datos del contenedor</div>
+      <div class="ed-grid">
+        <div class="field"><label>Campo / Cliente</label><select id="ed-cliente"></select></div>
+        <div class="field"><label>N° contenedor</label><input type="text" id="ed-num"></div>
+        <div class="field"><label>PO</label><input type="text" id="ed-po" placeholder="Vacío si no aplica"></div>
+        <div class="field"><label>Calidad</label><input type="text" id="ed-cal" list="ed-cal-opciones"><datalist id="ed-cal-opciones"><option value="IQF"></option><option value="B"></option><option value="C"></option><option value="JUGO"></option></datalist></div>
+        <div class="field"><label>Tipo de carga</label><input type="text" id="ed-tipo" list="ed-tipo-opciones"><datalist id="ed-tipo-opciones"><option value="A piso"></option><option value="Pallet"></option><option value="Bins"></option><option value="Rejillas"></option></datalist></div>
+        <div class="field"><label>Fecha de carga</label><input type="text" id="ed-fecha" placeholder="Ej: 2 oct 2026"></div>
+        <div class="field"><label>N° Guía Las Encinas</label><input type="text" id="ed-guia-enc"></div>
+        <div class="field"><label>N° Guía Cliente</label><input type="text" id="ed-guia-cli"></div>
+        <div class="field"><label>Temperatura inicial (°C)</label><input type="text" id="ed-temp" inputmode="decimal" placeholder="Ej: -18.5"></div>
+      </div>
+      <button class="btn-primary" style="width:100%;justify-content:center;" onclick="guardarDatosEditor()">💾 Guardar datos</button>
+    </div>
+    <div class="ed-block">
+      <div class="slot-label">Fotos de la carga — toca una foto para ver, reemplazar o eliminar</div>
+      <div id="ed-fotos"></div>
+    </div>
+    <div class="ed-block">
+      <div class="slot-label">Documentos</div>
+      <button class="btn-ghost" style="width:100%;" onclick="abrirGuias(edId)">📄 Guías y packing list</button>
+    </div>
+    <div class="modal-actions"><button class="btn-ghost" onclick="cerrarModal('editar')">Cerrar</button></div>
+  </div>
+</div>
+
 <div class="overlay" id="modal-nuevo">
   <div class="modal">
     <div class="modal-title">Nuevo contenedor</div>
@@ -642,7 +709,7 @@ nav { background:var(--forest); display:flex; align-items:center; padding:0 20px
 
 <div class="overlay" id="modal-guias">
   <div class="modal">
-    <div class="modal-title">Adjuntar guías</div>
+    <div class="modal-title">Guías y packing list</div>
     <div class="modal-sub" id="guias-sub"></div>
     <div class="slot-box">
       <div class="slot-label">Guía Las Encinas</div>
@@ -669,6 +736,19 @@ nav { background:var(--forest); display:flex; align-items:center; padding:0 20px
         <div class="slot-drop-text">Toca para subir PDF o foto</div>
       </div>
       <input type="file" id="input-cli" accept=".pdf,image/*" style="display:none" onchange="procesarGuia(this.files,&#39;cli&#39;)">
+    </div>
+    <div class="slot-box">
+      <div class="slot-label">Packing list</div>
+      <div class="slot-preview" id="slot-pack-prev">
+        <span id="slot-pack-icon" style="font-size:20px;">📄</span>
+        <div style="flex:1;"><div style="font-size:14px;font-weight:600;">Packing list</div><div id="slot-pack-tipo" style="font-family:var(--mono);font-size:10px;color:var(--ink3);"></div></div>
+        <button onclick="eliminarSlot(&#39;pack&#39;)" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--ink3);">✕</button>
+      </div>
+      <div class="slot-drop" id="slot-pack-drop" onclick="seleccionarGuia(&#39;pack&#39;)">
+        <div style="font-size:26px;">📎</div>
+        <div class="slot-drop-text">Toca para subir PDF o foto</div>
+      </div>
+      <input type="file" id="input-pack" accept=".pdf,image/*" style="display:none" onchange="procesarGuia(this.files,&#39;pack&#39;)">
     </div>
     <div class="modal-actions"><button class="btn-ghost" onclick="cerrarModal(&#39;guias&#39;)">Cerrar</button></div>
   </div>
@@ -775,8 +855,118 @@ function subirFotoAStorage(dataUrl, path, callback) {
   }
 }
 
+// ===== CATEGORIAS DE FOTOS (NUEVO) =====
+// Contenedor vacio, sello, termografo y patas aceptan 1 o mas fotos, sin
+// numero fijo. Cada una se guarda como lista en su propia columna.
+var LISTAS = {
+  vacio:      { col: 'vacio_urls',      prop: 'vacioUrls',      nombre: 'Contenedor vacío', etiqueta: 'Cont. vacío' },
+  sello:      { col: 'sello_urls',      prop: 'selloUrls',      nombre: 'Sello',            etiqueta: 'Sello' },
+  termografo: { col: 'termografo_urls', prop: 'termografoUrls', nombre: 'Termógrafo',       etiqueta: 'Termógrafo' },
+  pata:       { col: 'pata_urls',       prop: 'pataUrls',       nombre: 'Patas de carga',   etiqueta: 'Pata de carga' }
+};
+var ORDEN_TIPOS = ['temp', 'vacio', 'sello', 'termografo', 'fruta', 'pata'];
+
+function nombreTipo(t) {
+  if (LISTAS[t]) return LISTAS[t].nombre;
+  return t === 'temp' ? 'Temperatura inicial' : (t === 'fruta' ? 'Fotos de fruta' : t);
+}
+
+function limpiarLista(arr) {
+  if (typeof arr === 'string') { try { arr = JSON.parse(arr); } catch (e) { arr = []; } }
+  return (Array.isArray(arr) ? arr : []).filter(function(u) { return !!u; });
+}
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(ch) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+  });
+}
+
+function buscarCont(id) {
+  return contenedores.find(function(x) { return String(x.id) === String(id); });
+}
+
+function asegurarEstructura(c) {
+  if (!c.etapas) c.etapas = { temp: false, vacio: false };
+  if (!c.fotoUrls) c.fotoUrls = {};
+  if (!Array.isArray(c.frutaUrls)) c.frutaUrls = [];
+  Object.keys(LISTAS).forEach(function(t) { c[LISTAS[t].prop] = limpiarLista(c[LISTAS[t].prop]); });
+  if (!c.guias) c.guias = { enc: null, cli: null, pack: null };
+}
+
+function urlsDeTipo(c, t) {
+  if (t === 'temp') return (c.fotoUrls && c.fotoUrls.temp) ? [c.fotoUrls.temp] : [];
+  if (t === 'fruta') return c.frutaUrls || [];
+  return c[LISTAS[t].prop] || [];
+}
+
+function contarTipo(c, t) {
+  return urlsDeTipo(c, t).filter(function(u) { return !!u; }).length;
+}
+
+function contarFotos(c) {
+  return (c.etapas && c.etapas.temp ? 1 : 0) + contarTipo(c, 'vacio') + contarTipo(c, 'sello') +
+    contarTipo(c, 'termografo') + contarTipo(c, 'fruta') + contarTipo(c, 'pata');
+}
+
+// Arma SOLO los campos de un tipo de foto (guardado parcial, igual que antes:
+// un tipo nunca pisa los campos de otro).
+function camposDeTipo(c, t) {
+  asegurarEstructura(c);
+  var campos = {};
+  if (t === 'temp') {
+    campos.etapa_temp = !!c.etapas.temp;
+    campos.foto_temp = c.fotoUrls.temp || null;
+    campos.temp = c.temp || '—';
+    campos.temp_ok = !!c.tempOk;
+  } else if (t === 'fruta') {
+    c.frutaFotos = contarTipo(c, 'fruta');
+    campos.fruta_fotos = c.frutaFotos;
+    campos.fruta_urls = c.frutaUrls;
+  } else {
+    var L = LISTAS[t];
+    campos[L.col] = c[L.prop];
+    if (t === 'vacio') {
+      c.etapas.vacio = c.vacioUrls.length > 0;
+      campos.etapa_vacio = c.etapas.vacio;
+      campos.foto_vacio = c.vacioUrls[0] || null;   // compatibilidad con la columna antigua
+    }
+    if (t === 'pata') {
+      c.patas = c.pataUrls.length;
+      campos.patas = c.patas;
+    }
+  }
+  c.fotos = contarFotos(c);
+  campos.fotos = c.fotos;
+  return campos;
+}
+
+function contarDocs(c) {
+  return contarGuias(c) + (c.guias && c.guias.pack ? 1 : 0);
+}
+
+// Datos de columnas de cada documento del modal de guias
+function docCols(slot) {
+  if (slot === 'pack') return { tipo: 'packing_tipo', data: 'packing_data', nombre: 'Packing list' };
+  return { tipo: 'guias_' + slot + '_tipo', data: 'guias_' + slot + '_data', nombre: slot === 'enc' ? 'Guía Las Encinas' : 'Guía Cliente' };
+}
+
+// Despues de cualquier cambio, refresca todo lo que este a la vista
+function refrescarVistas(c) {
+  if (String(currentId) === String(c.id)) {
+    actualizarTemp(c);
+    renderEtapas(c);
+    renderPatas(c);
+  }
+  refrescarEditorSiAbierto(c);
+  actualizarMetricas();
+  renderTabla();
+}
+
 // Convert DB row to app object
 function dbToApp(r) {
+  var vacio = limpiarLista(r.vacio_urls);
+  if (!vacio.length && r.foto_vacio) vacio = [r.foto_vacio];   // contenedores antiguos (1 sola foto)
   return {
     id: r.id,
     cliente: r.cliente || '',
@@ -796,11 +986,17 @@ function dbToApp(r) {
     frutaFotos: r.fruta_fotos || 0,
     fotoUrls: { temp: r.foto_temp || null, vacio: r.foto_vacio || null },
     frutaUrls: r.fruta_urls || [],
-    pataUrls: r.pata_urls || [],
+    vacioUrls: vacio,
+    selloUrls: limpiarLista(r.sello_urls),
+    termografoUrls: limpiarLista(r.termografo_urls),
+    pataUrls: limpiarLista(r.pata_urls),
     guias: {
       enc: r.guias_enc_tipo ? { nombre: 'Guía Las Encinas', tipo: r.guias_enc_tipo, data: r.guias_enc_data || null } : null,
-      cli: r.guias_cli_tipo ? { nombre: 'Guía Cliente', tipo: r.guias_cli_tipo, data: r.guias_cli_data || null } : null
-    }
+      cli: r.guias_cli_tipo ? { nombre: 'Guía Cliente', tipo: r.guias_cli_tipo, data: r.guias_cli_data || null } : null,
+      pack: r.packing_tipo ? { nombre: 'Packing list', tipo: r.packing_tipo, data: r.packing_data || null } : null
+    },
+    // true solo si la fila trae las columnas de fotos (si no, aun no se cargan)
+    _fotosCargadas: Object.prototype.hasOwnProperty.call(r, 'pata_urls')
   };
 }
 
@@ -828,6 +1024,11 @@ function appToDb(c) {
     foto_vacio: c.fotoUrls ? c.fotoUrls.vacio : null,
     fruta_urls: c.frutaUrls || [],
     pata_urls: c.pataUrls || [],
+    vacio_urls: c.vacioUrls || [],
+    sello_urls: c.selloUrls || [],
+    termografo_urls: c.termografoUrls || [],
+    packing_tipo: c.guias && c.guias.pack ? c.guias.pack.tipo : null,
+    packing_data: c.guias && c.guias.pack ? (c.guias.pack.data || null) : null,
     guias_enc_tipo: c.guias && c.guias.enc ? c.guias.enc.tipo : null,
     guias_enc_data: c.guias && c.guias.enc ? (c.guias.enc.data || null) : null,
     guias_cli_tipo: c.guias && c.guias.cli ? c.guias.cli.tipo : null,
@@ -923,7 +1124,7 @@ function cargarDatos(callback) {
       // Se cargan aparte, por contenedor, al abrir cada uno.
       var COLS_LIVIANAS = 'id,cliente,num,po,cal,tipo,fecha,guia_enc,guia_cli,' +
         'temp,temp_ok,fotos,estado,patas,etapa_temp,etapa_vacio,fruta_fotos,' +
-        'guias_enc_tipo,guias_cli_tipo,created_at';
+        'guias_enc_tipo,guias_cli_tipo,packing_tipo,created_at';
       return supaFetch('contenedores?select=' + COLS_LIVIANAS + '&order=created_at.desc', 'GET');
     })
     .then(function(r) {
@@ -972,7 +1173,7 @@ function __ignora_cargarDatos_vieja(callback) {
       // Se cargan aparte, por contenedor, al abrir cada uno.
       var COLS_LIVIANAS = 'id,cliente,num,po,cal,tipo,fecha,guia_enc,guia_cli,' +
         'temp,temp_ok,fotos,estado,patas,etapa_temp,etapa_vacio,fruta_fotos,' +
-        'guias_enc_tipo,guias_cli_tipo,created_at';
+        'guias_enc_tipo,guias_cli_tipo,packing_tipo,created_at';
       return supaFetch('contenedores?select=' + COLS_LIVIANAS + '&order=created_at.desc', 'GET');
     })
     .then(function(r) { return r.json(); })
@@ -1157,12 +1358,12 @@ function renderTabla() {
     var tempClass = !c.temp || c.temp === '—' ? 'temp-none' : (c.tempOk ? 'temp-ok' : 'temp-warn');
     var stClass = proc ? 'status-proc' : 'status-done';
     var stText = proc ? 'En carga (' + c.patas + ' patas)' : 'Completo';
-    var guiaBadge = contarGuias(c) > 0 ? ' (' + contarGuias(c) + ')' : '';
+    var guiaBadge = contarDocs(c) > 0 ? ' (' + contarDocs(c) + ')' : '';
     
     var row = document.createElement('div');
     row.className = 'table-row' + (proc ? ' proceso' : '');
     row.innerHTML = '<div>' +
-      '<div class="cont-name">' + c.cliente + ' N° ' + c.num + '</div>' +
+      '<div class="cont-name" style="cursor:pointer;" title="Abrir ficha" onclick="abrirEditor(\'' + c.id + '\')">' + c.cliente + ' N° ' + c.num + '</div>' +
       '<div class="cont-po">' + poHtml + '</div>' +
       (guiaHtml ? '<div class="cont-guia">' + guiaHtml + '</div>' : '') +
       '<div class="cont-cal"><span class="cal-tag">' + (c.cal || '—') + '</span></div>' +
@@ -1171,8 +1372,9 @@ function renderTabla() {
       '<span class="temp-tag ' + tempClass + '">' + (c.temp || '—') + '</span>' +
       '<span class="status-tag ' + stClass + '">' + stText + '</span>' +
       '<div class="actions">' +
+        '<button class="btn-link" style="background:#eef2ff;color:#3730a3;border-color:#c7d2fe;" onclick="abrirEditor(\'' + c.id + '\')">✏️ Ficha</button>' +
         (proc ? '<button class="btn-blue" onclick="irAOp(\'' + c.id + '\')">Ver carga</button>' : '<button class="btn-link" onclick="abrirLink(\'' + c.id + '\')">🔗 Link</button>') +
-        '<button class="btn-link" style="background:#fff7ed;color:#92400e;border-color:#fed7aa;" onclick="abrirGuias(\'' + c.id + '\')">📄 Guías' + guiaBadge + '</button>' +
+        '<button class="btn-link" style="background:#fff7ed;color:#92400e;border-color:#fed7aa;" onclick="abrirGuias(\'' + c.id + '\')">📄 Docs' + guiaBadge + '</button>' +
         (!proc ? '<button class="btn-warn" onclick="reabrirCarga(\'' + c.id + '\')">↩</button>' : '') +
         '<button class="btn-danger" onclick="eliminarCont(\'' + c.id + '\')">🗑</button>' +
       '</div>';
@@ -1310,7 +1512,7 @@ function crearContenedor() {
     fecha: fecha,
     guiaEnc: guiaEnc,
     guiaCli: guiaCli,
-    guias: {enc: null, cli: null},
+    guias: {enc: null, cli: null, pack: null},
     temp: '—',
     tempOk: false,
     fotos: 0,
@@ -1320,7 +1522,11 @@ function crearContenedor() {
     frutaFotos: 0,
     fotoUrls: {},
     frutaUrls: [],
-    pataUrls: []
+    pataUrls: [],
+    vacioUrls: [],
+    selloUrls: [],
+    termografoUrls: [],
+    _fotosCargadas: true
   };
   contenedores.unshift(nuevo);
   actualizarMetricas();
@@ -1404,18 +1610,20 @@ function abrirGuias(id) {
   guiasContId = id;
   var c = contenedores.find(function(x) { return String(x.id) === String(id); });
   if (!c) return;
-  if (!c.guias) c.guias = {enc: null, cli: null};
+  if (!c.guias) c.guias = {enc: null, cli: null, pack: null};
   document.getElementById('guias-sub').textContent = c.cliente + ' N° ' + c.num + (c.po ? ' · PO: ' + c.po : '');
   renderSlot('enc', c.guias.enc);
   renderSlot('cli', c.guias.cli);
+  renderSlot('pack', c.guias.pack);
   abrirModal('guias');
   // Traer las guias reales (data) de este contenedor desde la base y refrescar
   // los slots cuando lleguen. En la lista general no vienen para evitar timeout.
   cargarFotosContenedor(id, function() {
     if (String(guiasContId) !== String(id)) return;
-    if (!c.guias) c.guias = {enc: null, cli: null};
+    if (!c.guias) c.guias = {enc: null, cli: null, pack: null};
     renderSlot('enc', c.guias.enc);
     renderSlot('cli', c.guias.cli);
+    renderSlot('pack', c.guias.pack);
   });
 }
 
@@ -1445,7 +1653,7 @@ function procesarGuia(files, slot) {
   if (!files || !files[0]) return;
   var c = contenedores.find(function(x) { return String(x.id) === String(guiasContId); });
   if (!c) return;
-  if (!c.guias) c.guias = {enc: null, cli: null};
+  if (!c.guias) c.guias = {enc: null, cli: null, pack: null};
   var file = files[0];
   var esPdf = file.type === 'application/pdf' || file.name.toLowerCase().indexOf('.pdf') >= 0;
   var input = document.getElementById('input-' + slot);
@@ -1456,18 +1664,20 @@ function procesarGuia(files, slot) {
     return;
   }
 
-  toast('⏳ Guardando guía...');
+  toast('⏳ Guardando documento...');
   var reader = new FileReader();
   reader.onload = function(e) {
     function guardarGuia(data) {
-      c.guias[slot] = {nombre: slot === 'enc' ? 'Guía Las Encinas' : 'Guía Cliente', tipo: esPdf ? 'pdf' : 'img', data: data};
+      var dc = docCols(slot);
+      c.guias[slot] = {nombre: dc.nombre, tipo: esPdf ? 'pdf' : 'img', data: data};
       renderSlot(slot, c.guias[slot]);
       renderTabla();
+      refrescarEditorSiAbierto(c);
       var campos = {};
-      campos['guias_' + slot + '_tipo'] = c.guias[slot].tipo;
-      campos['guias_' + slot + '_data'] = data;
-      patchContenedor(c.id, campos, 'la guía').then(function(ok) {
-        if (ok) toast('✓ Guía guardada');
+      campos[dc.tipo] = c.guias[slot].tipo;
+      campos[dc.data] = data;
+      patchContenedor(c.id, campos, dc.nombre).then(function(ok) {
+        if (ok) toast('✓ ' + dc.nombre + ' guardado');
       });
     }
     var path = c.id + '/guia_' + slot + '_' + Date.now();
@@ -1487,14 +1697,17 @@ function procesarGuia(files, slot) {
 function eliminarSlot(slot) {
   var c = contenedores.find(function(x) { return String(x.id) === String(guiasContId); });
   if (!c || !c.guias) return;
+  var dc = docCols(slot);
+  if (!confirm('¿Eliminar ' + dc.nombre + '?')) return;
   c.guias[slot] = null;
   renderSlot(slot, null);
   renderTabla();
+  refrescarEditorSiAbierto(c);
   var campos = {};
-  campos['guias_' + slot + '_tipo'] = null;
-  campos['guias_' + slot + '_data'] = null;
-  patchContenedor(c.id, campos, 'la eliminación de la guía');
-  toast('Guía eliminada');
+  campos[dc.tipo] = null;
+  campos[dc.data] = null;
+  patchContenedor(c.id, campos, 'la eliminación de ' + dc.nombre);
+  toast(dc.nombre + ' eliminado');
 }
 
 // ===== OPERARIO =====
@@ -1567,19 +1780,29 @@ function actualizarTemp(c) {
 }
 
 function renderEtapas(c) {
+  asegurarEstructura(c);
   var bt = document.getElementById('btn-temp');
-  var bv = document.getElementById('btn-vacio');
   var bf = document.getElementById('btn-fruta');
   if (c.etapas.temp) { bt.classList.add('done'); document.getElementById('lbl-temp').textContent = 'Temperatura inicial ✓'; }
   else { bt.classList.remove('done'); document.getElementById('lbl-temp').textContent = 'Temperatura inicial'; }
-  if (c.etapas.vacio) { bv.classList.add('done'); document.getElementById('lbl-vacio').textContent = 'Contenedor vacío ✓'; }
-  else { bv.classList.remove('done'); document.getElementById('lbl-vacio').textContent = 'Contenedor vacío'; }
+  ['vacio', 'sello', 'termografo'].forEach(function(t) {
+    var b = document.getElementById('btn-' + t);
+    if (!b) return;
+    var n = contarTipo(c, t);
+    var hecho = n > 0 || (t === 'vacio' && !c._fotosCargadas && c.etapas.vacio);
+    if (hecho) b.classList.add('done'); else b.classList.remove('done');
+    document.getElementById('lbl-' + t).textContent = LISTAS[t].nombre + (hecho ? ' ✓' : '');
+    var badge = document.getElementById('badge-' + t);
+    if (n > 0) { badge.textContent = n + ' foto' + (n !== 1 ? 's' : ''); badge.style.display = 'inline-block'; }
+    else { badge.style.display = 'none'; }
+    renderMiniaturas(document.getElementById('thumbs-' + t), c, t);
+  });
   if (c.frutaFotos > 0) {
     bf.classList.add('done');
     document.getElementById('lbl-fruta').textContent = 'Fotos de fruta ✓';
-    var badge = document.getElementById('fruta-badge');
-    badge.textContent = c.frutaFotos + ' foto' + (c.frutaFotos !== 1 ? 's' : '');
-    badge.style.display = 'inline-block';
+    var badgeF = document.getElementById('fruta-badge');
+    badgeF.textContent = c.frutaFotos + ' foto' + (c.frutaFotos !== 1 ? 's' : '');
+    badgeF.style.display = 'inline-block';
   } else {
     bf.classList.remove('done');
     document.getElementById('lbl-fruta').textContent = 'Fotos de fruta';
@@ -1601,7 +1824,12 @@ function renderFruta(c) {
     } else {
       div.innerHTML = '📷<span>Foto ' + (i + 1) + '</span>';
     }
-    (function(slotIdx) { div.onclick = function() { tomarFoto('fruta', slotIdx); }; })(i);
+    (function(slotIdx, tieneFoto) {
+      div.onclick = function() {
+        if (tieneFoto) opcionesFoto('fruta', slotIdx, c.id);
+        else tomarFoto('fruta', slotIdx);
+      };
+    })(i, !!url);
     thumbs.appendChild(div);
   }
   var n = c.frutaFotos || 0;
@@ -1610,24 +1838,19 @@ function renderFruta(c) {
 
 function renderPatas(c) {
   var grid = document.getElementById('pata-grid');
-  grid.innerHTML = '';
-  var urls = c.pataUrls || [];
-  for (var i = 1; i <= 24; i++) {
-    var filled = !!urls[i - 1];
-    var cell = document.createElement('div');
-    cell.className = 'pata-cell' + (filled ? ' done' : '');
-    cell.textContent = i;
-    (function(slotIdx) { cell.onclick = function() { tomarFoto('pata', slotIdx); }; })(i - 1);
-    grid.appendChild(cell);
+  var n = c._fotosCargadas ? contarTipo(c, 'pata') : (c.patas || 0);
+  if (!c._fotosCargadas) {
+    grid.innerHTML = '<div style="grid-column:1/-1;font-size:12px;color:var(--ink3);text-align:center;padding:10px;">⏳ Cargando fotos...</div>';
+  } else if (!n) {
+    grid.innerHTML = '<div style="grid-column:1/-1;font-size:12px;color:var(--ink3);text-align:center;padding:10px;">Aún no hay fotos de carga. Agrega las que estimes necesarias.</div>';
+  } else {
+    renderMiniaturas(grid, c, 'pata', true);
   }
-  var pataNumEl = document.getElementById('pata-num');
-  var proxima = urls.findIndex(function(u) { return !u; });
-  if (pataNumEl) pataNumEl.textContent = proxima >= 0 ? (proxima + 1) : '—';
   var fotoBtn = document.getElementById('foto-btn');
-  if (fotoBtn) fotoBtn.disabled = c.patas >= 24;
-  var pct = Math.round((c.patas || 0) / 24 * 100);
-  document.getElementById('op-prog').style.width = pct + '%';
-  document.getElementById('op-prog-label').textContent = (c.patas || 0) + ' de 24 patas';
+  if (fotoBtn) fotoBtn.disabled = false;
+  var prog = document.getElementById('op-prog');
+  if (prog && prog.parentNode) prog.parentNode.style.display = 'none';   // ya no hay meta de 24 patas
+  document.getElementById('op-prog-label').textContent = n + (n === 1 ? ' foto' : ' fotos') + ' de carga';
 }
 
 function toggleFruta() {
@@ -1635,18 +1858,36 @@ function toggleFruta() {
   panel.classList.toggle('show');
 }
 
-function tomarFoto(tipo, slotIdx) {
-  var c = contenedores.find(function(x) { return String(x.id) === String(currentId); });
-  if (!c) return;
+// Vacio / sello / termografo: si no hay fotos, abre directo la camara;
+// si ya hay, muestra/oculta las miniaturas (con boton para agregar mas).
+function togglePanel(t) {
+  var c = buscarCont(currentId);
+  var panel = document.getElementById('panel-' + t);
+  if (c && c._fotosCargadas && contarTipo(c, t) === 0) {
+    panel.classList.add('show');
+    tomarFoto(t);
+    return;
+  }
+  panel.classList.toggle('show');
+}
 
-  // Show choice: camera or gallery
+function tomarFoto(tipo, slotIdx, contId) {
+  var c = buscarCont(contId || currentId);
+  if (!c) return;
+  // Seguridad: no se guarda nada hasta tener las fotos actuales en memoria,
+  // asi un guardado nunca puede borrar fotos que aun no se habian cargado.
+  if (!c._fotosCargadas) { toast('⏳ Cargando fotos del contenedor — intenta de nuevo en un segundo'); return; }
+  asegurarEstructura(c);
+  var reemplazo = typeof slotIdx === 'number' && !!urlsDeTipo(c, tipo)[slotIdx];
+  var permiteVarias = !!LISTAS[tipo] && !reemplazo;
+
   var overlay = document.createElement('div');
   overlay.id = '_foto-choice';
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,26,20,0.6);z-index:200;display:flex;align-items:flex-end;justify-content:center;padding:20px;';
   overlay.innerHTML = '<div style="background:var(--cream);border-radius:12px;padding:20px;width:100%;max-width:400px;">' +
-    '<div style="font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px;text-align:center;">Agregar foto</div>' +
+    '<div style="font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px;text-align:center;">' + (reemplazo ? 'Reemplazar foto' : 'Agregar foto') + ' · ' + esc(nombreTipo(tipo)) + '</div>' +
     '<button id="_btn-camara" style="width:100%;padding:14px;background:var(--forest);color:var(--cream);border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:10px;">📷 Tomar foto ahora</button>' +
-    '<button id="_btn-galeria" style="width:100%;padding:14px;background:var(--cream2);color:var(--ink);border:1.5px solid var(--cream3);border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">🖼️ Elegir de galería</button>' +
+    '<button id="_btn-galeria" style="width:100%;padding:14px;background:var(--cream2);color:var(--ink);border:1.5px solid var(--cream3);border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">🖼️ Elegir de galería' + (permiteVarias ? ' (una o varias)' : '') + '</button>' +
     '<button id="_btn-cancel" style="width:100%;padding:12px;background:transparent;color:var(--ink3);border:none;font-size:13px;cursor:pointer;margin-top:6px;font-family:var(--mono);letter-spacing:0.06em;text-transform:uppercase;">Cancelar</button>' +
     '</div>';
 
@@ -1661,26 +1902,12 @@ function tomarFoto(tipo, slotIdx) {
     input.id = '_foto-input';
     input.accept = 'image/*';
     if (usarCamara) input.capture = 'environment';
+    if (!usarCamara && permiteVarias) input.multiple = true;
     input.style.cssText = 'position:fixed;top:-200px;left:-200px;width:1px;height:1px;opacity:0;';
     input.addEventListener('change', function() {
-      if (!input.files || !input.files[0]) return;
-      var file = input.files[0];
-      var reader = new FileReader();
-      // CORREGIDO: la foto se COMPRIME antes de guardarse. Sin esto,
-      // las fotos originales del celular (3-6 MB cada una) hacían que
-      // el guardado en Supabase fallara al acumular varias patas.
-      reader.onload = function(e) {
-        toast('⏳ Guardando foto...');
-        comprimirImagen(e.target.result, function(comprimida) {
-          var slotParaPath = (typeof slotIdx === 'number') ? slotIdx : 0;
-          var path = c.id + '/' + tipo + '_' + slotParaPath + '_' + Date.now();
-          subirFotoAStorage(comprimida, path, function(urlOResp) {
-            procesarFoto(tipo, c, urlOResp, slotIdx);
-          });
-        });
-      };
-      reader.onerror = function() { procesarFoto(tipo, c, null, slotIdx); };
-      reader.readAsDataURL(file);
+      var files = Array.prototype.slice.call(input.files || []);
+      if (!files.length) return;
+      procesarArchivosEnCola(tipo, c, files, slotIdx);
     });
     document.body.appendChild(input);
     setTimeout(function() { input.click(); }, 50);
@@ -1692,21 +1919,45 @@ function tomarFoto(tipo, slotIdx) {
   overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
 }
 
-function procesarFoto(tipo, c, dataUrl, slotIdx) {
-  // IMPORTANTE: se trabaja directamente sobre el objeto ya cargado en
-  // memoria (el mismo que esta en el arreglo "contenedores"), en vez de
-  // volver a consultar Supabase en cada foto. Consultar antes de cada
-  // guardado causaba que, al tomar fotos muy rapido seguidas, una
-  // respuesta que llegaba fuera de orden pisara la foto recien tomada.
-  // El estado se sincroniza con el servidor UNA vez al abrir el
-  // contenedor (ver abrirCarga), lo cual sigue permitiendo retomar
-  // una carga aunque se haya cerrado la app.
-  if (!c.etapas) c.etapas = { temp: false, vacio: false };
-  if (!c.fotoUrls) c.fotoUrls = {};
-  if (!c.frutaUrls) c.frutaUrls = [];
-  if (!c.pataUrls) c.pataUrls = [];
+// Procesa las fotos UNA POR UNA (comprimir -> subir a Storage -> guardar),
+// para que nunca se pisen entre ellas aunque se elijan varias a la vez.
+function procesarArchivosEnCola(tipo, c, files, slotIdx) {
+  var i = 0, ok = 0, total = files.length;
+  function siguiente() {
+    if (i >= total) {
+      if (total > 1) toast('✓ ' + ok + ' de ' + total + ' fotos guardadas', ok < total);
+      return;
+    }
+    var file = files[i];
+    var idx = (i === 0) ? slotIdx : undefined;
+    i++;
+    toast(total > 1 ? '⏳ Subiendo foto ' + i + ' de ' + total + '...' : '⏳ Guardando foto...');
+    var reader = new FileReader();
+    // La foto se COMPRIME antes de guardarse (fotos de celular de 3-6 MB).
+    reader.onload = function(e) {
+      comprimirImagen(e.target.result, function(comprimida) {
+        var path = c.id + '/' + tipo + '_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+        subirFotoAStorage(comprimida, path, function(urlOResp) {
+          procesarFoto(tipo, c, urlOResp, idx).then(function(guardo) {
+            if (guardo) ok++;
+            siguiente();
+          });
+        });
+      });
+    };
+    reader.onerror = function() {
+      toast('⚠ No se pudo leer una de las fotos — intenta de nuevo', true);
+      siguiente();
+    };
+    reader.readAsDataURL(file);
+  }
+  siguiente();
+}
 
-  var campos = {};
+function procesarFoto(tipo, c, dataUrl, slotIdx) {
+  // Se trabaja sobre el objeto ya cargado en memoria (el mismo del arreglo
+  // "contenedores") y se guardan SOLO los campos de este tipo de foto.
+  asegurarEstructura(c);
   var etiqueta = 'la foto';
 
   if (tipo === 'temp') {
@@ -1714,79 +1965,127 @@ function procesarFoto(tipo, c, dataUrl, slotIdx) {
     if (dataUrl) c.fotoUrls.temp = dataUrl;
     var tempStr = prompt('Ingresa la temperatura (ej: -18.5):');
     if (tempStr) {
-      var t = parseFloat(tempStr);
+      var t = parseFloat(String(tempStr).replace(',', '.'));
       if (!isNaN(t)) {
         c.temp = t.toFixed(1) + '°C';
         c.tempOk = t <= -12;
       }
     }
-    toast('✓ Temperatura registrada');
     etiqueta = 'la temperatura';
-    campos.etapa_temp = c.etapas.temp;
-    campos.foto_temp = c.fotoUrls.temp || null;
-    campos.temp = c.temp;
-    campos.temp_ok = c.tempOk;
-  } else if (tipo === 'vacio') {
-    c.etapas.vacio = true;
-    if (dataUrl) c.fotoUrls.vacio = dataUrl;
-    toast('✓ Contenedor vacío registrado');
-    etiqueta = 'la foto del contenedor vacío';
-    campos.etapa_vacio = c.etapas.vacio;
-    campos.foto_vacio = c.fotoUrls.vacio || null;
   } else if (tipo === 'fruta') {
     while (c.frutaUrls.length < 3) c.frutaUrls.push(null);
     var slotF = (typeof slotIdx === 'number' && slotIdx >= 0 && slotIdx < 3) ? slotIdx : c.frutaUrls.findIndex(function(u) { return !u; });
     if (slotF < 0) slotF = 0;
     if (dataUrl) c.frutaUrls[slotF] = dataUrl;
-    c.frutaFotos = c.frutaUrls.filter(function(u) { return !!u; }).length;
-    toast('✓ Foto de fruta ' + (slotF + 1) + ' registrada');
     etiqueta = 'la foto de fruta ' + (slotF + 1);
-    campos.fruta_fotos = c.frutaFotos;
-    campos.fruta_urls = c.frutaUrls;
-  } else if (tipo === 'pata') {
-    while (c.pataUrls.length < 24) c.pataUrls.push(null);
-    var slotP = (typeof slotIdx === 'number' && slotIdx >= 0 && slotIdx < 24) ? slotIdx : c.pataUrls.findIndex(function(u) { return !u; });
-    if (slotP < 0) {
-      toast('⚠ Ya se registraron las 24 patas');
+  } else if (LISTAS[tipo]) {
+    if (!dataUrl) { toast('⚠ No se pudo leer la foto — intenta de nuevo', true); return Promise.resolve(false); }
+    var arr = c[LISTAS[tipo].prop];
+    if (typeof slotIdx === 'number' && slotIdx >= 0 && slotIdx < arr.length) {
+      arr[slotIdx] = dataUrl;
+      etiqueta = 'el reemplazo de la foto (' + LISTAS[tipo].nombre + ')';
     } else {
-      if (dataUrl) c.pataUrls[slotP] = dataUrl;
-      c.patas = c.pataUrls.filter(function(u) { return !!u; }).length;
-      toast('✓ Pata ' + (slotP + 1) + ' registrada');
-      etiqueta = 'la foto de la pata ' + (slotP + 1);
-      campos.patas = c.patas;
-      campos.pata_urls = c.pataUrls;
+      arr.push(dataUrl);
+      etiqueta = 'la foto de ' + LISTAS[tipo].nombre.toLowerCase();
     }
+  } else {
+    return Promise.resolve(false);
   }
 
-  c.fotos = (c.etapas.temp ? 1 : 0) + (c.etapas.vacio ? 1 : 0) + (c.frutaFotos || 0) + (c.patas || 0);
-  campos.fotos = c.fotos;
-
-  // Guardado PARCIAL: cada tipo de foto guarda UNICAMENTE sus propios
-  // campos (nunca "estado" ni los campos de otras etapas), para que un
-  // guardado de un tipo nunca pueda pisar el de otro tipo distinto.
-  // Ahora ademas se confirma: si Supabase rechaza, sale aviso rojo.
-  patchContenedor(c.id, campos, etiqueta).then(function(ok) {
+  var campos = camposDeTipo(c, tipo);
+  refrescarVistas(c);
+  // Se confirma: si Supabase rechaza, sale aviso rojo (patchContenedor).
+  return patchContenedor(c.id, campos, etiqueta).then(function(ok) {
     if (ok) toast('✓ Se guardó ' + etiqueta);
+    return ok;
   });
+}
 
-  if (String(currentId) === String(c.id)) {
-    actualizarTemp(c);
-    renderEtapas(c);
-    renderPatas(c);
-  }
-  actualizarMetricas();
-  renderTabla();
+// Miniaturas de un tipo de foto + casilla "Agregar" (operario y ficha)
+function renderMiniaturas(el, c, tipo, sinAgregar) {
+  if (!el) return;
+  el.innerHTML = '';
+  urlsDeTipo(c, tipo).forEach(function(u, i) {
+    if (!u) return;
+    var d = document.createElement('div');
+    d.className = 'mf-slot';
+    d.innerHTML = '<img src="' + u + '">';
+    d.onclick = function() { opcionesFoto(tipo, i, c.id); };
+    el.appendChild(d);
+  });
+  if (sinAgregar) return;
+  if (tipo === 'temp' && contarTipo(c, 'temp') >= 1) return;
+  if (tipo === 'fruta' && contarTipo(c, 'fruta') >= 3) return;
+  var add = document.createElement('div');
+  add.className = 'mf-slot mf-add';
+  add.innerHTML = '＋<span>Agregar</span>';
+  add.onclick = function() {
+    if (tipo === 'fruta') {
+      var libre = (c.frutaUrls || []).findIndex(function(u) { return !u; });
+      tomarFoto('fruta', libre >= 0 ? libre : undefined, c.id);
+    } else {
+      tomarFoto(tipo, undefined, c.id);
+    }
+  };
+  el.appendChild(add);
+}
+
+// Al tocar una foto: ver / reemplazar / eliminar
+function opcionesFoto(tipo, idx, contId) {
+  var c = buscarCont(contId);
+  if (!c) return;
+  var url = urlsDeTipo(c, tipo)[idx];
+  if (!url) return;
+  var ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(15,26,20,0.65);z-index:250;display:flex;align-items:flex-end;justify-content:center;padding:20px;';
+  var estiloBtn = 'width:100%;padding:13px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:8px;';
+  ov.innerHTML = '<div style="background:var(--cream);border-radius:12px;padding:16px;width:100%;max-width:400px;">' +
+    '<div style="font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px;text-align:center;">' + esc(nombreTipo(tipo)) + '</div>' +
+    '<img src="' + url + '" style="width:100%;max-height:38vh;object-fit:contain;border-radius:8px;margin-bottom:12px;background:#111;">' +
+    '<button data-a="ver" style="' + estiloBtn + 'background:var(--cream2);border:1.5px solid var(--cream3);color:var(--ink);">🔍 Ver en grande</button>' +
+    '<button data-a="reemplazar" style="' + estiloBtn + 'background:var(--forest);border:none;color:var(--cream);">🔄 Reemplazar foto</button>' +
+    '<button data-a="eliminar" style="' + estiloBtn + 'background:#fdecea;border:1.5px solid #f5c2bd;color:#b42318;">🗑 Eliminar foto</button>' +
+    '<button data-a="cancelar" style="' + estiloBtn + 'background:transparent;border:none;color:var(--ink3);font-size:13px;margin-bottom:0;">Cancelar</button>' +
+    '</div>';
+  document.body.appendChild(ov);
+  ov.onclick = function(e) {
+    if (e.target === ov) { ov.remove(); return; }
+    var a = e.target.getAttribute && e.target.getAttribute('data-a');
+    if (!a) return;
+    ov.remove();
+    if (a === 'ver') verFoto(url, nombreTipo(tipo));
+    if (a === 'reemplazar') tomarFoto(tipo, idx, c.id);
+    if (a === 'eliminar') eliminarFoto(tipo, idx, c.id);
+  };
+}
+
+function eliminarFoto(tipo, idx, contId) {
+  var c = buscarCont(contId);
+  if (!c || !c._fotosCargadas) return;
+  if (!confirm('¿Eliminar esta foto de "' + nombreTipo(tipo) + '"?')) return;
+  asegurarEstructura(c);
+  if (tipo === 'temp') { c.fotoUrls.temp = null; c.etapas.temp = false; }
+  else if (tipo === 'fruta') { c.frutaUrls[idx] = null; }
+  else { c[LISTAS[tipo].prop].splice(idx, 1); }
+  var campos = camposDeTipo(c, tipo);
+  refrescarVistas(c);
+  patchContenedor(c.id, campos, 'la eliminación de la foto').then(function(ok) {
+    if (ok) toast('🗑 Foto eliminada');
+  });
 }
 
 function completarCarga() {
   var c = contenedores.find(function(x) { return String(x.id) === String(currentId); });
   if (!c) return;
 
+  function txtFotos(n) { return n > 0 ? n + (n === 1 ? ' foto' : ' fotos') : 'Sin fotos'; }
   var checks = [
     {label: 'Temperatura inicial', ok: c.etapas.temp, val: c.etapas.temp ? '1 foto' : 'Sin foto'},
-    {label: 'Contenedor vacío', ok: c.etapas.vacio, val: c.etapas.vacio ? '1 foto' : 'Sin foto'},
-    {label: 'Fotos de fruta', ok: c.frutaFotos > 0, val: c.frutaFotos > 0 ? c.frutaFotos + ' fotos' : 'Sin fotos'},
-    {label: 'Patas registradas', ok: c.patas > 0, val: c.patas + ' patas'}
+    {label: 'Contenedor vacío', ok: contarTipo(c, 'vacio') > 0, val: txtFotos(contarTipo(c, 'vacio'))},
+    {label: 'Sello', ok: contarTipo(c, 'sello') > 0, val: txtFotos(contarTipo(c, 'sello'))},
+    {label: 'Termógrafo', ok: contarTipo(c, 'termografo') > 0, val: txtFotos(contarTipo(c, 'termografo'))},
+    {label: 'Fotos de fruta', ok: c.frutaFotos > 0, val: txtFotos(c.frutaFotos || 0)},
+    {label: 'Patas de carga', ok: c.patas > 0, val: txtFotos(c.patas || 0)}
   ];
 
   var checksHtml = '';
@@ -1831,8 +2130,152 @@ function volverOp() {
   document.getElementById('op-selector').style.display = 'block';
   document.getElementById('op-carga').style.display = 'none';
   document.getElementById('fruta-panel').classList.remove('show');
+  ['vacio', 'sello', 'termografo'].forEach(function(t) {
+    var p = document.getElementById('panel-' + t);
+    if (p) p.classList.remove('show');
+  });
   currentId = null;
   renderOpSelector();
+}
+
+// ===== FICHA DEL CONTENEDOR (COORDINADOR) — NUEVO =====
+// Punto central para revisar y corregir cualquier contenedor (en carga o
+// completo): datos, fotos del operario, documentos y estado.
+var edId = null;
+
+function abrirEditor(id) {
+  var c = buscarCont(id);
+  if (!c) return;
+  edId = id;
+  document.getElementById('ed-sub').textContent = c.cliente + ' N° ' + c.num + (c.po ? ' · PO: ' + c.po : '');
+  llenarDatosEditor(c);
+  document.getElementById('ed-revision').innerHTML = '<div style="font-size:12px;color:var(--ink3);">⏳ Cargando...</div>';
+  document.getElementById('ed-fotos').innerHTML = '<div style="font-size:12px;color:var(--ink3);">⏳ Cargando fotos...</div>';
+  abrirModal('editar');
+  cargarFotosContenedor(id, function(cc) {
+    if (String(edId) !== String(id)) return;
+    if (!cc) {
+      document.getElementById('ed-fotos').innerHTML = '<div style="font-size:12px;color:#b42318;">⚠ No se pudieron cargar las fotos. Cierra y vuelve a abrir la ficha.</div>';
+      return;
+    }
+    renderEditor(cc);
+  });
+}
+
+function llenarDatosEditor(c) {
+  var sel = document.getElementById('ed-cliente');
+  sel.innerHTML = '';
+  var nombres = clientes.map(function(x) { return x.nombre; });
+  if (c.cliente && nombres.indexOf(c.cliente) < 0) nombres.unshift(c.cliente);
+  nombres.forEach(function(n) {
+    var o = document.createElement('option');
+    o.value = n; o.textContent = n;
+    sel.appendChild(o);
+  });
+  sel.value = c.cliente;
+  document.getElementById('ed-num').value = c.num || '';
+  document.getElementById('ed-po').value = c.po || '';
+  document.getElementById('ed-cal').value = c.cal || '';
+  document.getElementById('ed-tipo').value = c.tipo || '';
+  document.getElementById('ed-fecha').value = (c.fecha && c.fecha !== 'Sin fecha') ? c.fecha : '';
+  document.getElementById('ed-guia-enc').value = c.guiaEnc || '';
+  document.getElementById('ed-guia-cli').value = c.guiaCli || '';
+  document.getElementById('ed-temp').value = (c.temp && c.temp !== '—') ? String(c.temp).replace('°C', '') : '';
+}
+
+function renderEditor(c) {
+  renderRevision(c);
+  var cont = document.getElementById('ed-fotos');
+  cont.innerHTML = '';
+  ORDEN_TIPOS.forEach(function(t) {
+    var sec = document.createElement('div');
+    sec.className = 'ed-sec';
+    var n = contarTipo(c, t);
+    sec.innerHTML = '<div style="font-size:13px;font-weight:600;margin-bottom:6px;">' + esc(nombreTipo(t)) +
+      ' <span style="font-family:var(--mono);font-size:10px;color:var(--ink3);font-weight:400;">· ' + n + (n === 1 ? ' foto' : ' fotos') + '</span></div>';
+    var grid = document.createElement('div');
+    grid.className = 'mf-thumbs';
+    sec.appendChild(grid);
+    renderMiniaturas(grid, c, t);
+    cont.appendChild(sec);
+  });
+}
+
+function refrescarEditorSiAbierto(c) {
+  if (edId === null || String(edId) !== String(c.id)) return;
+  var m = document.getElementById('modal-editar');
+  if (!m || !m.classList.contains('open') || !c._fotosCargadas) return;
+  renderEditor(c);
+}
+
+function renderRevision(c) {
+  asegurarEstructura(c);
+  function fila(ok, label, val) {
+    return '<div class="ed-check"><span>' + (ok ? '✅' : '⚠️') + ' ' + esc(label) + '</span>' +
+      '<span style="font-size:12px;font-weight:600;color:' + (ok ? 'var(--ok)' : '#92400e') + ';">' + esc(val) + '</span></div>';
+  }
+  function txt(n) { return n > 0 ? n + (n === 1 ? ' foto' : ' fotos') : 'Sin fotos'; }
+  var tieneTemp = c.temp && c.temp !== '—';
+  var html = '';
+  html += fila(tieneTemp && c.tempOk && contarTipo(c, 'temp') > 0, 'Temperatura inicial',
+    (tieneTemp ? c.temp + (c.tempOk ? '' : ' (fuera de rango)') : 'Sin registrar') + ' · ' + (contarTipo(c, 'temp') ? 'con foto' : 'sin foto'));
+  html += fila(contarTipo(c, 'vacio') > 0, 'Contenedor vacío', txt(contarTipo(c, 'vacio')));
+  html += fila(contarTipo(c, 'sello') > 0, 'Sello', txt(contarTipo(c, 'sello')));
+  html += fila(contarTipo(c, 'termografo') > 0, 'Termógrafo', txt(contarTipo(c, 'termografo')));
+  html += fila(contarTipo(c, 'fruta') > 0, 'Fotos de fruta', txt(contarTipo(c, 'fruta')));
+  html += fila(contarTipo(c, 'pata') > 0, 'Patas de carga', txt(contarTipo(c, 'pata')));
+  html += fila(contarGuias(c) === 2, 'Guías', contarGuias(c) + ' de 2');
+  html += fila(!!c.guias.pack, 'Packing list', c.guias.pack ? 'Adjunto' : 'Falta');
+  html += fila(c.estado === 'completo', 'Estado', c.estado === 'completo' ? 'Completo' : 'En carga');
+  html += '<button class="btn-ghost" style="width:100%;margin-top:10px;" onclick="cambiarEstadoEditor()">' +
+    (c.estado === 'completo' ? '↩ Reabrir carga (vuelve al operario)' : '✅ Marcar como completo') + '</button>';
+  document.getElementById('ed-revision').innerHTML = html;
+}
+
+function cambiarEstadoEditor() {
+  var c = buscarCont(edId);
+  if (!c) return;
+  var nuevo = c.estado === 'completo' ? 'proceso' : 'completo';
+  if (!confirm(nuevo === 'completo' ? '¿Marcar este contenedor como completo?' : '¿Reabrir la carga? Volverá a aparecer en el panel del operario.')) return;
+  c.estado = nuevo;
+  patchContenedor(c.id, { estado: nuevo }, 'el cambio de estado').then(function(ok) {
+    if (ok) toast(nuevo === 'completo' ? '✓ Marcado como completo' : '↩ Carga reabierta');
+  });
+  renderRevision(c);
+  actualizarMetricas();
+  renderTabla();
+}
+
+function guardarDatosEditor() {
+  var c = buscarCont(edId);
+  if (!c) return;
+  function v(id) { return String(document.getElementById(id).value || '').trim(); }
+  var cliente = v('ed-cliente'), num = v('ed-num');
+  if (!cliente || !num) { alert('El cliente y el N° de contenedor no pueden quedar vacíos'); return; }
+  var campos = {
+    cliente: cliente, num: num,
+    po: v('ed-po') || null, cal: v('ed-cal') || null, tipo: v('ed-tipo') || null,
+    fecha: v('ed-fecha') || null, guia_enc: v('ed-guia-enc') || null, guia_cli: v('ed-guia-cli') || null
+  };
+  var tStr = v('ed-temp').replace('°C', '').replace(',', '.');
+  if (tStr) {
+    var t = parseFloat(tStr);
+    if (isNaN(t)) { alert('La temperatura no es un número válido (ej: -18.5)'); return; }
+    campos.temp = t.toFixed(1) + '°C';
+    campos.temp_ok = t <= -12;
+  }
+  patchContenedor(c.id, campos, 'los datos del contenedor').then(function(ok) {
+    if (!ok) return;
+    c.cliente = cliente; c.num = num;
+    c.po = campos.po || ''; c.cal = campos.cal || ''; c.tipo = campos.tipo || '';
+    c.fecha = campos.fecha || ''; c.guiaEnc = campos.guia_enc || ''; c.guiaCli = campos.guia_cli || '';
+    if (campos.temp) { c.temp = campos.temp; c.tempOk = campos.temp_ok; }
+    document.getElementById('ed-sub').textContent = c.cliente + ' N° ' + c.num + (c.po ? ' · PO: ' + c.po : '');
+    renderRevision(c);
+    actualizarMetricas();
+    renderTabla();
+    toast('✓ Datos guardados');
+  });
 }
 
 // ===== CLIENTE =====
@@ -1871,144 +2314,308 @@ function renderCliSelector() {
 // asi que esto rellena las fotos justo cuando se necesitan. Devuelve una promesa
 // que resuelve con el contenedor ya completo (o null si fallo).
 function cargarFotosContenedor(id, callback) {
-  var COLS_FOTOS = 'id,foto_temp,foto_vacio,fruta_urls,pata_urls,' +
-    'guias_enc_tipo,guias_enc_data,guias_cli_tipo,guias_cli_data';
+  var COLS_FOTOS = 'id,foto_temp,foto_vacio,vacio_urls,sello_urls,termografo_urls,fruta_urls,pata_urls,' +
+    'guias_enc_tipo,guias_enc_data,guias_cli_tipo,guias_cli_data,packing_tipo,packing_data';
   return supaFetch('contenedores?id=eq.' + encodeURIComponent(String(id)) +
       '&select=' + COLS_FOTOS, 'GET')
-    .then(function(r) { return r.json(); })
+    .then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
     .then(function(rows) {
-      var c = contenedores.find(function(x) { return String(x.id) === String(id); });
+      var c = buscarCont(id);
       if (rows && rows[0] && c) {
         var f = rows[0];
+        var vacio = limpiarLista(f.vacio_urls);
+        if (!vacio.length && f.foto_vacio) vacio = [f.foto_vacio];
         c.fotoUrls = { temp: f.foto_temp || null, vacio: f.foto_vacio || null };
         c.frutaUrls = f.fruta_urls || [];
-        c.pataUrls = f.pata_urls || [];
+        c.vacioUrls = vacio;
+        c.selloUrls = limpiarLista(f.sello_urls);
+        c.termografoUrls = limpiarLista(f.termografo_urls);
+        c.pataUrls = limpiarLista(f.pata_urls);
         c.guias = {
           enc: f.guias_enc_tipo ? { nombre: 'Guía Las Encinas', tipo: f.guias_enc_tipo, data: f.guias_enc_data || null } : null,
-          cli: f.guias_cli_tipo ? { nombre: 'Guía Cliente', tipo: f.guias_cli_tipo, data: f.guias_cli_data || null } : null
+          cli: f.guias_cli_tipo ? { nombre: 'Guía Cliente', tipo: f.guias_cli_tipo, data: f.guias_cli_data || null } : null,
+          pack: f.packing_tipo ? { nombre: 'Packing list', tipo: f.packing_tipo, data: f.packing_data || null } : null
         };
+        c._fotosCargadas = true;
       }
       if (callback) callback(c || null);
       return c || null;
     })
     .catch(function(e) {
       console.error('cargar fotos error:', e);
+      toast('⚠ No se pudieron cargar las fotos — revisa internet y vuelve a abrir', true);
       if (callback) callback(null);
       return null;
     });
 }
 
+// ===== DOCUMENTO DEL CLIENTE (NUEVO) =====
+// El cliente puede personalizar el documento ANTES de descargarlo: quitar o
+// agregar fotos, quitar o agregar guias / packing list, cambiar calidad y
+// fecha. Estos cambios viven solo en su pantalla y en lo que descarga:
+// NO modifican el registro de Las Encinas en la base de datos.
+var docCli = null;
+
+function construirDocCli(c, cargado) {
+  asegurarEstructura(c);
+  var fotos = [];
+  function add(sec, label, url) {
+    if (url) fotos.push({ sec: sec, label: label, url: url, incluida: true, extra: false });
+  }
+  add('etapas', 'Temp. inicial', c.fotoUrls.temp);
+  ['vacio', 'sello', 'termografo'].forEach(function(t) {
+    var arr = urlsDeTipo(c, t).filter(function(u) { return !!u; });
+    arr.forEach(function(u, i) { add('etapas', LISTAS[t].etiqueta + (arr.length > 1 ? ' ' + (i + 1) : ''), u); });
+  });
+  (c.frutaUrls || []).forEach(function(u, i) { add('etapas', 'Fruta ' + (i + 1), u); });
+  (c.pataUrls || []).forEach(function(u) { add('patas', 'Pata de carga', u); });
+  var docs = [];
+  if (cargado && c.guias.enc) docs.push({ nombre: 'Guía Las Encinas', tipo: c.guias.enc.tipo, data: c.guias.enc.data, incluida: true, extra: false, grupo: 'guia' });
+  if (cargado && c.guias.cli) docs.push({ nombre: 'Guía Cliente', tipo: c.guias.cli.tipo, data: c.guias.cli.data, incluida: true, extra: false, grupo: 'guia' });
+  if (cargado && c.guias.pack) docs.push({ nombre: 'Packing list', tipo: c.guias.pack.tipo, data: c.guias.pack.data, incluida: true, extra: false, grupo: 'pack' });
+  return { id: c.id, cal: c.cal || '', fecha: (c.fecha && c.fecha !== 'Sin fecha') ? c.fecha : '', cargado: cargado, editando: false, fotos: fotos, docs: docs };
+}
+
 function abrirGaleria(id) {
-  var c = contenedores.find(function(x) { return String(x.id) === String(id); });
+  var c = buscarCont(id);
   if (!c) return;
-  // Traer las fotos de ESTE contenedor desde la base (no vienen en la lista).
-  // Mostramos primero el marco y luego, al llegar las fotos, re-render.
-  cargarFotosContenedor(id, function() { renderGaleria(id); });
+  docCli = construirDocCli(c, false);
   renderGaleria(id);
+  // Las fotos no vienen en la lista general: se traen de este contenedor
+  cargarFotosContenedor(id, function(cc) {
+    if (!docCli || String(docCli.id) !== String(id)) return;
+    if (cc) docCli = construirDocCli(cc, true);
+    renderGaleria(id);
+  });
 }
 
 function renderGaleria(id) {
-  var c = contenedores.find(function(x) { return String(x.id) === String(id); });
-  if (!c) return;
+  var c = buscarCont(id);
+  if (!c || !docCli) return;
+  var ed = docCli.editando;
   document.getElementById('cli-selector').style.display = 'none';
   document.getElementById('cli-galeria').style.display = 'block';
   document.getElementById('cli-po').textContent = c.po ? 'PO: ' + c.po : '';
   document.getElementById('cli-title').textContent = c.cliente + ' N° ' + c.num;
-  document.getElementById('cli-cal').textContent = c.cal || '—';
+  document.getElementById('cli-cal').textContent = docCli.cal || '—';
+  document.getElementById('cli-fecha').textContent = docCli.fecha || '—';
   var tempEl = document.getElementById('cli-temp');
   tempEl.textContent = c.temp || '—';
-  tempEl.className = 'client-meta-val' + (!c.temp || c.temp==='—' ? '' : (c.tempOk ? ' ok' : ' warn'));
-  document.getElementById('cli-fecha').textContent = c.fecha || '—';
-  
-  var etapas = [];
-  if (c.etapas && c.etapas.temp) etapas.push({icon:'🌡️', label:'Temp. inicial', url: c.fotoUrls && c.fotoUrls.temp});
-  if (c.etapas && c.etapas.vacio) etapas.push({icon:'📦', label:'Cont. vacío', url: c.fotoUrls && c.fotoUrls.vacio});
-  (c.frutaUrls || []).forEach(function(u, i) { if (u) etapas.push({icon:'🍓', label:'Fruta ' + (i + 1), url: u}); });
-  
-  var hasGuias = c.guias && (c.guias.enc || c.guias.cli);
-  
-  var etSec = document.getElementById('cli-etapas');
-  etSec.innerHTML = '<div class="gallery-title">Etapas iniciales <span class="gallery-badge">' + etapas.length + ' fotos</span></div>';
-  var etGrid = document.createElement('div');
-  etGrid.className = 'photo-grid';
-  etapas.forEach(function(e) {
-    var card = document.createElement('div');
-    card.className = 'photo-card';
-    if (e.url) {
-      card.innerHTML = '<img src="' + e.url + '"><div class="photo-card-label">' + e.label + '</div>';
-      card.onclick = function() { verFoto(e.url, e.label); };
-    } else {
-      card.innerHTML = '<div class="photo-card-icon">' + e.icon + '</div><div class="photo-card-text">' + e.label + '</div>';
+  tempEl.className = 'client-meta-val' + (!c.temp || c.temp === '—' ? '' : (c.tempOk ? ' ok' : ' warn'));
+
+  var bEd = document.getElementById('btn-cli-editar');
+  bEd.disabled = !docCli.cargado;
+  bEd.textContent = ed ? '✓ Listo — volver a la vista normal' : (docCli.cargado ? '✏️ Editar documento antes de descargar' : '⏳ Cargando fotos...');
+  renderEditorCliente();
+
+  function seccion(elId, titulo, sec) {
+    var el = document.getElementById(elId);
+    var lista = docCli.fotos.filter(function(f) { return f.sec === sec && (ed || f.incluida); });
+    var incl = lista.filter(function(f) { return f.incluida; }).length;
+    el.innerHTML = '';
+    var hayDocs = sec === 'etapas' && docCli.docs.some(function(d) { return d.incluida; });
+    if (!lista.length && !hayDocs) {
+      if (sec === 'etapas' && !docCli.cargado) el.innerHTML = '<div class="gallery-title">' + titulo + '</div><div style="font-size:12px;color:var(--ink3);">⏳ Cargando fotos...</div>';
+      return;
     }
-    etGrid.appendChild(card);
-  });
-  if (hasGuias) {
-    var gCard = document.createElement('div');
-    gCard.className = 'photo-card';
-    gCard.innerHTML = '<div class="photo-card-icon">📄</div><div class="photo-card-text">Guías (' + contarGuias(c) + ')</div>';
-    gCard.onclick = function() { mostrarGuiasCliente(c); };
-    etGrid.appendChild(gCard);
+    el.innerHTML = '<div class="gallery-title">' + titulo + ' <span class="gallery-badge">' + incl + ' fotos</span></div>';
+    var grid = document.createElement('div');
+    grid.className = 'photo-grid';
+    lista.forEach(function(f) { grid.appendChild(tarjetaFotoCli(f)); });
+    if (sec === 'etapas') {
+      // Guias y packing list, al lado de las fotos de etapas iniciales
+      [['guia', '📄', 'Guías', 'Guías de despacho'], ['pack', '📋', 'Packing list', 'Packing list'], ['extra', '📎', 'Otros documentos', 'Otros documentos']].forEach(function(g) {
+        var docsG = docCli.docs.filter(function(d) { return d.grupo === g[0] && d.incluida; });
+        if (!docsG.length) return;
+        var card = document.createElement('div');
+        card.className = 'photo-card';
+        card.innerHTML = '<div class="photo-card-icon">' + g[1] + '</div><div class="photo-card-text">' + g[2] + (g[0] === 'pack' ? '' : ' (' + docsG.length + ')') + '</div>';
+        card.onclick = function() { mostrarDocsCliente(docsG, g[3], c.cliente + ' N° ' + c.num); };
+        grid.appendChild(card);
+      });
+    }
+    el.appendChild(grid);
   }
-  etSec.appendChild(etGrid);
-  
-  var ptSec = document.getElementById('cli-patas');
-  ptSec.innerHTML = '';
-  if (c.patas > 0) {
-    ptSec.innerHTML = '<div class="gallery-title">Patas de carga <span class="gallery-badge">' + c.patas + ' de 24</span></div>';
-    var ptGrid = document.createElement('div');
-    ptGrid.className = 'photo-grid';
-    (c.pataUrls || []).forEach(function(url, j) {
-      if (!url) return;
-      var pCard = document.createElement('div');
-      pCard.className = 'photo-card';
-      pCard.innerHTML = '<img src="' + url + '"><div class="photo-card-label">Pata ' + (j + 1) + '</div>';
-      pCard.onclick = function() { verFoto(url, 'Pata ' + (j + 1)); };
-      ptGrid.appendChild(pCard);
-    });
-    ptSec.appendChild(ptGrid);
+  seccion('cli-etapas', 'Etapas iniciales', 'etapas');
+  seccion('cli-patas', 'Patas de carga', 'patas');
+  seccion('cli-extras', 'Fotos agregadas', 'extra');
+}
+
+function tarjetaFotoCli(f) {
+  var card = document.createElement('div');
+  card.className = 'photo-card' + (f.incluida ? '' : ' cli-excluida');
+  card.innerHTML = '<img src="' + f.url + '"><div class="photo-card-label">' + esc(f.label) + '</div>';
+  card.onclick = function() { verFoto(f.url, f.label); };
+  if (docCli && docCli.editando) {
+    var x = document.createElement('button');
+    x.className = 'mf-x';
+    x.textContent = f.incluida ? '✕' : '↺';
+    x.title = f.extra ? 'Quitar foto' : (f.incluida ? 'Quitar del documento' : 'Volver a incluir');
+    x.onclick = function(ev) {
+      ev.stopPropagation();
+      if (f.extra) docCli.fotos.splice(docCli.fotos.indexOf(f), 1);
+      else f.incluida = !f.incluida;
+      renderGaleria(docCli.id);
+    };
+    card.appendChild(x);
+  }
+  return card;
+}
+
+function toggleEditarDocCliente() {
+  if (!docCli || !docCli.cargado) return;
+  docCli.editando = !docCli.editando;
+  renderGaleria(docCli.id);
+}
+
+function renderEditorCliente() {
+  var box = document.getElementById('cli-editor');
+  if (!docCli || !docCli.editando) { box.style.display = 'none'; box.innerHTML = ''; return; }
+  box.style.display = 'block';
+  box.innerHTML =
+    '<div class="cli-ed-note">✏️ Estás personalizando el documento que vas a descargar (PDF y fotos). Estos cambios <b>no modifican</b> el registro original del contenedor. Toca ✕ en una foto para quitarla y ↺ para volver a incluirla.</div>' +
+    '<div class="ed-grid">' +
+      '<div class="field"><label>Calidad</label><input type="text" id="cli-ed-cal" list="cli-cal-opciones"><datalist id="cli-cal-opciones"><option value="IQF"></option><option value="B"></option><option value="C"></option><option value="JUGO"></option></datalist></div>' +
+      '<div class="field"><label>Fecha de carga</label><input type="text" id="cli-ed-fecha" placeholder="Ej: 2 oct 2026"></div>' +
+    '</div>' +
+    '<div class="slot-label">Documentos incluidos</div>' +
+    '<div id="cli-ed-docs"></div>' +
+    '<div class="cli-ed-btns">' +
+      '<button class="btn-ghost" onclick="document.getElementById(\'cli-in-fotos\').click()">＋ Agregar fotos</button>' +
+      '<button class="btn-ghost" onclick="document.getElementById(\'cli-in-doc\').click()">＋ Agregar guía / packing list</button>' +
+      '<button class="btn-ghost" onclick="restablecerDocCliente()">↺ Deshacer todos los cambios</button>' +
+    '</div>' +
+    '<input type="file" id="cli-in-fotos" accept="image/*" multiple style="display:none" onchange="agregarFotosCliente(this.files)">' +
+    '<input type="file" id="cli-in-doc" accept=".pdf,image/*" style="display:none" onchange="agregarDocCliente(this.files)">';
+  var inCal = document.getElementById('cli-ed-cal');
+  var inFecha = document.getElementById('cli-ed-fecha');
+  inCal.value = docCli.cal;
+  inFecha.value = docCli.fecha;
+  inCal.oninput = function() { docCli.cal = inCal.value.trim(); document.getElementById('cli-cal').textContent = docCli.cal || '—'; };
+  inFecha.oninput = function() { docCli.fecha = inFecha.value.trim(); document.getElementById('cli-fecha').textContent = docCli.fecha || '—'; };
+
+  var cont = document.getElementById('cli-ed-docs');
+  if (!docCli.docs.length) {
+    cont.innerHTML = '<div style="font-size:12px;color:var(--ink3);margin-bottom:6px;">Este contenedor no tiene documentos adjuntos.</div>';
+  }
+  docCli.docs.forEach(function(d) {
+    var row = document.createElement('div');
+    row.className = 'cli-doc-row';
+    var chk = document.createElement('input');
+    chk.type = 'checkbox';
+    chk.checked = d.incluida;
+    chk.onchange = function() { d.incluida = chk.checked; renderGaleria(docCli.id); };
+    row.appendChild(chk);
+    var info = document.createElement('div');
+    info.style.flex = '1';
+    info.innerHTML = '<div style="font-weight:600;">' + esc(d.nombre) + '</div><div style="font-family:var(--mono);font-size:10px;color:var(--ink3);">' + (d.tipo === 'pdf' ? 'PDF' : 'Imagen') + (d.extra ? ' · agregado por ti' : '') + '</div>';
+    row.appendChild(info);
+    if (d.extra) {
+      var x = document.createElement('button');
+      x.className = 'btn-ghost';
+      x.style.padding = '4px 10px';
+      x.textContent = '✕';
+      x.onclick = function() { docCli.docs.splice(docCli.docs.indexOf(d), 1); renderGaleria(docCli.id); };
+      row.appendChild(x);
+    }
+    cont.appendChild(row);
+  });
+}
+
+function agregarFotosCliente(files) {
+  var lista = Array.prototype.slice.call(files || []);
+  if (!lista.length || !docCli) return;
+  var i = 0;
+  toast('⏳ Agregando ' + lista.length + ' foto' + (lista.length !== 1 ? 's' : '') + '...');
+  function sig() {
+    if (i >= lista.length) { toast('✓ Fotos agregadas al documento'); renderGaleria(docCli.id); return; }
+    var file = lista[i++];
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      comprimirImagen(e.target.result, function(comp) {
+        docCli.fotos.push({ sec: 'extra', label: 'Foto adicional', url: comp, incluida: true, extra: true });
+        sig();
+      });
+    };
+    reader.onerror = sig;
+    reader.readAsDataURL(file);
+  }
+  sig();
+}
+
+function agregarDocCliente(files) {
+  if (!files || !files[0] || !docCli) return;
+  var file = files[0];
+  var esPdf = file.type === 'application/pdf' || file.name.toLowerCase().indexOf('.pdf') >= 0;
+  if (esPdf && file.size > 8 * 1024 * 1024) { toast('⚠ El PDF pesa más de 8 MB — usa uno más liviano', true); return; }
+  var sugerido = file.name.replace(/\.[^.]+$/, '');
+  var nombre = prompt('Nombre del documento (ej: Packing list, Guía):', sugerido);
+  if (nombre === null) return;
+  nombre = nombre.trim() || sugerido || 'Documento';
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    function listo(data) {
+      docCli.docs.push({ nombre: nombre, tipo: esPdf ? 'pdf' : 'img', data: data, incluida: true, extra: true, grupo: 'extra' });
+      toast('✓ Documento agregado');
+      renderGaleria(docCli.id);
+    }
+    if (esPdf) listo(e.target.result); else comprimirImagen(e.target.result, listo);
+  };
+  reader.readAsDataURL(file);
+}
+
+function restablecerDocCliente() {
+  if (!docCli) return;
+  if (!confirm('¿Deshacer todos los cambios y volver al documento original?')) return;
+  var c = buscarCont(docCli.id);
+  if (!c) return;
+  docCli = construirDocCli(c, true);
+  docCli.editando = true;
+  renderGaleria(docCli.id);
+}
+
+function abrirDocumento(g) {
+  if (!g.data) {
+    toast('⚠ Este documento se adjuntó con una versión anterior y no quedó guardado — pide al coordinador volver a adjuntarlo', true);
+    return;
+  }
+  if (g.tipo === 'img') {
+    verFoto(g.data, g.nombre);
+  } else {
+    var a = document.createElement('a');
+    a.href = g.data;
+    a.download = g.nombre.replace(/\s+/g, '-') + '.pdf';
+    a.target = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
 }
 
 // CORREGIDO: el botón ⬇ de cada guía ahora abre o descarga el archivo
 // real guardado en la base de datos (antes no hacía nada).
-function mostrarGuiasCliente(c) {
-  var guiasArr = [];
-  if (c.guias.enc) guiasArr.push({nombre:'Guía Las Encinas', tipo: c.guias.enc.tipo, data: c.guias.enc.data});
-  if (c.guias.cli) guiasArr.push({nombre:'Guía Cliente', tipo: c.guias.cli.tipo, data: c.guias.cli.data});
-
+function mostrarDocsCliente(lista, titulo, sub) {
   var overlay = document.createElement('div');
   overlay.id = 'guias-overlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;';
   var card = document.createElement('div');
   card.style.cssText = 'background:#f5f0e8;border-radius:12px;padding:24px;width:100%;max-width:380px;';
-  card.innerHTML = '<div style="font-size:18px;font-weight:700;color:#1a3a2a;margin-bottom:4px;">Guías de despacho</div>' +
-    '<div style="font-size:12px;color:#6B6860;margin-bottom:16px;">' + c.cliente + ' N° ' + c.num + '</div>';
+  card.innerHTML = '<div style="font-size:18px;font-weight:700;color:#1a3a2a;margin-bottom:4px;">' + esc(titulo) + '</div>' +
+    '<div style="font-size:12px;color:#6B6860;margin-bottom:16px;">' + esc(sub) + '</div>';
 
-  guiasArr.forEach(function(g) {
+  lista.forEach(function(g) {
     var row = document.createElement('div');
     row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:12px;background:#ece6d8;border:1px solid #ddd6c6;border-radius:6px;margin-bottom:8px;';
-    row.innerHTML = '<span style="font-size:22px;">' + (g.tipo==='pdf' ? '📄' : '🖼️') + '</span>' +
-      '<div style="flex:1;"><div style="font-size:13px;font-weight:600;">' + g.nombre + '</div>' +
-      '<div style="font-size:11px;color:#9E9B93;">' + (g.tipo==='pdf' ? 'PDF' : 'Imagen') + '</div></div>';
+    row.innerHTML = '<span style="font-size:22px;">' + (g.tipo === 'pdf' ? '📄' : '🖼️') + '</span>' +
+      '<div style="flex:1;"><div style="font-size:13px;font-weight:600;">' + esc(g.nombre) + '</div>' +
+      '<div style="font-size:11px;color:#9E9B93;">' + (g.tipo === 'pdf' ? 'PDF' : 'Imagen') + '</div></div>';
     var btn = document.createElement('button');
     btn.style.cssText = 'background:#1a3a2a;color:#fff;border:none;border-radius:4px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;';
     btn.textContent = g.tipo === 'pdf' ? '⬇' : 'Ver';
-    btn.onclick = function() {
-      if (!g.data) {
-        toast('⚠ Esta guía se adjuntó con la versión anterior y no quedó guardada — pide al coordinador volver a adjuntarla', true);
-        return;
-      }
-      if (g.tipo === 'img') {
-        verFoto(g.data, g.nombre);
-      } else {
-        var a = document.createElement('a');
-        a.href = g.data;
-        a.download = g.nombre.replace(/\s+/g, '-') + '.pdf';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      }
-    };
+    btn.onclick = function() { abrirDocumento(g); };
     row.appendChild(btn);
     card.appendChild(row);
   });
@@ -2038,53 +2645,57 @@ function verFoto(url, label) {
 // ===== UTILS =====
 
 function descargarTodasFotos() {
-  var imgs = document.querySelectorAll('#cli-etapas img, #cli-patas img');
-  if (!imgs.length) { toast('⚠ No hay fotos para descargar'); return; }
-  
-  // Show instructions overlay
+  if (!docCli || !docCli.cargado) { toast('⏳ Espera a que carguen las fotos'); return; }
+  var lista = [];
+  docCli.fotos.forEach(function(f) { if (f.incluida) lista.push({ url: f.url, nombre: f.label, ext: 'jpg' }); });
+  docCli.docs.forEach(function(d) { if (d.incluida && d.data) lista.push({ url: d.data, nombre: d.nombre, ext: d.tipo === 'pdf' ? 'pdf' : 'jpg' }); });
+  if (!lista.length) { toast('⚠ No hay fotos para descargar'); return; }
+
   var overlay = document.createElement('div');
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,26,20,0.7);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;';
   overlay.innerHTML = '<div style="background:var(--cream);border-radius:12px;padding:24px;width:100%;max-width:400px;">' +
     '<div style="font-family:var(--display);font-size:20px;color:var(--forest);margin-bottom:8px;">Descargar fotos</div>' +
-    '<div style="font-size:13px;color:var(--ink2);margin-bottom:16px;line-height:1.6;">Se descargarán <strong>' + imgs.length + ' fotos</strong>. En iPhone quedan en <strong>Archivos → Descargas</strong>. En PC quedan en la carpeta Descargas.</div>' +
+    '<div style="font-size:13px;color:var(--ink2);margin-bottom:16px;line-height:1.6;">Se descargarán <strong>' + lista.length + ' archivos</strong>. En iPhone quedan en <strong>Archivos → Descargas</strong>. En PC quedan en la carpeta Descargas.</div>' +
     '<div style="display:flex;gap:8px;">' +
     '<button id="_dl-cancel" style="flex:1;padding:11px;background:var(--cream2);border:1px solid var(--cream3);border-radius:6px;font-size:14px;cursor:pointer;">Cancelar</button>' +
     '<button id="_dl-confirm" style="flex:1;padding:11px;background:var(--forest);color:var(--cream);border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;">Descargar todas</button>' +
     '</div></div>';
   document.body.appendChild(overlay);
-  
+
   document.getElementById('_dl-cancel').onclick = function() { overlay.remove(); };
   document.getElementById('_dl-confirm').onclick = function() {
     overlay.remove();
-    toast('⬇ Descargando ' + imgs.length + ' fotos...');
-    imgs.forEach(function(img, i) {
+    toast('⬇ Descargando ' + lista.length + ' archivos...');
+    lista.forEach(function(item, i) {
       setTimeout(function() {
         var a = document.createElement('a');
-        a.href = img.src;
-        var label = img.nextElementSibling ? img.nextElementSibling.textContent.replace(/\s+/g,'-') : ('foto-' + (i+1));
-        a.download = label + '.jpg';
+        a.href = item.url;
+        a.download = item.nombre.replace(/\s+/g, '-') + '-' + (i + 1) + '.' + item.ext;
         a.target = '_blank';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        if (i === imgs.length - 1) toast('✓ ' + imgs.length + ' fotos en Archivos → Descargas');
+        if (i === lista.length - 1) toast('✓ ' + lista.length + ' archivos en Archivos → Descargas');
       }, i * 500);
     });
   };
 }
 
 function descargarPDF() {
-  var etapasImgs = document.querySelectorAll('#cli-etapas img');
-  var patasImgs  = document.querySelectorAll('#cli-patas img');
-  if (!etapasImgs.length && !patasImgs.length) { toast('⚠ No hay fotos para generar PDF'); return; }
+  if (!docCli || !docCli.cargado) { toast('⏳ Espera a que carguen las fotos'); return; }
+  var c = buscarCont(docCli.id);
+  if (!c) return;
+  var etapas = docCli.fotos.filter(function(f) { return f.incluida && f.sec === 'etapas'; });
+  var patas = docCli.fotos.filter(function(f) { return f.incluida && f.sec === 'patas'; });
+  var extras = docCli.fotos.filter(function(f) { return f.incluida && f.sec === 'extra'; });
+  var docs = docCli.docs.filter(function(d) { return d.incluida && d.data; });
+  if (!etapas.length && !patas.length && !extras.length && !docs.length) { toast('⚠ No hay fotos para generar PDF'); return; }
 
-  var titulo = document.getElementById('cli-title').textContent;
-  var po     = document.getElementById('cli-po').textContent;
-  var cal    = document.getElementById('cli-cal').textContent;
-  var fecha  = document.getElementById('cli-fecha').textContent;
+  var titulo = c.cliente + ' N° ' + c.num;
+  var po = c.po ? 'PO: ' + c.po : '';
 
   var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
-    '<title>Encinas Track — ' + titulo + '</title>' +
+    '<title>Encinas Track — ' + esc(titulo) + '</title>' +
     '<style>' +
     '*{box-sizing:border-box;margin:0;padding:0;}' +
     'body{font-family:Arial,sans-serif;background:#fff;color:#1a1916;padding:0;}' +
@@ -2104,39 +2715,53 @@ function descargarPDF() {
     '.photo-item{break-inside:avoid;page-break-inside:avoid;}' +
     '.photo-item img{width:100%;height:140px;object-fit:cover;border-radius:6px;border:1px solid #e0dbd0;display:block;}' +
     '.photo-label{font-size:10px;color:#6B6860;text-align:center;margin-top:4px;letter-spacing:0.04em;}' +
+    '.doc-page{break-before:page;page-break-before:always;padding-top:10px;}' +
+    '.doc-page img{width:100%;max-height:900px;object-fit:contain;border:1px solid #e0dbd0;border-radius:6px;}' +
+    '.doc-pdf{padding:10px 12px;border:1px solid #ddd;border-radius:6px;margin-bottom:8px;font-size:13px;}' +
+    '.doc-pdf a{color:#1B3A2A;font-weight:700;}' +
     '.footer{margin-top:32px;padding-top:12px;border-top:1px solid #ddd;font-size:10px;color:#9E9B93;text-align:center;letter-spacing:0.06em;}' +
     '@media print{.no-print{display:none!important;}body{padding:0;}.doc{padding:16px 20px;}}' +
     '</style></head><body>' +
     '<div class="no-print">' +
-    '<h2>🫐 Encinas Track — ' + titulo + '</h2>' +
+    '<h2>🫐 Encinas Track — ' + esc(titulo) + '</h2>' +
     '<button class="btn-print" onclick="window.print()">🖨 Guardar como PDF</button>' +
     '</div>' +
     '<div class="doc">' +
     '<div class="doc-header">' +
-    (po ? '<div class="po">' + po + '</div>' : '') +
-    '<div class="titulo">' + titulo + '</div>' +
+    (po ? '<div class="po">' + esc(po) + '</div>' : '') +
+    '<div class="titulo">' + esc(titulo) + '</div>' +
     '<div class="meta-grid">' +
-    '<div class="meta-item"><label>Calidad</label><span>' + (cal||'—') + '</span></div>' +
-    '<div class="meta-item"><label>Fecha de carga</label><span>' + (fecha||'—') + '</span></div>' +
+    '<div class="meta-item"><label>Calidad</label><span>' + esc(docCli.cal || '—') + '</span></div>' +
+    '<div class="meta-item"><label>Fecha de carga</label><span>' + esc(docCli.fecha || '—') + '</span></div>' +
     '</div></div>';
 
-  if (etapasImgs.length) {
-    html += '<div class="section"><div class="section-title">Etapas iniciales</div><div class="photo-grid">';
-    etapasImgs.forEach(function(img) {
-      var lbl = img.nextElementSibling ? img.nextElementSibling.textContent : '';
-      html += '<div class="photo-item"><img src="' + img.src + '"><div class="photo-label">' + lbl + '</div></div>';
+  function grilla(tituloSec, lista) {
+    if (!lista.length) return '';
+    var h = '<div class="section"><div class="section-title">' + tituloSec + '</div><div class="photo-grid">';
+    lista.forEach(function(f) {
+      h += '<div class="photo-item"><img src="' + f.url + '"><div class="photo-label">' + esc(f.label) + '</div></div>';
     });
-    html += '</div></div>';
+    return h + '</div></div>';
   }
+  html += grilla('Etapas iniciales', etapas);
+  html += grilla('Patas de carga — ' + patas.length + ' fotos', patas);
+  html += grilla('Fotos adicionales', extras);
 
-  if (patasImgs.length) {
-    html += '<div class="section"><div class="section-title">Patas de carga — ' + patasImgs.length + ' registradas</div><div class="photo-grid">';
-    patasImgs.forEach(function(img) {
-      var lbl = img.nextElementSibling ? img.nextElementSibling.textContent : '';
-      html += '<div class="photo-item"><img src="' + img.src + '"><div class="photo-label">' + lbl + '</div></div>';
+  // Documentos: las imagenes van a pagina completa; los PDF se listan con
+  // enlace (un PDF no se puede incrustar dentro de otro desde el navegador).
+  var docsPdf = docs.filter(function(d) { return d.tipo === 'pdf'; });
+  if (docsPdf.length) {
+    html += '<div class="section"><div class="section-title">Documentos adjuntos (PDF)</div>';
+    docsPdf.forEach(function(d) {
+      var enLinea = /^https?:/.test(d.data);
+      html += '<div class="doc-pdf">📄 ' + esc(d.nombre) + ' — ' +
+        (enLinea ? '<a href="' + d.data + '" target="_blank">abrir documento</a>' : 'se entrega como archivo aparte (botón "Todas las fotos")') + '</div>';
     });
-    html += '</div></div>';
+    html += '</div>';
   }
+  docs.filter(function(d) { return d.tipo !== 'pdf'; }).forEach(function(d) {
+    html += '<div class="doc-page"><div class="section-title">' + esc(d.nombre) + '</div><img src="' + d.data + '"></div>';
+  });
 
   html += '<div class="footer">Encinas Track · Sistema de registro de carga · ' + new Date().toLocaleDateString('es-CL') + '</div>';
   html += '</div></body></html>';
